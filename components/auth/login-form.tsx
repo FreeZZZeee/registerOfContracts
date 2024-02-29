@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams } from "next/navigation";
 
-import { LoginSchema } from "@/schemas";
+import { LoginSchema } from "@/schemas/login.schema";
 import {
     Form,
     FormControl,
@@ -65,7 +65,7 @@ export const LoginForm = () => {
                         setShowTwoFactor(true);
                     }
                 })
-                .catch(() => setError("Чтото пошло не так!"));
+                .catch(() => setError("Что-то пошло не так!"));
         });
     };
 

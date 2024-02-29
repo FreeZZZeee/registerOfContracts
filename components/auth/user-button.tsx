@@ -39,7 +39,7 @@ import Link from "next/link";
                 </DropdownMenuItem>             
                 <Link href={"/profile"}>
                     <DropdownMenuItem>
-                        <CgProfile  className="h-4 w-4 mr-2"/>
+                        <CgProfile className="h-4 w-4 mr-2"/>
                         Профиль
                     </DropdownMenuItem>
                 </Link>

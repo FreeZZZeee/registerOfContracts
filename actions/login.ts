@@ -4,7 +4,7 @@ import * as z from "zod";
 import { AuthError } from "next-auth";
 
 import { signIn } from "@/auth";
-import { LoginSchema } from "@/schemas";
+import { LoginSchema } from "@/schemas/login.schema";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { 
     generateVerificationToken, 

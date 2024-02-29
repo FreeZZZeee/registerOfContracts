@@ -14,7 +14,7 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select";
-import { SettingsSchema } from "@/schemas";
+import { ProfileSchema } from "@/schemas/profile.schema";
 import {
     Card,
     CardHeader,
@@ -45,8 +45,8 @@ const ProfilePage = () => {
     const { update } = useSession();
     const [isPending, startTransition] = useTransition();
 
-    const form = useForm<z.infer<typeof SettingsSchema>>({
-        resolver: zodResolver(SettingsSchema),
+    const form = useForm<z.infer<typeof ProfileSchema>>({
+        resolver: zodResolver(ProfileSchema),
         defaultValues: {
             name: user?.name || undefined,
             email: user?.email || undefined,
@@ -57,7 +57,7 @@ const ProfilePage = () => {
         }
     });
 
-    const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
+    const onSubmit = (values: z.infer<typeof ProfileSchema>) => {
         startTransition(() => {
             profile(values)
                 .then((data) => {

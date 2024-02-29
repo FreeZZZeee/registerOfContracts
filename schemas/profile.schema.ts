@@ -1,7 +1,7 @@
 import { UserRole } from "@prisma/client";
 import * as z from "zod";
 
-export const SettingsSchema = z.object({
+export const ProfileSchema = z.object({
     name: z.optional(z.string()),
     isTwoFactorEnabled: z.optional(z.boolean()),
     role: z.enum([UserRole.ADMIN, UserRole.USER]),
@@ -33,32 +33,3 @@ export const SettingsSchema = z.object({
         message: "Требуется пароль!",
         path: ["password"]
     })
-
-export const NewPasswordSchema = z.object({
-    password: z.string().min(6, {
-        message: "Минимальная длинна пароля 6 символов"
-    })
-});
-
-export const ResetSchema = z.object({
-    email: z.string().email({ message: "Требуется email" }),
-});
-
-
-export const LoginSchema = z.object({
-    email: z.string().email({ message: "Требуется email" }),
-    password: z.string().min(1, {
-        message: "Требуется пароль"
-    }),
-    code: z.optional(z.string())
-});
-
-export const RegisterSchema = z.object({
-    email: z.string().email({ message: "Требуется email" }),
-    password: z.string().min(6, {
-        message: "Минимальная длинна пароля 6 символов"
-    }),
-    login: z.string().min(1, {
-        message: "Требуется логин"
-    })
-});

@@ -5,14 +5,14 @@ import bcrypt from "bcryptjs";
 
 import { unstable_update } from "@/auth";
 import { db } from "@/lib/db";
-import { SettingsSchema } from "@/schemas";
+import { ProfileSchema } from "@/schemas/profile.schema";
 import { getUserByEmail, getUserById } from "@/data/user";
 import { currentUser } from "@/lib/auth";
 import { generateVerificationToken } from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/mail";
 
 export const profile = async (
-    values: z.infer<typeof SettingsSchema>
+    values: z.infer<typeof ProfileSchema>
 ) => {
     const user = await currentUser();
 
