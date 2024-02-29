@@ -4,15 +4,17 @@ import { TableOfContracts } from "@/components/table-of-contracts"
 import { Table, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const tableRows = [
-    { name: "№ П/П" },
+    { name: "№" },
     { name: "Номер договора" },
     { name: "Способ размещения" },
     { name: "Дата договора" },
+    { name: "Срок окончания" },
     { name: "Предмет договора" },
     { name: "Подразделение" },
     { name: "Поставщик, подрядчик, исполнитель" },
     { name: "Сумма договора" },
     { name: "Фактически оплачено" },
+    { name: "Исполнитель" },
     { name: "Цвет" },
     { name: "" },
 ]

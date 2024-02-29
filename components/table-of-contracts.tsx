@@ -21,6 +21,8 @@ import { TiDelete } from "react-icons/ti";
             <TableCell>Credit Card</TableCell>
             <TableCell>Credit Card</TableCell>
             <TableCell>Credit Card</TableCell>
+            <TableCell>Credit Card</TableCell>
+            <TableCell>Credit Card</TableCell>
             <TableCell className="flex flex-row gap-x-1">
               <EditContract />
               <Button  variant="destructive" className="w-[50px]"><TiDelete /></Button>
@@ -29,6 +31,8 @@ import { TiDelete } from "react-icons/ti";
           <TableRow>
             <TableCell className="font-medium">INV001</TableCell>
             <TableCell>Paid</TableCell>
+            <TableCell>Credit Card</TableCell>
+            <TableCell>Credit Card</TableCell>
             <TableCell>Credit Card</TableCell>
             <TableCell>Credit Card</TableCell>
             <TableCell>Credit Card</TableCell>
