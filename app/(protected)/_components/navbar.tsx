@@ -1,6 +1,7 @@
 "use client";
 
 import { UserButton } from "@/components/auth/user-button";
+import { ReferencesButton } from "@/components/references-button";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -13,7 +14,7 @@ export const Navbar = () => {
             <div className="flex gap-x-2">
             <Button
                     asChild
-                    variant={pathname === "/registry" ? "default" : "outline"}
+                    variant={pathname === "/regestry" ? "default" : "outline"}
                 >
                     <Link href={"/registry"}>
                         Реестр договоров
@@ -27,14 +28,7 @@ export const Navbar = () => {
                         Сводная таблица закупок ПНИПУ
                     </Link>
                 </Button>
-                <Button
-                    asChild
-                    variant={pathname === "/guide" ? "default" : "outline"}
-                >
-                    <Link href={"/guide"}>
-                        Справочник
-                    </Link>
-                </Button>                
+                <ReferencesButton />              
                 <Button
                     asChild
                     variant={pathname === "/reports" ? "default" : "outline"}

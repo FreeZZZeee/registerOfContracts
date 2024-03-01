@@ -26,7 +26,7 @@ import { TiDelete } from "react-icons/ti";
             <TableCell className="flex flex-row gap-x-1">
               <EditContract />
               <Button  variant="destructive" className="w-[50px]"><TiDelete /></Button>
-              </TableCell>
+            </TableCell>
           </TableRow>
           <TableRow>
             <TableCell className="font-medium">INV001</TableCell>
