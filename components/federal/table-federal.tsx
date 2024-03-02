@@ -7,9 +7,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { TiDelete } from "react-icons/ti";
 import { useTransition } from "react";
-import { placementDelete } from "@/actions/placement";
 import { toast } from "sonner";
-import { EditPlacement } from "@/components/placement/edit-placement";
+import { federalDelete } from "@/actions/federal";
+import { EditFederal } from "./edit-federal";
 
 interface TableOfPlacementProps {
   id: string;
@@ -17,7 +17,7 @@ interface TableOfPlacementProps {
   count: number;
 }
 
-  export const TablePlacement = ({
+  export const TableFederal = ({
     id,
     name,
     count
@@ -26,7 +26,7 @@ interface TableOfPlacementProps {
     
     const onDelete = (id: string) => {
       startTransition(() => {
-        placementDelete(id)
+        federalDelete(id)
               .then((data) => {
                   if (data.error) {
                       toast.error(data.error);
@@ -46,18 +46,18 @@ interface TableOfPlacementProps {
               <TableCell className="font-medium">{count}</TableCell>
               <TableCell>{name}</TableCell>
               <TableCell className="flex flex-row gap-x-1">
-                <EditPlacement 
+                <EditFederal
                   id={id}
                   name={name}
                 /> 
                 <Button 
-                  onClick={() => onDelete(id)} 
-                  variant="destructive" 
-                  className="w-[50px]"
-                  disabled={isPending}
-                  >
-                    <TiDelete />
-                </Button>
+                onClick={() => onDelete(id)} 
+                variant="destructive" 
+                className="w-[50px]"
+                disabled={isPending}
+                >
+                  <TiDelete />
+                  </Button>
               </TableCell>
             </TableRow>
     );
