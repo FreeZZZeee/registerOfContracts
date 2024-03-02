@@ -23,26 +23,34 @@ import {
     FormLabel, 
     FormMessage 
 } from "@/components/ui/form"
-import { useEffect, useState, useTransition } from "react"
-import { PlacementSchema } from "@/schemas/placement.schema"
+import { useTransition } from "react"
 import { useForm } from "react-hook-form"
-import { placementCreate } from "@/actions/placement";
+import { FaRegEdit } from "react-icons/fa";
+import { TypeSchema } from "@/schemas/type.schema";
+import { typeUpdate } from "@/actions/type";
+
+interface EditPlacementProps {
+  id: string;
+  name: string;
+}
   
 
-export const AddAPlacement = () => {
-    const [value, setValues] = useState<string>();
-    const [isPending, startTransition] = useTransition();
+export const EditType = ({
+  id,
+  name
+}: EditPlacementProps) => {
+    const [isPending, startTransition] = useTransition();    
   
-    const form = useForm<z.infer<typeof PlacementSchema>>({
-      resolver: zodResolver(PlacementSchema),
+    const form = useForm<z.infer<typeof TypeSchema>>({
+      resolver: zodResolver(TypeSchema),
       defaultValues: {
-          name: "",
+          name: name || undefined
       }
     });
   
-    const onSubmit = (values: z.infer<typeof PlacementSchema>) => {
+    const onSubmit = (values: z.infer<typeof TypeSchema>) => {
       startTransition(() => {
-        placementCreate(values)
+        typeUpdate(values, id)
               .then((data) => {
                   if (data.error) {
                       toast.error(data.error);
@@ -50,23 +58,16 @@ export const AddAPlacement = () => {
   
                   if (data.success) {
                     toast.success(data.success);
-                    window.location.reload();   
+                    window.location.reload();
                   }
               })
               .catch(() => toast.error("Что-то пошло не так!"));
-      });           
+      });        
   }
-
-  useEffect(() => {
-    if (value) {
-      setValues("");
-    }
-  }, [value])    
-
     return (
       <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Добавить</Button>
+        <Button variant="outline" className="w-[50px]"><FaRegEdit className="w-full"/></Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -86,7 +87,6 @@ export const AddAPlacement = () => {
                         <FormControl>
                         <Input 
                             {...field}
-                            value={value}
                             placeholder="Наименование"
                             disabled={isPending}
                             type="text"

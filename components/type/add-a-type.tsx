@@ -24,25 +24,25 @@ import {
     FormMessage 
 } from "@/components/ui/form"
 import { useEffect, useState, useTransition } from "react"
-import { PlacementSchema } from "@/schemas/placement.schema"
 import { useForm } from "react-hook-form"
-import { placementCreate } from "@/actions/placement";
+import { typeCreate } from "@/actions/type";
+import { TypeSchema } from "@/schemas/type.schema";
   
 
-export const AddAPlacement = () => {
+export const AddAType = () => {
     const [value, setValues] = useState<string>();
     const [isPending, startTransition] = useTransition();
   
-    const form = useForm<z.infer<typeof PlacementSchema>>({
-      resolver: zodResolver(PlacementSchema),
+    const form = useForm<z.infer<typeof TypeSchema>>({
+      resolver: zodResolver(TypeSchema),
       defaultValues: {
           name: "",
       }
     });
   
-    const onSubmit = (values: z.infer<typeof PlacementSchema>) => {
+    const onSubmit = (values: z.infer<typeof TypeSchema>) => {
       startTransition(() => {
-        placementCreate(values)
+        typeCreate(values)
               .then((data) => {
                   if (data.error) {
                       toast.error(data.error);

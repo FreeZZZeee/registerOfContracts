@@ -12,6 +12,18 @@ export const getPlacementByName = async (name: string) => {
     }
 }
 
+export const getPlacementById = async (id: string) => {
+    try {
+        const placement = await db.placement.findUnique({
+            where: { id }
+        });
+
+        return placement;
+    } catch {
+        return null;
+    }
+}
+
 export const getPlacements = async () => {
     try {
         const placement = await db.placement.findMany();        

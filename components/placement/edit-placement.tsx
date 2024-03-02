@@ -27,22 +27,30 @@ import { useEffect, useState, useTransition } from "react"
 import { PlacementSchema } from "@/schemas/placement.schema"
 import { useForm } from "react-hook-form"
 import { placementUpdate } from "@/actions/placement";
+import { FaRegEdit } from "react-icons/fa";
+
+interface EditPlacementProps {
+  id: string;
+  name: string;
+}
   
 
-export const EditPlacement = () => {
-    const [value, setValues] = useState<string>();
-    const [isPending, startTransition] = useTransition();
+export const EditPlacement = ({
+  id,
+  name
+}: EditPlacementProps) => {
+    const [isPending, startTransition] = useTransition();    
   
     const form = useForm<z.infer<typeof PlacementSchema>>({
       resolver: zodResolver(PlacementSchema),
       defaultValues: {
-          name: "",
+          name: name || undefined
       }
     });
   
     const onSubmit = (values: z.infer<typeof PlacementSchema>) => {
       startTransition(() => {
-        placementUpdate(values)
+        placementUpdate(values, id)
               .then((data) => {
                   if (data.error) {
                       toast.error(data.error);
@@ -50,22 +58,16 @@ export const EditPlacement = () => {
   
                   if (data.success) {
                     toast.success(data.success);
+                    window.location.reload();
                   }
               })
               .catch(() => toast.error("Что-то пошло не так!"));
       });        
   }
-
-  useEffect(() => {
-    if (value) {
-      setValues("");
-    }
-  }, [value])    
-
     return (
       <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Добавить</Button>
+        <Button variant="outline" className="w-[50px]"><FaRegEdit className="w-full"/></Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -85,7 +87,6 @@ export const EditPlacement = () => {
                         <FormControl>
                         <Input 
                             {...field}
-                            value={value}
                             placeholder="Наименование"
                             disabled={isPending}
                             type="text"

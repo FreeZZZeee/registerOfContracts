@@ -1,6 +1,6 @@
 import { AddAPlacement } from "@/components/placement/add-a-placement";
-import { TableOfPlacement } from "@/components/placement/table-of-placement";
-import { Table, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TablePlacement } from "@/components/placement/table-placement";
+import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getPlacements } from "@/data/placement";
 
 const tableRows = [
@@ -10,7 +10,8 @@ const tableRows = [
 ]
 
 const PlacementPage = async () => {
-    const placements = await getPlacements();
+    const placements = await getPlacements(); 
+    let count = 1;
     
     return (
         <div className="bg-secondary rounded-xl w-1/2 flex flex-wrap items-center justify-between mx-auto p-4 shadow-sm">  
@@ -25,11 +26,17 @@ const PlacementPage = async () => {
                             </TableHead>
                         ))}
                     </TableRow>                    
-                </TableHeader>
-                <TableOfPlacement 
-                    placements={placements}
-                        
-                />
+                </TableHeader>  
+                <TableBody>
+                {placements?.map(placement => (
+                    <TablePlacement 
+                        key={placement.id}
+                        id={placement.id}
+                        name={placement.name}   
+                        count={count++}                        
+                    />
+                ))}
+                </TableBody>
             </Table>
         </div>
     );
