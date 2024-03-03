@@ -17,7 +17,7 @@ const ArticlePage = async () => {
         <div className="bg-secondary rounded-xl w-1/2 flex flex-wrap items-center justify-between mx-auto p-4 shadow-sm">  
             <AddAArticle />
             <Table>
-                <TableCaption>Вид закупки</TableCaption>
+                <TableCaption>Статья расходов</TableCaption>
                 <TableHeader className="h-[80px]">
                     <TableRow>                        
                         {tableRows.map(tableRow => (
