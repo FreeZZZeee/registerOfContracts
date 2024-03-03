@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { typeDelete } from "@/actions/type";
 import { EditType } from "@/components/type/edit-type";
 
-interface TableOfPlacementProps {
+interface TableOfTypeProps {
   id: string;
   name: string;
   count: number;
@@ -21,7 +21,7 @@ interface TableOfPlacementProps {
     id,
     name,
     count
-  }: TableOfPlacementProps) => {
+  }: TableOfTypeProps) => {
     const [isPending, startTransition] = useTransition();
     
     const onDelete = (id: string) => {

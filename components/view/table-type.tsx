@@ -8,25 +8,25 @@ import { Button } from "@/components/ui/button";
 import { TiDelete } from "react-icons/ti";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { federalDelete } from "@/actions/federal";
-import { EditFederal } from "./edit-federal";
+import { EditView } from "./edit-type";
+import { viewDelete } from "@/actions/view";
 
-interface TableOfFederalProps {
+interface TableOfViewProps {
   id: string;
   name: string;
   count: number;
 }
 
-  export const TableFederal = ({
+  export const TableView = ({
     id,
     name,
     count
-  }: TableOfFederalProps) => {
+  }: TableOfViewProps) => {
     const [isPending, startTransition] = useTransition();
     
     const onDelete = (id: string) => {
       startTransition(() => {
-        federalDelete(id)
+        viewDelete(id)
               .then((data) => {
                   if (data.error) {
                       toast.error(data.error);
@@ -46,7 +46,7 @@ interface TableOfFederalProps {
               <TableCell className="font-medium">{count}</TableCell>
               <TableCell>{name}</TableCell>
               <TableCell className="flex flex-row gap-x-1">
-                <EditFederal
+                <EditView
                   id={id}
                   name={name}
                 /> 

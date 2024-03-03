@@ -26,32 +26,31 @@ import {
 import { useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { FaRegEdit } from "react-icons/fa";
-import { typeUpdate } from "@/actions/type";
-import { FederalSchema } from "@/schemas/federal.schema";
-import { federalUpdate } from "@/actions/federal";
+import { ArticleSchema } from "@/schemas/article.schema";
+import { artcleUpdate } from "@/actions/article";
 
-interface EditFederalProps {
+interface EditArticleProps {
   id: string;
   name: string;
 }
   
 
-export const EditFederal = ({
+export const EditArticle = ({
   id,
   name
-}: EditFederalProps) => {
+}: EditArticleProps) => {
     const [isPending, startTransition] = useTransition();    
   
-    const form = useForm<z.infer<typeof FederalSchema>>({
-      resolver: zodResolver(FederalSchema),
+    const form = useForm<z.infer<typeof ArticleSchema>>({
+      resolver: zodResolver(ArticleSchema),
       defaultValues: {
           name: name || undefined
       }
     });
   
-    const onSubmit = (values: z.infer<typeof FederalSchema>) => {
+    const onSubmit = (values: z.infer<typeof ArticleSchema>) => {
       startTransition(() => {
-        federalUpdate(values, id)
+        artcleUpdate(values, id)
               .then((data) => {
                   if (data.error) {
                       toast.error(data.error);

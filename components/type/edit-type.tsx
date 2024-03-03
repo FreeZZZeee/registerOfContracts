@@ -29,7 +29,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { TypeSchema } from "@/schemas/type.schema";
 import { typeUpdate } from "@/actions/type";
 
-interface EditPlacementProps {
+interface EditTypeProps {
   id: string;
   name: string;
 }
@@ -38,7 +38,7 @@ interface EditPlacementProps {
 export const EditType = ({
   id,
   name
-}: EditPlacementProps) => {
+}: EditTypeProps) => {
     const [isPending, startTransition] = useTransition();    
   
     const form = useForm<z.infer<typeof TypeSchema>>({

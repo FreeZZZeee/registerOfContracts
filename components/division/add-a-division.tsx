@@ -23,35 +23,26 @@ import {
     FormLabel, 
     FormMessage 
 } from "@/components/ui/form"
-import { useTransition } from "react"
+import { useEffect, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
-import { FaRegEdit } from "react-icons/fa";
-import { typeUpdate } from "@/actions/type";
-import { FederalSchema } from "@/schemas/federal.schema";
-import { federalUpdate } from "@/actions/federal";
-
-interface EditFederalProps {
-  id: string;
-  name: string;
-}
+import { DivisionSchema } from "@/schemas/division.schema";
+import { divisionCreate } from "@/actions/division";
   
 
-export const EditFederal = ({
-  id,
-  name
-}: EditFederalProps) => {
-    const [isPending, startTransition] = useTransition();    
+export const AddADivision = () => {
+    const [value, setValues] = useState<string>();
+    const [isPending, startTransition] = useTransition();
   
-    const form = useForm<z.infer<typeof FederalSchema>>({
-      resolver: zodResolver(FederalSchema),
+    const form = useForm<z.infer<typeof DivisionSchema>>({
+      resolver: zodResolver(DivisionSchema),
       defaultValues: {
-          name: name || undefined
+          name: "",
       }
     });
   
-    const onSubmit = (values: z.infer<typeof FederalSchema>) => {
+    const onSubmit = (values: z.infer<typeof DivisionSchema>) => {
       startTransition(() => {
-        federalUpdate(values, id)
+        divisionCreate(values)
               .then((data) => {
                   if (data.error) {
                       toast.error(data.error);
@@ -59,16 +50,23 @@ export const EditFederal = ({
   
                   if (data.success) {
                     toast.success(data.success);
-                    window.location.reload();
+                    window.location.reload();   
                   }
               })
               .catch(() => toast.error("Что-то пошло не так!"));
-      });        
+      });           
   }
+
+  useEffect(() => {
+    if (value) {
+      setValues("");
+    }
+  }, [value])    
+
     return (
       <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-[50px]"><FaRegEdit className="w-full"/></Button>
+        <Button variant="outline">Добавить</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -88,6 +86,7 @@ export const EditFederal = ({
                         <FormControl>
                         <Input 
                             {...field}
+                            value={value}
                             placeholder="Наименование"
                             disabled={isPending}
                             type="text"
