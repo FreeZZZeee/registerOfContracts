@@ -4,7 +4,7 @@ import {
     TableRow,
   } from "@/components/ui/table"
 import { EditContract } from "./edit-contracts";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { TiDelete } from "react-icons/ti";
 
   export const TableOfContracts = () => {

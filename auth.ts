@@ -47,7 +47,7 @@ export const {
 
       return true;
     },
-    async session({ token, session }) {      
+    async session({ token, session }) {     
       if (token.sub && session.user) {
         session.user.id = token.sub;
       }
@@ -94,6 +94,10 @@ export const {
     }
   },
   adapter: PrismaAdapter(db),
-  session: { strategy: "jwt" },
+  session: { 
+    strategy: "jwt",
+    maxAge: 4 * 60 * 60,
+    updateAge: 8 * 60 * 60
+   },
   ...authConfig
 });

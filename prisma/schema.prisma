@@ -86,6 +86,8 @@ model Placement {
   id String @id @default(cuid())
   name String @unique
 
+  contract Contract[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
 }
@@ -93,6 +95,8 @@ model Placement {
 model Type {
   id String @id @default(cuid())
   name String @unique
+
+  contract Contract[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
@@ -102,6 +106,8 @@ model Federal {
   id String @id @default(cuid())
   name String @unique
 
+  contract Contract[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
 }
@@ -109,6 +115,8 @@ model Federal {
 model View {
   id String @id @default(cuid())
   name String @unique
+
+  contract Contract[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
@@ -118,6 +126,8 @@ model Article {
   id String @id @default(cuid())
   name String @unique
 
+  contract Contract[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
 }
@@ -126,6 +136,48 @@ model Division {
   id String @id @default(cuid())
   name String @unique
 
+  contract Contract[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
+}
+
+model Contract {
+  id String @id @default(cuid())
+
+  placementId String?
+  placement Placement? @relation(fields: [placementId], references: [id], onDelete: Cascade)  
+
+  typeId String?
+  type Type? @relation(fields: [typeId], references: [id], onDelete: Cascade)
+
+  federalId String?
+  federal Federal? @relation(fields: [federalId], references: [id], onDelete: Cascade)
+
+  contractNumber String?
+  startDateOfTheAgreement String
+  endDateOfTheContract String?
+  provider String?
+  theSubjectOfTheAgreement String
+  actuallyPaidFor String?
+  theAmountOfTheContract String?
+  returnDate String?
+  theAmountOfCollateral String?
+  classifierSection String?
+  classifierSection2014 String?
+
+  viewId String
+  view View @relation(fields: [viewId], references: [id], onDelete: Cascade)
+
+  articleId String
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  divisionId String
+  division Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+
+  sourceOfFinancing String?
+  additionalInformation String? @db.Text
+  MP Boolean
+  subcontractorMP Boolean
+  transients Boolean
 }
