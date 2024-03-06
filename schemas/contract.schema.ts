@@ -10,6 +10,7 @@ export const ContractSchema = z.object({
     }),
     endDateOfTheContract: z.optional(z.string()),
     provider: z.optional(z.string()),
+    contractColor: z.optional(z.string()),
     theSubjectOfTheAgreement: z.string().min(1, {
         message: "Обязательно к заполнению"
     }),

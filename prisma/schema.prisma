@@ -158,6 +158,7 @@ model Contract {
   startDateOfTheAgreement String
   endDateOfTheContract String?
   provider String?
+  contractColor String?
   theSubjectOfTheAgreement String
   actuallyPaidFor String?
   theAmountOfTheContract String?
@@ -177,7 +178,7 @@ model Contract {
 
   sourceOfFinancing String?
   additionalInformation String? @db.Text
-  MP Boolean
-  subcontractorMP Boolean
-  transients Boolean
+  MP Boolean @default(false)
+  subcontractorMP Boolean @default(false)
+  transients Boolean @default(false)
 }

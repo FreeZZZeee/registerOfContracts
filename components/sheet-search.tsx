@@ -19,7 +19,7 @@ import {
 import {  useForm } from "react-hook-form"
 import { Form ,FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form"
 import { useState, useTransition } from "react";
-import { contract } from "@/actions/contract";
+import { contractCreate } from "@/actions/contract";
 import { FormError } from "./form-error";
 import { FormSuccess } from "./form-success";
   
@@ -38,7 +38,7 @@ export const SheetSearch = () => {
 
   const onSubmit = (values: z.infer<typeof ContractSchema>) => {
     startTransition(() => {
-        contract(values)
+      contractCreate(values)
             .then((data) => {
                 if (data.error) {
                     setError(data.error);

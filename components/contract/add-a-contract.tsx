@@ -2,7 +2,6 @@
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { v4 as uuidv4 } from 'uuid';
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -25,65 +24,53 @@ import {
     FormMessage 
 } from "@/components/ui/form"
 import { useEffect, useState, useTransition } from "react"
-import { ControllerRenderProps, useForm } from "react-hook-form"
-import { divisionCreate } from "@/actions/division";
+import { useForm } from "react-hook-form"
 import { ContractSchema } from "@/schemas/contract.schema";
-import { ScrollArea } from "../ui/scroll-area";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Switch } from "../ui/switch";
-import { Textarea } from "../ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { contractCreate } from "@/actions/contract";
+
+
 
 interface valuesParamProps {
-  placement: string;
+  name: string;
+  label: string;
   type: string;
-  federal: string;
-  contractNumber: string;
-  startDateOfTheAgreement: string;
-  endDateOfTheContract: string;
-  provider: string;
-  theSubjectOfTheAgreement: string;
-  actuallyPaidFor: string;
-  theAmountOfTheContract: string;
-  returnDate: string;
-  theAmountOfCollateral: string;
-  classifierSection: string;
-  classifierSection2014: string;
-  view: string;
-  article: string;
-  division: string;
-  sourceOfFinancing: string;
-  MP: boolean;
-  subcontractorMP: boolean;
-  transients: boolean;
 }
 
-export const AddAContract = (
-  {
-    placement,
-    type,
-    federal,
-    contractNumber,
-    startDateOfTheAgreement,
-    endDateOfTheContract,
-    provider,
-    theSubjectOfTheAgreement,
-    actuallyPaidFor,
-    theAmountOfTheContract,
-    returnDate,
-    theAmountOfCollateral,
-    classifierSection,
-    classifierSection2014,
-    view,
-    article,
-    division,
-    sourceOfFinancing,
-    MP,
-    subcontractorMP,
-    transients
-  }: valuesParamProps
-  ) => {
+interface selectParam {
+  name: string;
+}
+
+interface colorParam {
+  color: string;
+}
+
+type valuesParamPropsArr = {
+  valuesParam: valuesParamProps[]
+  placements: selectParam[]
+  types: selectParam[]
+  federals: selectParam[]
+  views: selectParam[]
+  articles: selectParam[]
+  divisions: selectParam[]
+  colors: colorParam[]
+}
+
+export const AddAContract = ({
+  valuesParam,
+  placements,
+  types,
+  federals,
+  views,
+  articles,
+  divisions,
+  colors
+}: valuesParamPropsArr) => {
     const [value, setValues] = useState<string>();
-    const [isPending, startTransition] = useTransition();
+    const [isPending, startTransition] = useTransition();    
   
     const form = useForm<z.infer<typeof ContractSchema>>({
       resolver: zodResolver(ContractSchema),
@@ -109,12 +96,14 @@ export const AddAContract = (
         MP: false,
         subcontractorMP: false,
         transients: false,
+        additionalInformation: "",
+        contractColor: ""
       }
     });
   
     const onSubmit = (values: z.infer<typeof ContractSchema>) => {
       startTransition(() => {
-        divisionCreate(values)
+        contractCreate(values)
               .then((data) => {
                   if (data.error) {
                       toast.error(data.error);
@@ -122,7 +111,7 @@ export const AddAContract = (
   
                   if (data.success) {
                     toast.success(data.success);
-                    window.location.reload();   
+                    // window.location.reload();   
                   }
               })
               .catch(() => toast.error("Что-то пошло не так!"));
@@ -151,102 +140,254 @@ export const AddAContract = (
                     >
                     <ScrollArea className="h-[600px] w-full rounded-md border p-4">
                       <div className="flex flex-col flex-wrap gap-2">
-                    {valuesParam.map(valueParam => (
-                      <div key={valueParam.name}>
-                        {valueParam.type === "text" && (
-                          <FormField
-                            control={form.control}
-                            name={valueParam.name as any}
-                            render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>{valueParam.label}</FormLabel>
-                            <FormControl>
-                            <Input 
-                                {...field}
-                                value={value}
-                                placeholder={valueParam.label}
-                                disabled={isPending}
-                                type="text"
-                                />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                                )}
-                          />
-                        )}
-
-                        {valueParam.type === "select" && (                          
-                          <FormField 
-                            control={form.control}
-                            name={valueParam.name as any}
-                            render={({ field }) => (
-                              <FormItem>
-                                  <FormLabel>{valueParam.label}</FormLabel>
-                                  {valueParam.name === "placement" && (   
-                                    <Select
-                                        disabled={isPending}
-                                        onValueChange={field.onChange}
-                                    >                                    
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue 
-                                                    placeholder={valueParam.label}
-                                                />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                          {placements.map(placement => (
-                                              <SelectItem value="1">
-                                              {placement.name}
-                                              </SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                    </Select>
-                                  )}
-                                  <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        )}
-                        
-                        {valueParam.type === "bool" && (
-                          <FormField 
-                            control={form.control}
-                            name={valueParam.name as any}
-                            render={({ field }) => (
-                              <FormItem className="flex flex-row items-center justify-between
-                                rounded-lg border p-3 shadow-sm w-[250px]">
-                                <div className="space-y-0.5">
+                        {valuesParam.map(valueParam => (
+                          <div className="w-auto" key={valueParam.name}>
+                            {valueParam.type === "text" && (
+                              <FormField
+                                control={form.control}
+                                name={valueParam.name as any}
+                                render={({ field }) => (
+                                <FormItem>
                                 <FormLabel>{valueParam.label}</FormLabel>
-                                </div>
                                 <FormControl>
-                                  <Switch 
+                                <Input 
+                                    {...field}
+                                    value={value}
+                                    placeholder={valueParam.label}
                                     disabled={isPending}
-                                    onCheckedChange={field.onChange}
-                                  />
-                                </FormControl>
-                              </FormItem>
+                                    type={valueParam.type}
+                                    />
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                    )}
+                              />
                             )}
-                          />
-                        )}
 
-                        {valueParam.type === "textArea" && (
-                          <FormField 
-                            control={form.control}
-                            name={valueParam.name as any}
-                            render={({ field }) => (
-                              <FormItem>
-                              <FormLabel>{valueParam.label}</FormLabel>
-                              <FormControl>
-                                <Textarea placeholder="Дополнительная информация" id="message-2" />
-                              </FormControl>
-                              <FormMessage />
-                              </FormItem>
+                            {valueParam.type === "date" && (
+                              <FormField
+                                control={form.control}
+                                name={valueParam.name as any}
+                                render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>{valueParam.label}</FormLabel>
+                                <FormControl className="w-[200px]">
+                                <Input 
+                                    {...field}
+                                    value={value}
+                                    placeholder={valueParam.label}
+                                    disabled={isPending}
+                                    type={valueParam.type}
+                                    />
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                    )}
+                              />
                             )}
-                          />
-                        )}                        
-                      </div>
-                    ))}
+
+                            {valueParam.type === "select" && (                          
+                              <FormField 
+                                control={form.control}
+                                name={valueParam.name as any}
+                                render={({ field }) => (
+                                  <FormItem>
+                                      <FormLabel>{valueParam.label}</FormLabel>
+                                      {valueParam.name === "placement" && (   
+                                        <Select
+                                            disabled={isPending}
+                                            onValueChange={field.onChange}
+                                        >                                    
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue 
+                                                        placeholder={valueParam.label}
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                              {placements.map(placement => (
+                                                  <SelectItem value={placement.name} key={placement.name}>
+                                                  {placement.name}
+                                                  </SelectItem>
+                                              ))}
+                                            </SelectContent>
+                                        </Select>
+                                      )}         
+                                      {valueParam.name === "type" && (   
+                                        <Select
+                                            disabled={isPending}
+                                            onValueChange={field.onChange}
+                                        >                                    
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue 
+                                                        placeholder={valueParam.label}
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                              {types.map(type => (
+                                                  <SelectItem value={type.name} key={type.name}>
+                                                  {type.name}
+                                                  </SelectItem>
+                                              ))}
+                                            </SelectContent>
+                                        </Select>
+                                      )}
+                                      {valueParam.name === "federal" && (   
+                                        <Select
+                                            disabled={isPending}
+                                            onValueChange={field.onChange}
+                                        >                                    
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue 
+                                                        placeholder={valueParam.label}
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                              {federals.map(federal => (
+                                                  <SelectItem value={federal.name} key={federal.name}>
+                                                  {federal.name}
+                                                  </SelectItem>
+                                              ))}
+                                            </SelectContent>
+                                        </Select>
+                                      )}
+                                      {valueParam.name === "color" && (   
+                                        <Select
+                                            disabled={isPending}
+                                            onValueChange={field.onChange}
+                                        >                                    
+                                            <FormControl className="w-[250px]">
+                                                <SelectTrigger id="color" className="">
+                                                    <SelectValue 
+                                                        placeholder={valueParam.label}
+                                                        defaultValue={field.value}
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                              {colors.map(color => (
+                                                  <SelectItem 
+                                                  value={color.color} 
+                                                  key={color.color} 
+                                                  className={`h-9 ${color.color} my-2`} 
+                                                  >
+                                                  </SelectItem>
+                                              ))}
+                                            </SelectContent>
+                                        </Select>
+                                      )}
+                                      {valueParam.name === "view" && (   
+                                        <Select
+                                            disabled={isPending}
+                                            onValueChange={field.onChange}
+                                        >                                    
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue 
+                                                        placeholder={valueParam.label}
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                              {views.map(view => (
+                                                  <SelectItem value={view.name} key={view.name}>
+                                                  {view.name}
+                                                  </SelectItem>
+                                              ))}
+                                            </SelectContent>
+                                        </Select>
+                                      )}
+                                      {valueParam.name === "article" && (   
+                                        <Select
+                                            disabled={isPending}
+                                            onValueChange={field.onChange}
+                                        >                                    
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue 
+                                                        placeholder={valueParam.label}
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                              {articles.map(article => (
+                                                  <SelectItem value={article.name} key={article.name}>
+                                                  {article.name}
+                                                  </SelectItem>
+                                              ))}
+                                            </SelectContent>
+                                        </Select>
+                                      )}   
+                                       {valueParam.name === "division" && (   
+                                        <Select
+                                            disabled={isPending}
+                                            onValueChange={field.onChange}
+                                        >                                    
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue 
+                                                        placeholder={valueParam.label}
+                                                    />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                              {divisions.map(division => (
+                                                  <SelectItem value={division.name} key={division.name}>
+                                                  {division.name}
+                                                  </SelectItem>
+                                              ))}
+                                            </SelectContent>
+                                        </Select>
+                                      )}                                                                             
+                                      <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            )}
+                            
+                            {valueParam.type === "bool" && (
+                              <FormField 
+                                control={form.control}
+                                name={valueParam.name as any}
+                                render={({ field }) => (
+                                  <FormItem className="flex flex-row items-center justify-between
+                                    rounded-lg border p-3 shadow-sm w-[250px]">
+                                    <div className="space-y-0.5">
+                                    <FormLabel>{valueParam.label}</FormLabel>
+                                    </div>
+                                    <FormControl>
+                                      <Switch 
+                                        disabled={isPending}
+                                        onCheckedChange={field.onChange}
+                                      />
+                                    </FormControl>
+                                  </FormItem>
+                                )}
+                              />
+                            )}
+
+                            {valueParam.type === "textArea" && (
+                              <FormField 
+                                control={form.control}
+                                name={valueParam.name as any}
+                                render={({ field }) => (
+                                  <FormItem>
+                                  <FormLabel>{valueParam.label}</FormLabel>
+                                  <FormControl>
+                                    <Textarea placeholder="Дополнительная информация" id="message-2" />
+                                  </FormControl>
+                                  <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            )}                        
+                          </div>
+                        ))}
 
                     </div>
                     </ScrollArea>
