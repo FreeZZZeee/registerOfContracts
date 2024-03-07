@@ -68,45 +68,43 @@ export const contractCreate = async (
      const dbArticle = await getArticleByName(article as string);
      const dbDivision = await getDivisionByName(division as string);
 
-     console.log(contractColor)
-
-    //  if (MP !== undefined 
-    //     && subcontractorMP !== undefined 
-    //     && transients !== undefined 
-    //     && dbView?.id !== undefined
-    //     && dbPlacement?.id !== undefined
-    //     && dbType?.id !== undefined
-    //     && dbFederal?.id !== undefined
-    //     && dbArticle?.id !== undefined
-    //     && dbDivision?.id !== undefined) {
-    //     const obj = await db.contract.create({
-    //         data: {
-    //             placementId: dbPlacement?.id,
-    //             typeId: dbType?.id,
-    //             federalId: dbFederal?.id,
-    //             contractNumber,
-    //             startDateOfTheAgreement,
-    //             endDateOfTheContract,
-    //             provider,
-    //             contractColor,
-    //             theSubjectOfTheAgreement,
-    //             actuallyPaidFor,
-    //             theAmountOfTheContract,
-    //             returnDate,
-    //             theAmountOfCollateral,
-    //             classifierSection,
-    //             classifierSection2014,
-    //             viewId: dbView?.id,
-    //             articleId: dbArticle?.id,
-    //             divisionId: dbDivision?.id,
-    //             sourceOfFinancing,
-    //             additionalInformation,
-    //             MP,
-    //             subcontractorMP,
-    //             transients,                
-    //         }
-    //     });
-    // }
+     if (MP !== undefined 
+        && subcontractorMP !== undefined 
+        && transients !== undefined 
+        && dbView?.id !== undefined
+        && dbPlacement?.id !== undefined
+        && dbType?.id !== undefined
+        && dbFederal?.id !== undefined
+        && dbArticle?.id !== undefined
+        && dbDivision?.id !== undefined) {
+        const obj = await db.contract.create({
+            data: {
+                placementId: dbPlacement?.id,
+                typeId: dbType?.id,
+                federalId: dbFederal?.id,
+                contractNumber,
+                startDateOfTheAgreement,
+                endDateOfTheContract,
+                provider,
+                contractColor,
+                theSubjectOfTheAgreement,
+                actuallyPaidFor,
+                theAmountOfTheContract,
+                returnDate,
+                theAmountOfCollateral,
+                classifierSection,
+                classifierSection2014,
+                viewId: dbView?.id,
+                articleId: dbArticle?.id,
+                divisionId: dbDivision?.id,
+                sourceOfFinancing,
+                additionalInformation,
+                MP,
+                subcontractorMP,
+                transients,                
+            }
+        });
+    }
     
     
  

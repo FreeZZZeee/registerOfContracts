@@ -1,13 +1,14 @@
 import { AddAContract } from "@/components/contract/add-a-contract";
 import { SheetSearch } from "@/components/sheet-search";
 import { TableOfContracts } from "@/components/contract/table-of-contracts"
-import { Table, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { getPlacements } from "@/data/placement";
+import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { getPlacementById, getPlacements } from "@/data/placement";
 import { getTypes } from "@/data/type";
 import { getFederals } from "@/data/federal";
 import { getViews } from "@/data/view";
 import { getArticles } from "@/data/article";
 import { getDivisions } from "@/data/division";
+import { getContracts } from "@/data/contract";
 
 const tableRows = [
     { name: "№" },
@@ -49,7 +50,7 @@ const valuesParam = [
     {name: "MP", label: "МП", type: "bool"},
     {name: "subcontractorMP", label: "Субподрядчик МП", type: "bool"},
     {name: "transients", label: "Переходящие", type: "bool"},
-    {name: "color", label: "Цвет", type: "select"},
+    {name: "contractColor", label: "Цвет", type: "select"},
   ]
 
 const colors = [
@@ -77,7 +78,10 @@ const RegestryPage = async () => {
     const federals = await getFederals();
     const views = await getViews();
     const articles = await getArticles();
-    const divisions =await getDivisions(); 
+    const divisions = await getDivisions(); 
+    const contracts = await getContracts();
+
+    let count = 1;
 
     return (
         <div className="bg-secondary rounded-xl w-full flex flex-wrap items-center justify-between mx-auto p-4 shadow-sm">            
@@ -103,7 +107,25 @@ const RegestryPage = async () => {
                         ))}
                     </TableRow>
                 </TableHeader>
-                <TableOfContracts />
+                <TableBody>
+                    {contracts?.map(contract => (
+                        <TableOfContracts
+                            key={contract.id}
+                            count={count++}
+                            placementId={contract.placementId as string}
+                            contractNumber={contract.contractNumber as string}
+                            startDateOfTheAgreement={contract.startDateOfTheAgreement as string}
+                            endDateOfTheContract={contract.endDateOfTheContract as string}
+                            provider={contract.provider as string}
+                            theSubjectOfTheAgreement={contract.theSubjectOfTheAgreement as string}
+                            actuallyPaidFor={contract.actuallyPaidFor as string}
+                            theAmountOfTheContract={contract.theAmountOfCollateral as string}
+                            executor={"Ф"}
+                            divisionId={contract.divisionId}
+                            color={contract.contractColor as string}
+                        />
+                    ))}                    
+                </TableBody>
             </Table>
         </div>
     );

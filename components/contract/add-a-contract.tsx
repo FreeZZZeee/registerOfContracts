@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input"
 import { toast } from "sonner";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -70,6 +69,7 @@ export const AddAContract = ({
   colors
 }: valuesParamPropsArr) => {
     const [value, setValues] = useState<string>();
+    const [color, setColor] = useState<string>();
     const [isPending, startTransition] = useTransition();    
   
     const form = useForm<z.infer<typeof ContractSchema>>({
@@ -102,6 +102,8 @@ export const AddAContract = ({
     });
   
     const onSubmit = (values: z.infer<typeof ContractSchema>) => {
+      values.contractColor = color;
+            
       startTransition(() => {
         contractCreate(values)
               .then((data) => {
@@ -111,14 +113,14 @@ export const AddAContract = ({
   
                   if (data.success) {
                     toast.success(data.success);
-                    // window.location.reload();   
+                    window.location.reload();   
                   }
               })
               .catch(() => toast.error("Что-то пошло не так!"));
       });           
   }
 
-  useEffect(() => {
+  useEffect(() => {    
     if (value) {
       setValues("");
     }
@@ -256,30 +258,28 @@ export const AddAContract = ({
                                             </SelectContent>
                                         </Select>
                                       )}
-                                      {valueParam.name === "color" && (   
+                                      {valueParam.name === "contractColor" && (
                                         <Select
-                                            disabled={isPending}
-                                            onValueChange={field.onChange}
-                                        >                                    
-                                            <FormControl className="w-[250px]">
-                                                <SelectTrigger id="color" className="">
-                                                    <SelectValue 
-                                                        placeholder={valueParam.label}
-                                                        defaultValue={field.value}
-                                                    />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                              {colors.map(color => (
-                                                  <SelectItem 
-                                                  value={color.color} 
-                                                  key={color.color} 
-                                                  className={`h-9 ${color.color} my-2`} 
-                                                  >
-                                                  </SelectItem>
-                                              ))}
-                                            </SelectContent>
-                                        </Select>
+                                        disabled={isPending}
+                                        onValueChange={(value) => setColor(value)}
+                                    >                                    
+                                        <FormControl>
+                                            <SelectTrigger className={`${color} w-[250px]`}>
+                                                <SelectValue 
+                                                    placeholder="Выбрать цвет"
+                                                />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                          {colors.map(color => (
+                                              <SelectItem 
+                                                value={color.color} 
+                                                key={color.color} 
+                                                className={`${color.color} h-9 my-1`}>
+                                              </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                    </Select>
                                       )}
                                       {valueParam.name === "view" && (   
                                         <Select
@@ -379,7 +379,11 @@ export const AddAContract = ({
                                   <FormItem>
                                   <FormLabel>{valueParam.label}</FormLabel>
                                   <FormControl>
-                                    <Textarea placeholder="Дополнительная информация" id="message-2" />
+                                    <Textarea 
+                                    placeholder="Дополнительная информация" id="message-2" 
+                                    disabled={isPending} 
+                                    {...field}                                   
+                                    />
                                   </FormControl>
                                   <FormMessage />
                                   </FormItem>
@@ -393,13 +397,13 @@ export const AddAContract = ({
                     </ScrollArea>
                     
                     <DialogFooter>
-                      <DialogClose asChild>
+                      {/* <DialogClose asChild> */}
                           <Button 
                             disabled={isPending}
                             type="submit">
                               Сохранить
                           </Button>
-                      </DialogClose>
+                      {/* </DialogClose> */}
                     </DialogFooter>
                 </form>
             </Form>        
