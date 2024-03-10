@@ -16,7 +16,7 @@ export const articleCreate = async (
 
     if (!user) {
         return { error: "Неавторизованный" };
-    }    
+    }
 
     const dbUser = await getUserById(user.id as string);
 
@@ -34,12 +34,12 @@ export const articleCreate = async (
 
     if (dbArticle) {
         return { error: "Статья расходов уже существует!" }
-    }    
+    }
 
     await db.article.create({
-        data: { 
+        data: {
             name
-         }
+        }
     });
 
     return { success: "Статья расходов добавлена" };
@@ -54,7 +54,7 @@ export const artcleUpdate = async (
 
     if (!user) {
         return { error: "Неавторизованный" };
-    }    
+    }
 
     const dbUser = await getUserById(user.id as string);
 
@@ -73,7 +73,7 @@ export const artcleUpdate = async (
 
     if (dbArticle) {
         return { error: "Статья расходов уже существует!" }
-    }    
+    }
 
     if (!dbArticleById) {
         return { error: "Статья расходов не найдена!" }
@@ -95,7 +95,7 @@ export const articleDelete = async (id: string) => {
 
     if (!user) {
         return { error: "Неавторизованный" };
-    }    
+    }
 
     const dbUser = await getUserById(user.id as string);
 
@@ -107,7 +107,7 @@ export const articleDelete = async (id: string) => {
 
     if (!dbArticle) {
         return { error: "Статья расходов не существует!" }
-    }    
+    }
 
     await db.article.delete({
         where: { id }

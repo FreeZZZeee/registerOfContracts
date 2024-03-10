@@ -42,6 +42,7 @@ model User {
   password      String?
   role          UserRole @default(USER)
   accounts      Account[]
+  contracts     Contract[]
   isTwoFactorEnabled Boolean @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
 }
@@ -154,18 +155,16 @@ model Contract {
   federalId String?
   federal Federal? @relation(fields: [federalId], references: [id], onDelete: Cascade)
 
-  contractNumber String?
+  contractNumber String
   startDateOfTheAgreement String
   endDateOfTheContract String?
-  provider String?
+  provider String
   contractColor String?
   theSubjectOfTheAgreement String
   actuallyPaidFor String?
   theAmountOfTheContract String?
   returnDate String?
   theAmountOfCollateral String?
-  classifierSection String?
-  classifierSection2014 String?
 
   viewId String
   view View @relation(fields: [viewId], references: [id], onDelete: Cascade)
@@ -181,4 +180,10 @@ model Contract {
   MP Boolean @default(false)
   subcontractorMP Boolean @default(false)
   transients Boolean @default(false)
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
 }

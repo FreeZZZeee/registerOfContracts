@@ -16,7 +16,7 @@ export const divisionCreate = async (
 
     if (!user) {
         return { error: "Неавторизованный" };
-    }    
+    }
 
     const dbUser = await getUserById(user.id as string);
 
@@ -34,12 +34,12 @@ export const divisionCreate = async (
 
     if (dbDivision) {
         return { error: "Подразделение уже существует!" }
-    }    
+    }
 
     await db.division.create({
-        data: { 
+        data: {
             name
-         }
+        }
     });
 
     return { success: "Подразделение добавлено" };
@@ -54,7 +54,7 @@ export const divisionUpdate = async (
 
     if (!user) {
         return { error: "Неавторизованный" };
-    }    
+    }
 
     const dbUser = await getUserById(user.id as string);
 
@@ -73,7 +73,7 @@ export const divisionUpdate = async (
 
     if (dbDivision) {
         return { error: "Подразделение уже существует!" }
-    }    
+    }
 
     if (!dbDivisionById) {
         return { error: "Подразделение не найдено!" }
@@ -95,7 +95,7 @@ export const divisionDelete = async (id: string) => {
 
     if (!user) {
         return { error: "Неавторизованный" };
-    }    
+    }
 
     const dbUser = await getUserById(user.id as string);
 
@@ -107,7 +107,7 @@ export const divisionDelete = async (id: string) => {
 
     if (!dbDivision) {
         return { error: "Подразделение не существует!" }
-    }    
+    }
 
     await db.division.delete({
         where: { id }

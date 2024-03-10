@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Navbar } from "./_components/navbar";
 import { useSession } from "next-auth/react";
 import { useIdleTimer } from 'react-idle-timer'
-import { signOut } from "@/auth";
+import { logout } from "@/actions/logout";
 
 interface ProtectedLayoutProps {
     children: React.ReactNode;
@@ -31,7 +31,7 @@ const ProtectedLayout = ({ children }: ProtectedLayoutProps) => {
     });
   
     useEffect(() => {
-      const checkUserSession = setInterval( async () => {
+      const checkUserSession = setInterval(() => {
         const expiresTimeTimestamp = Math.floor(new Date(session?.expires || '').getTime());
         const currentTimestamp = Date.now();
         const timeRemaining = expiresTimeTimestamp - currentTimestamp;        
@@ -46,7 +46,7 @@ const ProtectedLayout = ({ children }: ProtectedLayoutProps) => {
   
         } else if (timeRemaining < 0) {
           // session has expired, logout the user and display session expiration message
-          await signOut();
+          logout();
         }
       }, CHECK_SESSION_EXP_TIME);
   
