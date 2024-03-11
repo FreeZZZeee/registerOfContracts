@@ -10,6 +10,7 @@ import { TiDelete } from "react-icons/ti";
 import { contractDelete } from "@/actions/contract";
 import { toast } from "sonner";
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 interface contractParam {
   id: string;
@@ -43,6 +44,9 @@ export const TableOfContracts = ({
   color
 }: contractParam) => {
 
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
   const getColor = (color: string) => {
     if (color) {
       return `${color} text-white hover:!text-black`
@@ -50,8 +54,6 @@ export const TableOfContracts = ({
 
     return "bg-secondary"
   }
-
-  const [isPending, startTransition] = useTransition();
 
   const onDelete = (id: string) => {
     startTransition(() => {
@@ -63,7 +65,7 @@ export const TableOfContracts = ({
 
           if (data.success) {
             toast.success(data.success);
-            window.location.reload();
+            router.refresh();
           }
         })
         .catch(() => toast.error("Что-то пошло не так!"));
@@ -71,7 +73,6 @@ export const TableOfContracts = ({
   }
 
   return (
-
     <TableRow className={getColor(color)}>
       <TableCell className="font-medium">{count}</TableCell>
       <TableCell>{contractNumber}</TableCell>

@@ -30,6 +30,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { contractCreate } from "@/actions/contract";
+import { useRouter } from "next/navigation";
 
 
 
@@ -70,7 +71,10 @@ export const AddAContract = ({
 }: valuesParamPropsArr) => {
   const [value, setValues] = useState<string>();
   const [color, setColor] = useState<string>();
+  const [open, setOpen] = useState(false);
+
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof ContractSchema>>({
     resolver: zodResolver(ContractSchema),
@@ -111,7 +115,8 @@ export const AddAContract = ({
 
           if (data.success) {
             toast.success(data.success);
-            window.location.reload();
+            setOpen(false);
+            router.refresh();
           }
         })
         .catch(() => toast.error("Что-то пошло не так!"));
@@ -125,7 +130,7 @@ export const AddAContract = ({
   }, [value])
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Добавить договор</Button>
       </DialogTrigger>
@@ -395,13 +400,11 @@ export const AddAContract = ({
             </ScrollArea>
 
             <DialogFooter>
-              {/* <DialogClose asChild> */}
               <Button
                 disabled={isPending}
                 type="submit">
                 Сохранить
               </Button>
-              {/* </DialogClose> */}
             </DialogFooter>
           </form>
         </Form>
