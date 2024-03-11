@@ -3,62 +3,65 @@
 import {
     TableCell,
     TableRow,
-  } from "@/components/ui/table"
+} from "@/components/ui/table"
 import { Button } from "@/components/ui/button";
 import { TiDelete } from "react-icons/ti";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { EditView } from "./edit-type";
 import { viewDelete } from "@/actions/view";
+import { useRouter } from "next/navigation";
 
 interface TableOfViewProps {
-  id: string;
-  name: string;
-  count: number;
+    id: string;
+    name: string;
+    count: number;
 }
 
-  export const TableView = ({
+export const TableView = ({
     id,
     name,
     count
-  }: TableOfViewProps) => {
+}: TableOfViewProps) => {
     const [isPending, startTransition] = useTransition();
-    
+
+    const router = useRouter();
+
     const onDelete = (id: string) => {
-      startTransition(() => {
-        viewDelete(id)
-              .then((data) => {
-                  if (data.error) {
-                      toast.error(data.error);
-                  }
-  
-                  if (data.success) {
-                    toast.success(data.success);
-                    window.location.reload();   
-                  }
-              })
-              .catch(() => toast.error("Что-то пошло не так!"));
-      });           
+        startTransition(() => {
+            viewDelete(id)
+                .then((data) => {
+                    if (data.error) {
+                        toast.error(data.error);
+                    }
+
+                    if (data.success) {
+                        toast.success(data.success);
+                        router.refresh();
+                    }
+                })
+                .catch(() => toast.error("Что-то пошло не так!"));
+        });
     }
 
     return (
-            <TableRow key={id}>
-              <TableCell className="font-medium">{count}</TableCell>
-              <TableCell>{name}</TableCell>
-              <TableCell className="flex flex-row gap-x-1">
+        <TableRow key={id}>
+            <TableCell className="font-medium">{count}</TableCell>
+            <TableCell>{name}</TableCell>
+            <TableCell className="flex flex-row gap-x-1">
                 <EditView
-                  id={id}
-                  name={name}
-                /> 
-                <Button 
-                onClick={() => onDelete(id)} 
-                variant="destructive" 
-                className="w-[50px]"
-                disabled={isPending}
+                    id={id}
+                    name={name}
+                />
+                <Button
+                    onClick={() => onDelete(id)}
+                    variant="destructive"
+                    className="w-[50px]"
+                    disabled={isPending}
                 >
-                  <TiDelete />
-                  </Button>
-              </TableCell>
-            </TableRow>
+                    <TiDelete />
+                </Button>
+            </TableCell>
+        </TableRow>
     );
-  }
+}

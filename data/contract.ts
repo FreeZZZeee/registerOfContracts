@@ -14,7 +14,7 @@ export const getContractById = async (id: string) => {
 
 export const getContracts = async () => {
     try {
-        const contract = await db.contract.findMany();        
+        const contract = await db.contract.findMany();
 
         return contract;
     } catch {

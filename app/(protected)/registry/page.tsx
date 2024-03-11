@@ -2,7 +2,7 @@
 
 import { AddAContract } from "@/components/contract/add-a-contract";
 import { SheetSearch } from "@/components/sheet-search";
-// import { TableOfContracts } from "@/components/contract/table-of-contracts"
+import { TableOfContracts } from "@/components/contract/table-of-contracts"
 import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getPlacementById, getPlacements } from "@/data/placement";
 import { getTypes } from "@/data/type";
@@ -12,10 +12,6 @@ import { getArticles } from "@/data/article";
 import { getDivisionById, getDivisions } from "@/data/division";
 import { getContracts } from "@/data/contract";
 import { getUserById } from "@/data/user";
-import dynamic from 'next/dynamic'
-
-const TableOfContracts = dynamic(() => import('@/components/contract/table-of-contracts')
-    .then(({ TableOfContracts }) => ({ default: TableOfContracts })), { ssr: false })
 
 
 const tableRows = [
