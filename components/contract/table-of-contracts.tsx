@@ -12,6 +12,20 @@ import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 
+interface valuesParamProps {
+  name: string;
+  label: string;
+  type: string;
+}
+
+interface selectParam {
+  name: string;
+}
+
+interface colorParam {
+  color: string;
+}
+
 interface contractParam {
   id: string;
   count: number;
@@ -25,8 +39,17 @@ interface contractParam {
   theAmountOfTheContract: string,
   divisionName: string,
   executor: string,
-  color: string
+  color: string,
+  valuesParam: valuesParamProps[]
+  placements: selectParam[]
+  types: selectParam[]
+  federals: selectParam[]
+  views: selectParam[]
+  articles: selectParam[]
+  divisions: selectParam[]
+  colors: colorParam[]
 }
+
 
 export const TableOfContracts = ({
   id,
@@ -41,8 +64,17 @@ export const TableOfContracts = ({
   theAmountOfTheContract,
   divisionName,
   executor,
-  color
-}: contractParam) => {
+  color,
+  valuesParam,
+  placements,
+  types,
+  federals,
+  views,
+  articles,
+  divisions,
+  colors
+}: contractParam
+) => {
 
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -87,7 +119,16 @@ export const TableOfContracts = ({
       <TableCell>{executor}</TableCell>
       <TableCell>Цвет</TableCell>
       <TableCell className="flex flex-row gap-x-1 !text-black">
-        <EditContract />
+        <EditContract
+          valuesParam={valuesParam}
+          placements={placements as []}
+          types={types as []}
+          federals={federals as []}
+          views={views as []}
+          articles={articles as []}
+          divisions={divisions as []}
+          colors={colors}
+        />
         <Button
           onClick={() => onDelete(id)}
           variant="destructive"

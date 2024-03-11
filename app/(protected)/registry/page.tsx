@@ -132,6 +132,14 @@ const RegestryPage = async () => {
                                 executor={executor?.name as string}
                                 divisionName={division?.name as string}
                                 color={contract.contractColor as string}
+                                valuesParam={valuesParam as []}
+                                placements={placements as []}
+                                types={types as []}
+                                federals={federals as []}
+                                views={views as []}
+                                articles={articles as []}
+                                divisions={divisions as []}
+                                colors={colors}
                             />
                         )
                     })}
