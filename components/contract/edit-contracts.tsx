@@ -171,7 +171,7 @@ export const EditContract = ({
             <DialogTrigger asChild>
                 <Button variant="outline" className="w-[50px]"><FaRegEdit className="w-full" /></Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px] sm:max-h-[800px]">
+            <DialogContent className="sm:max-w-[1000px]">
                 <DialogHeader>
                     <DialogTitle>Редактировать</DialogTitle>
                 </DialogHeader>

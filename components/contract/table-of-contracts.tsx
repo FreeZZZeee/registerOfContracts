@@ -103,7 +103,7 @@ export const TableOfContracts = ({
 
   const getColor = (color: string) => {
     if (color) {
-      return `${color} text-white hover:!text-black`
+      return `${color}`
     }
 
     return "bg-secondary"
@@ -127,7 +127,7 @@ export const TableOfContracts = ({
   }
 
   return (
-    <TableRow className={getColor(color)}>
+    <TableRow>
       <TableCell className="font-medium">{count}</TableCell>
       <TableCell>{contractNumber}</TableCell>
       <TableCell>{placementName}</TableCell>
@@ -139,7 +139,7 @@ export const TableOfContracts = ({
       <TableCell>{actuallyPaidFor}</TableCell>
       <TableCell>{theAmountOfTheContract}</TableCell>
       <TableCell>{executor}</TableCell>
-      <TableCell>Цвет</TableCell>
+      <TableCell className={getColor(color)}></TableCell>
       <TableCell className="flex flex-row gap-x-1 !text-black">
         <EditContract
           id={id}

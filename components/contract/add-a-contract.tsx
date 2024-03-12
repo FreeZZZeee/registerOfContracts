@@ -134,7 +134,7 @@ export const AddAContract = ({
       <DialogTrigger asChild>
         <Button variant="outline">Добавить договор</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] sm:max-h-[800px]">
+      <DialogContent className="sm:max-w-[1000px]">
         <DialogHeader>
           <DialogTitle>Добавить</DialogTitle>
         </DialogHeader>
