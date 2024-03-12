@@ -5,8 +5,6 @@ import * as z from "zod";
 import { db } from "@/lib/db";
 import { getUserById } from "@/data/user";
 import { currentUser } from "@/lib/auth";
-import { generateVerificationToken } from "@/lib/tokens";
-import { sendVerificationEmail } from "@/lib/mail";
 import { ContractSchema } from "@/schemas/contract.schema";
 import { getPlacementByName } from "@/data/placement";
 import { getTypeByName } from "@/data/type";
@@ -91,7 +89,7 @@ export const contractCreate = async (
         && dbFederal?.id !== undefined
         && dbArticle?.id !== undefined
         && dbDivision?.id !== undefined) {
-        const obj = await db.contract.create({
+        await db.contract.create({
             data: {
                 placementId: dbPlacement?.id,
                 typeId: dbType?.id,
@@ -147,4 +145,95 @@ export const contractDelete = async (id: string) => {
 
 
     return { success: "Договор удален!" };
+}
+
+export const contractUpdate = async (
+    values: z.infer<typeof ContractSchema>,
+    id: string
+) => {
+    const user = await currentUser();
+    const validateFields = ContractSchema.safeParse(values);
+
+    if (!user) {
+        return { error: "Неавторизованный" };
+    }
+
+    const dbUser = await getUserById(user.id as string);
+
+    if (!dbUser) {
+        return { error: "Неавторизованный" };
+    }
+
+    if (!validateFields.success) {
+        return { error: "Недопустимое поле!" };
+    }
+
+    const {
+        placement,
+        type,
+        federal,
+        contractNumber,
+        startDateOfTheAgreement,
+        endDateOfTheContract,
+        provider,
+        theSubjectOfTheAgreement,
+        actuallyPaidFor,
+        theAmountOfTheContract,
+        returnDate,
+        theAmountOfCollateral,
+        view,
+        article,
+        division,
+        sourceOfFinancing,
+        MP,
+        subcontractorMP,
+        transients,
+        additionalInformation,
+        contractColor,
+    } = validateFields.data;
+
+    const dbPlacement = await getPlacementByName(placement as string);
+    const dbDivision = await getDivisionByName(division as string);
+    const dbType = await getTypeByName(type as string);
+    const dbFederal = await getFederalByName(federal as string);
+    const dbView = await getViewByName(view as string);
+    const dbArticle = await getArticleByName(article as string);
+    const dbContractById = await getContractById(id);
+
+
+    if (!dbContractById) {
+        return { error: "Договор не найден!" }
+    }
+
+    await db.contract.update({
+        where: {
+            id: dbContractById.id
+        },
+        data: {
+            placementId: dbPlacement?.id,
+            typeId: dbType?.id,
+            federalId: dbFederal?.id,
+            contractNumber,
+            startDateOfTheAgreement,
+            endDateOfTheContract,
+            provider,
+            contractColor,
+            theSubjectOfTheAgreement,
+            actuallyPaidFor,
+            theAmountOfTheContract,
+            returnDate,
+            theAmountOfCollateral,
+            viewId: dbView?.id,
+            articleId: dbArticle?.id,
+            divisionId: dbDivision?.id,
+            sourceOfFinancing,
+            additionalInformation,
+            MP,
+            subcontractorMP,
+            transients,
+            userId: user?.id as string
+        }
+    })
+
+    return { success: "Договор изменен!" };
 }

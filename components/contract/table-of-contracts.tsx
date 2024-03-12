@@ -31,15 +31,26 @@ interface contractParam {
   count: number;
   placementName: string;
   contractNumber: string;
-  startDateOfTheAgreement: string,
-  endDateOfTheContract: string,
-  provider: string,
-  theSubjectOfTheAgreement: string,
-  actuallyPaidFor: string,
-  theAmountOfTheContract: string,
-  divisionName: string,
-  executor: string,
-  color: string,
+  startDateOfTheAgreement: string;
+  endDateOfTheContract: string;
+  provider: string;
+  federal: string;
+  type: string;
+  theSubjectOfTheAgreement: string;
+  actuallyPaidFor: string;
+  theAmountOfTheContract: string;
+  divisionName: string;
+  executor: string;
+  color: string;
+  returnDate: string;
+  theAmountOfCollateral: string;
+  view: string;
+  article: string;
+  sourceOfFinancing: string;
+  MP: boolean;
+  subcontractorMP: boolean;
+  transients: boolean;
+  additionalInformation: string;
   valuesParam: valuesParamProps[]
   placements: selectParam[]
   types: selectParam[]
@@ -59,12 +70,23 @@ export const TableOfContracts = ({
   startDateOfTheAgreement,
   endDateOfTheContract,
   provider,
+  federal,
+  type,
   theSubjectOfTheAgreement,
   actuallyPaidFor,
   theAmountOfTheContract,
   divisionName,
   executor,
   color,
+  returnDate,
+  theAmountOfCollateral,
+  view,
+  article,
+  sourceOfFinancing,
+  MP,
+  subcontractorMP,
+  transients,
+  additionalInformation,
   valuesParam,
   placements,
   types,
@@ -120,14 +142,36 @@ export const TableOfContracts = ({
       <TableCell>Цвет</TableCell>
       <TableCell className="flex flex-row gap-x-1 !text-black">
         <EditContract
-          valuesParam={valuesParam}
+          id={id}
+          placement={placementName}
+          contractNumber={contractNumber}
+          startDateOfTheAgreement={startDateOfTheAgreement}
+          endDateOfTheContract={endDateOfTheContract}
+          provider={provider}
+          federal={federal}
+          type={type}
+          theSubjectOfTheAgreement={theSubjectOfTheAgreement}
+          actuallyPaidFor={actuallyPaidFor}
+          theAmountOfTheContract={theAmountOfCollateral}
+          division={divisionName}
+          contractColor={color}
+          returnDate={returnDate}
+          theAmountOfCollateral={theAmountOfCollateral}
+          view={view}
+          article={article}
+          sourceOfFinancing={sourceOfFinancing}
+          MP={MP}
+          subcontractorMP={subcontractorMP}
+          transients={transients}
+          additionalInformation={additionalInformation}
+          valuesParam={valuesParam as []}
           placements={placements as []}
           types={types as []}
           federals={federals as []}
           views={views as []}
           articles={articles as []}
           divisions={divisions as []}
-          colors={colors}
+          colors={colors as []}
         />
         <Button
           onClick={() => onDelete(id)}

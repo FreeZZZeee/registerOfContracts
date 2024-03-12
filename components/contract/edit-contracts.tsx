@@ -30,6 +30,8 @@ import { Switch } from "../ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { ScrollArea } from "../ui/scroll-area";
 import { ContractSchema } from "@/schemas/contract.schema";
+import { contractUpdate } from "@/actions/contract";
+import { FaRegEdit } from "react-icons/fa";
 
 
 interface valuesParamProps {
@@ -47,6 +49,28 @@ interface colorParam {
 }
 
 type valuesParamPropsArr = {
+    id: string,
+    placement: string,
+    type: string,
+    federal: string,
+    contractNumber: string,
+    startDateOfTheAgreement: string,
+    endDateOfTheContract: string,
+    provider: string,
+    theSubjectOfTheAgreement: string,
+    actuallyPaidFor: string,
+    theAmountOfTheContract: string,
+    returnDate: string,
+    theAmountOfCollateral: string,
+    view: string,
+    article: string,
+    division: string,
+    sourceOfFinancing: string,
+    MP: boolean,
+    subcontractorMP: boolean,
+    transients: boolean,
+    additionalInformation: string,
+    contractColor: string
     valuesParam: valuesParamProps[]
     placements: selectParam[]
     types: selectParam[]
@@ -59,6 +83,28 @@ type valuesParamPropsArr = {
 
 
 export const EditContract = ({
+    id,
+    placement,
+    type,
+    federal,
+    contractNumber,
+    startDateOfTheAgreement,
+    endDateOfTheContract,
+    provider,
+    theSubjectOfTheAgreement,
+    actuallyPaidFor,
+    theAmountOfTheContract,
+    returnDate,
+    theAmountOfCollateral,
+    view,
+    article,
+    division,
+    sourceOfFinancing,
+    MP,
+    subcontractorMP,
+    transients,
+    additionalInformation,
+    contractColor,
     valuesParam,
     placements,
     types,
@@ -69,6 +115,7 @@ export const EditContract = ({
     colors
 }: valuesParamPropsArr) => {
     const [open, setOpen] = useState<boolean>(false);
+    const [color, setColor] = useState<string>(contractColor);
     const [isPending, startTransition] = useTransition();
 
     const router = useRouter();
@@ -76,32 +123,33 @@ export const EditContract = ({
     const form = useForm<z.infer<typeof ContractSchema>>({
         resolver: zodResolver(ContractSchema),
         defaultValues: {
-            name: name || undefined
-            placement: "",
-            type: "",
-            federal: "",
-            contractNumber: "",
-            startDateOfTheAgreement: "",
-            endDateOfTheContract: "",
-            provider: "",
-            theSubjectOfTheAgreement: "",
-            actuallyPaidFor: "",
-            theAmountOfTheContract: "",
-            returnDate: "",
-            theAmountOfCollateral: "",
-            view: "",
-            article: "",
-            division: "",
-            sourceOfFinancing: "",
-            MP: false,
-            subcontractorMP: false,
-            transients: false,
-            additionalInformation: "",
-            contractColor: ""
+            placement: placement || undefined,
+            type: type || undefined,
+            federal: federal || undefined,
+            contractNumber: contractNumber || undefined,
+            startDateOfTheAgreement: startDateOfTheAgreement || undefined,
+            endDateOfTheContract: endDateOfTheContract || undefined,
+            provider: provider || undefined,
+            theSubjectOfTheAgreement: theSubjectOfTheAgreement || undefined,
+            actuallyPaidFor: actuallyPaidFor || undefined,
+            theAmountOfTheContract: theAmountOfTheContract || undefined,
+            returnDate: returnDate || undefined,
+            theAmountOfCollateral: theAmountOfCollateral || undefined,
+            view: view || undefined,
+            article: article || undefined,
+            division: division || undefined,
+            sourceOfFinancing: sourceOfFinancing || undefined,
+            MP: MP || undefined,
+            subcontractorMP: subcontractorMP || undefined,
+            transients: transients || undefined,
+            additionalInformation: additionalInformation || undefined,
+            contractColor: contractColor || undefined
         }
     });
 
     const onSubmit = (values: z.infer<typeof ContractSchema>) => {
+        values.contractColor = color;
+
         startTransition(() => {
             contractUpdate(values, id)
                 .then((data) => {
@@ -121,7 +169,7 @@ export const EditContract = ({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">Редактировать договор</Button>
+                <Button variant="outline" className="w-[50px]"><FaRegEdit className="w-full" /></Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px] sm:max-h-[800px]">
                 <DialogHeader>
@@ -189,6 +237,7 @@ export const EditContract = ({
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
+                                                                defaultValue={field.value}
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
@@ -210,6 +259,7 @@ export const EditContract = ({
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
+                                                                defaultValue={field.value}
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
@@ -231,6 +281,7 @@ export const EditContract = ({
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
+                                                                defaultValue={field.value}
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
@@ -252,6 +303,7 @@ export const EditContract = ({
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={(value) => setColor(value)}
+                                                                defaultValue={field.value}
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger className={`${color} w-[250px]`}>
@@ -275,6 +327,7 @@ export const EditContract = ({
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
+                                                                defaultValue={field.value}
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
@@ -296,6 +349,7 @@ export const EditContract = ({
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
+                                                                defaultValue={field.value}
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
@@ -317,6 +371,7 @@ export const EditContract = ({
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
+                                                                defaultValue={field.value}
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
@@ -354,6 +409,7 @@ export const EditContract = ({
                                                             <Switch
                                                                 disabled={isPending}
                                                                 onCheckedChange={field.onChange}
+                                                                checked={field.value}
                                                             />
                                                         </FormControl>
                                                     </FormItem>

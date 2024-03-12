@@ -5,10 +5,10 @@ import { SheetSearch } from "@/components/sheet-search";
 import { TableOfContracts } from "@/components/contract/table-of-contracts"
 import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getPlacementById, getPlacements } from "@/data/placement";
-import { getTypes } from "@/data/type";
-import { getFederals } from "@/data/federal";
-import { getViews } from "@/data/view";
-import { getArticles } from "@/data/article";
+import { getTypeById, getTypes } from "@/data/type";
+import { getFederalById, getFederals } from "@/data/federal";
+import { getViewById, getViews } from "@/data/view";
+import { getArticleById, getArticles } from "@/data/article";
 import { getDivisionById, getDivisions } from "@/data/division";
 import { getContracts } from "@/data/contract";
 import { getUserById } from "@/data/user";
@@ -73,17 +73,71 @@ const colors = [
     { color: "bg-fuchsia-700" },
 ]
 
+interface ContractParam {
+    id: string,
+    placementId: string,
+    typeId: string,
+    federalId: string,
+    contractNumber: string,
+    startDateOfTheAgreement: string,
+    endDateOfTheContract: string,
+    provider: string,
+    theSubjectOfTheAgreement: string,
+    actuallyPaidFor: string,
+    theAmountOfTheContract: string,
+    returnDate: string,
+    theAmountOfCollateral: string,
+    viewId: string,
+    articleId: string,
+    divisionId: string,
+    sourceOfFinancing: string,
+    MP: boolean,
+    subcontractorMP: boolean,
+    transients: boolean,
+    additionalInformation: string,
+    contractColor: string
+    userId: string
+}
+
+interface References {
+    id: string;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date | null;
+}
+
 const RegestryPage = async () => {
 
-    const placements = await getPlacements();
-    const types = await getTypes();
-    const federals = await getFederals();
-    const views = await getViews();
-    const articles = await getArticles();
-    const divisions = await getDivisions();
-    const contracts = await getContracts();
+    let count: number = 1;
 
-    let count = 1;
+    const placements = await getPlacements() as References[];
+    const types = await getTypes() as References[];
+    const federals = await getFederals() as References[];
+    const views = await getViews() as References[];
+    const articles = await getArticles() as References[];
+    const divisions = await getDivisions() as References[];
+    const contracts = await getContracts() as ContractParam[];
+
+    const newContrats: ContractParam[] = await Promise.all(contracts?.map(async (contract) => {
+        const placement = await getPlacementById(contract.placementId as string);
+        const division = await getDivisionById(contract.divisionId as string);
+        const executor = await getUserById(contract.userId as string);
+        const view = await getViewById(contract.viewId as string);
+        const article = await getArticleById(contract.articleId as string);
+        const federal = await getFederalById(contract.federalId as string);
+        const type = await getTypeById(contract.typeId as string);
+
+        return {
+            ...contract,
+            placementId: placement?.name as string,
+            divisionId: division?.name as string,
+            userId: executor?.name as string,
+            viewId: view?.name as string,
+            articleId: article?.name as string,
+            federalId: federal?.name as string,
+            typeId: type?.name as string
+        }
+    }))
 
     return (
         <div className="bg-secondary rounded-xl w-full flex flex-wrap items-center justify-between mx-auto p-4 shadow-sm">
@@ -110,28 +164,34 @@ const RegestryPage = async () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {contracts?.map(async (contract) => {
-
-                        const placement = await getPlacementById(contract.placementId as string);
-                        const division = await getDivisionById(contract.divisionId);
-                        const executor = await getUserById(contract.userId);
-
+                    {newContrats?.map((contract) => {
                         return (
                             <TableOfContracts
                                 key={contract.id}
                                 id={contract.id as string}
                                 count={count++}
-                                placementName={placement?.name as string}
+                                placementName={contract.placementId as string}
                                 contractNumber={contract.contractNumber as string}
                                 startDateOfTheAgreement={contract.startDateOfTheAgreement as string}
                                 endDateOfTheContract={contract.endDateOfTheContract as string}
                                 provider={contract.provider as string}
+                                federal={contract.federalId as string}
+                                type={contract.typeId as string}
                                 theSubjectOfTheAgreement={contract.theSubjectOfTheAgreement as string}
                                 actuallyPaidFor={contract.actuallyPaidFor as string}
                                 theAmountOfTheContract={contract.theAmountOfCollateral as string}
-                                executor={executor?.name as string}
-                                divisionName={division?.name as string}
+                                executor={contract.userId as string}
+                                divisionName={contract.divisionId as string}
                                 color={contract.contractColor as string}
+                                returnDate={contract.returnDate as string}
+                                theAmountOfCollateral={contract.theAmountOfCollateral as string}
+                                view={contract.viewId as string}
+                                article={contract.articleId as string}
+                                sourceOfFinancing={contract.sourceOfFinancing as string}
+                                MP={contract.MP as boolean}
+                                subcontractorMP={contract.subcontractorMP as boolean}
+                                transients={contract.transients as boolean}
+                                additionalInformation={contract.additionalInformation as string}
                                 valuesParam={valuesParam as []}
                                 placements={placements as []}
                                 types={types as []}
@@ -139,7 +199,7 @@ const RegestryPage = async () => {
                                 views={views as []}
                                 articles={articles as []}
                                 divisions={divisions as []}
-                                colors={colors}
+                                colors={colors as []}
                             />
                         )
                     })}
