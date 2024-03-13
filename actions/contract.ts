@@ -13,6 +13,7 @@ import { getViewByName } from "@/data/view";
 import { getArticleByName } from "@/data/article";
 import { getDivisionByName } from "@/data/division";
 import { getContractById, getContracts } from "@/data/contract";
+import { removeNull } from "@/helpers/remove-null";
 
 export const contractCreate = async (
     values: z.infer<typeof ContractSchema>
@@ -35,9 +36,9 @@ export const contractCreate = async (
     }
 
     const {
-        placement,
-        type,
-        federal,
+        placementId,
+        typeId,
+        federalId,
         contractNumber,
         startDateOfTheAgreement,
         endDateOfTheContract,
@@ -47,9 +48,9 @@ export const contractCreate = async (
         theAmountOfTheContract,
         returnDate,
         theAmountOfCollateral,
-        view,
-        article,
-        division,
+        viewId,
+        articleId,
+        divisionId,
         sourceOfFinancing,
         MP,
         subcontractorMP,
@@ -58,12 +59,12 @@ export const contractCreate = async (
         contractColor
     } = validateFields.data;
 
-    const dbPlacement = await getPlacementByName(placement as string);
-    const dbType = await getTypeByName(type as string);
-    const dbFederal = await getFederalByName(federal as string);
-    const dbView = await getViewByName(view as string);
-    const dbArticle = await getArticleByName(article as string);
-    const dbDivision = await getDivisionByName(division as string);
+    const dbPlacement = await getPlacementByName(placementId as string);
+    const dbType = await getTypeByName(typeId as string);
+    const dbFederal = await getFederalByName(federalId as string);
+    const dbView = await getViewByName(viewId as string);
+    const dbArticle = await getArticleByName(articleId as string);
+    const dbDivision = await getDivisionByName(divisionId as string);
 
 
     const dbContract = await db.contract.findFirst({
@@ -169,9 +170,9 @@ export const contractUpdate = async (
     }
 
     const {
-        placement,
-        type,
-        federal,
+        placementId,
+        typeId,
+        federalId,
         contractNumber,
         startDateOfTheAgreement,
         endDateOfTheContract,
@@ -181,9 +182,9 @@ export const contractUpdate = async (
         theAmountOfTheContract,
         returnDate,
         theAmountOfCollateral,
-        view,
-        article,
-        division,
+        viewId,
+        articleId,
+        divisionId,
         sourceOfFinancing,
         MP,
         subcontractorMP,
@@ -192,12 +193,12 @@ export const contractUpdate = async (
         contractColor,
     } = validateFields.data;
 
-    const dbPlacement = await getPlacementByName(placement as string);
-    const dbDivision = await getDivisionByName(division as string);
-    const dbType = await getTypeByName(type as string);
-    const dbFederal = await getFederalByName(federal as string);
-    const dbView = await getViewByName(view as string);
-    const dbArticle = await getArticleByName(article as string);
+    const dbPlacement = await getPlacementByName(placementId as string);
+    const dbDivision = await getDivisionByName(divisionId as string);
+    const dbType = await getTypeByName(typeId as string);
+    const dbFederal = await getFederalByName(federalId as string);
+    const dbView = await getViewByName(viewId as string);
+    const dbArticle = await getArticleByName(articleId as string);
     const dbContractById = await getContractById(id);
 
 
@@ -238,6 +239,32 @@ export const contractUpdate = async (
     return { success: "Договор изменен!" };
 }
 
+interface searchValuesParams {
+    placementId: string,
+    typeId: string,
+    federalId: string,
+    contractNumber: string,
+    startDateOfTheAgreement: string,
+    endDateOfTheContract: string,
+    provider: string,
+    theSubjectOfTheAgreement: string,
+    actuallyPaidFor: string,
+    theAmountOfTheContract: string,
+    returnDate: string,
+    theAmountOfCollateral: string,
+    viewId: string,
+    articleId: string,
+    divisionId: string,
+    sourceOfFinancing: string,
+    MP: boolean,
+    subcontractorMP: boolean,
+    transients: boolean,
+    additionalInformation: string,
+    contractColor: string;
+    userId: string
+}
+
+
 export const contractSearch = async (
     values: z.infer<typeof SearchContractSchema>
 ) => {
@@ -257,51 +284,44 @@ export const contractSearch = async (
     if (!validateFields.success) {
         return { error: "Недопустимое поле!" };
     }
-    console.log(Object.entries(values).filter((value) => value != '' ? { value } : null));
+
+    let searchValues = removeNull(validateFields.data) as searchValuesParams;
 
 
-    const {
-        placement,
-        type,
-        federal,
-        contractNumber,
-        startDateOfTheAgreement,
-        endDateOfTheContract,
-        provider,
-        theSubjectOfTheAgreement,
-        actuallyPaidFor,
-        theAmountOfTheContract,
-        returnDate,
-        theAmountOfCollateral,
-        view,
-        article,
-        division,
-        sourceOfFinancing,
-        MP,
-        subcontractorMP,
-        transients,
-        additionalInformation,
-        contractColor,
-    } = validateFields.data;
+    if (searchValues.placementId) {
+        const placement = await getPlacementByName(searchValues.placementId as string);
+        searchValues.placementId = placement?.id as string;
+    }
+    if (searchValues.typeId) {
+        const dbType = await getTypeByName(searchValues.typeId as string);
+        searchValues.typeId = dbType?.id as string;
+    }
+    if (searchValues.federalId) {
+        const dbFederal = await getFederalByName(searchValues.federalId as string);
+        searchValues.federalId = dbFederal?.id as string;
+    }
+    if (searchValues.viewId) {
+        const dbView = await getViewByName(searchValues.viewId as string);
+        searchValues.viewId = dbView?.id as string;
+    }
+    if (searchValues.articleId) {
+        const dbArticle = await getArticleByName(searchValues.articleId as string);
+        searchValues.articleId = dbArticle?.id as string;
+    }
+    if (searchValues.divisionId) {
+        const dbDivision = await getDivisionByName(searchValues.divisionId as string);
+        searchValues.divisionId = dbDivision?.id as string;
+    }
 
-    const dbPlacement = await getPlacementByName(placement as string);
-    const dbDivision = await getDivisionByName(division as string);
-    const dbType = await getTypeByName(type as string);
-    const dbFederal = await getFederalByName(federal as string);
-    const dbView = await getViewByName(view as string);
-    const dbArticle = await getArticleByName(article as string);
-
-    const allContracts = await getContracts() as [];
-
-    // const newContracts = allContracts.map(contract => {
-    //     return Object.entries(contract).filter(([key, value]) => value != '' ? { [key]: value } : null);
-    // })
-
-    // console.log(newContracts);
+    const contracts = await db.contract.findMany({
+        where: {
+            ...searchValues
+        }
+    })
 
 
     return {
-        // contracts,
+        contracts,
         success: "Договор изменен!"
     };
 }

@@ -1,9 +1,9 @@
 import * as z from "zod";
 
 export const ContractSchema = z.object({
-    placement: z.optional(z.string()),
-    type: z.optional(z.string()),
-    federal: z.optional(z.string()),
+    placementId: z.optional(z.string()),
+    typeId: z.optional(z.string()),
+    federalId: z.optional(z.string()),
     contractNumber: z.string().min(1, {
         message: "Обязательно к заполнению"
     }),
@@ -22,13 +22,13 @@ export const ContractSchema = z.object({
     theAmountOfTheContract: z.optional(z.string()),
     returnDate: z.optional(z.string()),
     theAmountOfCollateral: z.optional(z.string()),
-    view: z.string().min(1, {
+    viewId: z.string().min(1, {
         message: "Обязательно к заполнению"
     }),
-    article: z.string().min(1, {
+    articleId: z.string().min(1, {
         message: "Обязательно к заполнению"
     }),
-    division: z.string().min(1, {
+    divisionId: z.string().min(1, {
         message: "Обязательно к заполнению"
     }),
     sourceOfFinancing: z.optional(z.string()),
@@ -40,9 +40,9 @@ export const ContractSchema = z.object({
 });
 
 export const SearchContractSchema = z.object({
-    placement: z.string(),
-    type: z.optional(z.string()),
-    federal: z.optional(z.string()),
+    placementId: z.string(),
+    typeId: z.optional(z.string()),
+    federalId: z.optional(z.string()),
     contractNumber: z.optional(z.string()),
     startDateOfTheAgreement: z.optional(z.string()),
     endDateOfTheContract: z.optional(z.string()),
@@ -53,9 +53,9 @@ export const SearchContractSchema = z.object({
     theAmountOfTheContract: z.optional(z.string()),
     returnDate: z.optional(z.string()),
     theAmountOfCollateral: z.optional(z.string()),
-    view: z.optional(z.string()),
-    article: z.optional(z.string()),
-    division: z.optional(z.string()),
+    viewId: z.optional(z.string()),
+    articleId: z.optional(z.string()),
+    divisionId: z.optional(z.string()),
     sourceOfFinancing: z.optional(z.string()),
     additionalInformation: z.optional(z.string()),
     MP: z.optional(z.boolean()),

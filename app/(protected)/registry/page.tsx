@@ -32,9 +32,9 @@ const tableRows = [
 
 
 const valuesParam = [
-    { name: "placement", label: "Способ размещения", type: "select" },
-    { name: "type", label: "Тип ЕП", type: "select" },
-    { name: "federal", label: "Федеральный закон", type: "select" },
+    { name: "placementId", label: "Способ размещения", type: "select" },
+    { name: "typeId", label: "Тип ЕП", type: "select" },
+    { name: "federalId", label: "Федеральный закон", type: "select" },
     { name: "contractNumber", label: "Номер контракта", type: "text" },
     { name: "startDateOfTheAgreement", label: "Дата начала действия договора", type: "date" },
     { name: "endDateOfTheContract", label: "Дата окончания договора", type: "date" },
@@ -44,9 +44,9 @@ const valuesParam = [
     { name: "theAmountOfTheContract", label: "Сумма договора", type: "text" },
     { name: "returnDate", label: "Дата возврата", type: "date" },
     { name: "theAmountOfCollateral", label: "Сумма обеспечения", type: "text" },
-    { name: "view", label: "Вид закупки", type: "select" },
-    { name: "article", label: "Статья расходов", type: "select" },
-    { name: "division", label: "Подразделение", type: "select" },
+    { name: "viewId", label: "Вид закупки", type: "select" },
+    { name: "articleId", label: "Статья расходов", type: "select" },
+    { name: "divisionId", label: "Подразделение", type: "select" },
     { name: "sourceOfFinancing", label: "Источники финансирования", type: "text" },
     { name: "additionalInformation", label: "Дополнительная информация", type: "textArea" },
     { name: "MP", label: "МП", type: "bool" },
@@ -116,7 +116,24 @@ const RegestryPage = async () => {
     const views = await getViews() as References[];
     const articles = await getArticles() as References[];
     const divisions = await getDivisions() as References[];
-    const contracts = await getContracts() as ContractParam[];
+    let contracts = [] as ContractParam[];
+
+    let localContract
+
+    if (typeof window !== 'undefined') {
+
+        localContract = await JSON.parse(localStorage.getItem('contracts') as any);
+    }
+
+    console.log(localContract);
+
+
+    if (localContract) {
+        contracts = JSON.parse(localContract);
+    } else {
+        // contracts = await getContracts() as ContractParam[];
+    }
+
 
     const newContrats: ContractParam[] = await Promise.all(contracts?.map(async (contract) => {
         const placement = await getPlacementById(contract.placementId as string);
@@ -179,23 +196,23 @@ const RegestryPage = async () => {
                                 key={contract.id}
                                 id={contract.id as string}
                                 count={count++}
-                                placementName={contract.placementId as string}
+                                placementId={contract.placementId as string}
                                 contractNumber={contract.contractNumber as string}
                                 startDateOfTheAgreement={contract.startDateOfTheAgreement as string}
                                 endDateOfTheContract={contract.endDateOfTheContract as string}
                                 provider={contract.provider as string}
-                                federal={contract.federalId as string}
-                                type={contract.typeId as string}
+                                federalId={contract.federalId as string}
+                                typeId={contract.typeId as string}
                                 theSubjectOfTheAgreement={contract.theSubjectOfTheAgreement as string}
                                 actuallyPaidFor={contract.actuallyPaidFor as string}
                                 theAmountOfTheContract={contract.theAmountOfCollateral as string}
                                 executor={contract.userId as string}
-                                divisionName={contract.divisionId as string}
+                                divisionId={contract.divisionId as string}
                                 color={contract.contractColor as string}
                                 returnDate={contract.returnDate as string}
                                 theAmountOfCollateral={contract.theAmountOfCollateral as string}
-                                view={contract.viewId as string}
-                                article={contract.articleId as string}
+                                viewId={contract.viewId as string}
+                                articleId={contract.articleId as string}
                                 sourceOfFinancing={contract.sourceOfFinancing as string}
                                 MP={contract.MP as boolean}
                                 subcontractorMP={contract.subcontractorMP as boolean}

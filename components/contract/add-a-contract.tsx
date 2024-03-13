@@ -79,9 +79,9 @@ export const AddAContract = ({
   const form = useForm<z.infer<typeof ContractSchema>>({
     resolver: zodResolver(ContractSchema),
     defaultValues: {
-      placement: "",
-      type: "",
-      federal: "",
+      placementId: "",
+      typeId: "",
+      federalId: "",
       contractNumber: "",
       startDateOfTheAgreement: "",
       endDateOfTheContract: "",
@@ -91,9 +91,9 @@ export const AddAContract = ({
       theAmountOfTheContract: "",
       returnDate: "",
       theAmountOfCollateral: "",
-      view: "",
-      article: "",
-      division: "",
+      viewId: "",
+      articleId: "",
+      divisionId: "",
       sourceOfFinancing: "",
       MP: false,
       subcontractorMP: false,
@@ -198,7 +198,7 @@ export const AddAContract = ({
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>{valueParam.label}</FormLabel>
-                            {valueParam.name === "placement" && (
+                            {valueParam.name === "placementId" && (
                               <Select
                                 disabled={isPending}
                                 onValueChange={field.onChange}
@@ -219,7 +219,7 @@ export const AddAContract = ({
                                 </SelectContent>
                               </Select>
                             )}
-                            {valueParam.name === "type" && (
+                            {valueParam.name === "typeId" && (
                               <Select
                                 disabled={isPending}
                                 onValueChange={field.onChange}
@@ -240,7 +240,7 @@ export const AddAContract = ({
                                 </SelectContent>
                               </Select>
                             )}
-                            {valueParam.name === "federal" && (
+                            {valueParam.name === "federalId" && (
                               <Select
                                 disabled={isPending}
                                 onValueChange={field.onChange}
@@ -284,7 +284,7 @@ export const AddAContract = ({
                                 </SelectContent>
                               </Select>
                             )}
-                            {valueParam.name === "view" && (
+                            {valueParam.name === "viewId" && (
                               <Select
                                 disabled={isPending}
                                 onValueChange={field.onChange}
@@ -305,7 +305,7 @@ export const AddAContract = ({
                                 </SelectContent>
                               </Select>
                             )}
-                            {valueParam.name === "article" && (
+                            {valueParam.name === "articleId" && (
                               <Select
                                 disabled={isPending}
                                 onValueChange={field.onChange}
@@ -326,7 +326,7 @@ export const AddAContract = ({
                                 </SelectContent>
                               </Select>
                             )}
-                            {valueParam.name === "division" && (
+                            {valueParam.name === "divisionId" && (
                               <Select
                                 disabled={isPending}
                                 onValueChange={field.onChange}

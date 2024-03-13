@@ -50,9 +50,9 @@ interface colorParam {
 
 type valuesParamPropsArr = {
     id: string,
-    placement: string,
-    type: string,
-    federal: string,
+    placementId: string,
+    typeId: string,
+    federalId: string,
     contractNumber: string,
     startDateOfTheAgreement: string,
     endDateOfTheContract: string,
@@ -62,9 +62,9 @@ type valuesParamPropsArr = {
     theAmountOfTheContract: string,
     returnDate: string,
     theAmountOfCollateral: string,
-    view: string,
-    article: string,
-    division: string,
+    viewId: string,
+    articleId: string,
+    divisionId: string,
     sourceOfFinancing: string,
     MP: boolean,
     subcontractorMP: boolean,
@@ -84,9 +84,9 @@ type valuesParamPropsArr = {
 
 export const EditContract = ({
     id,
-    placement,
-    type,
-    federal,
+    placementId,
+    typeId,
+    federalId,
     contractNumber,
     startDateOfTheAgreement,
     endDateOfTheContract,
@@ -96,9 +96,9 @@ export const EditContract = ({
     theAmountOfTheContract,
     returnDate,
     theAmountOfCollateral,
-    view,
-    article,
-    division,
+    viewId,
+    articleId,
+    divisionId,
     sourceOfFinancing,
     MP,
     subcontractorMP,
@@ -123,9 +123,9 @@ export const EditContract = ({
     const form = useForm<z.infer<typeof ContractSchema>>({
         resolver: zodResolver(ContractSchema),
         defaultValues: {
-            placement: placement || undefined,
-            type: type || undefined,
-            federal: federal || undefined,
+            placementId: placementId || undefined,
+            typeId: typeId || undefined,
+            federalId: federalId || undefined,
             contractNumber: contractNumber || undefined,
             startDateOfTheAgreement: startDateOfTheAgreement || undefined,
             endDateOfTheContract: endDateOfTheContract || undefined,
@@ -135,9 +135,9 @@ export const EditContract = ({
             theAmountOfTheContract: theAmountOfTheContract || undefined,
             returnDate: returnDate || undefined,
             theAmountOfCollateral: theAmountOfCollateral || undefined,
-            view: view || undefined,
-            article: article || undefined,
-            division: division || undefined,
+            viewId: viewId || undefined,
+            articleId: articleId || undefined,
+            divisionId: divisionId || undefined,
             sourceOfFinancing: sourceOfFinancing || undefined,
             MP: MP || undefined,
             subcontractorMP: subcontractorMP || undefined,
@@ -233,7 +233,7 @@ export const EditContract = ({
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel>{valueParam.label}</FormLabel>
-                                                        {valueParam.name === "placement" && (
+                                                        {valueParam.name === "placementId" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
@@ -255,7 +255,7 @@ export const EditContract = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {valueParam.name === "type" && (
+                                                        {valueParam.name === "typeId" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
@@ -277,7 +277,7 @@ export const EditContract = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {valueParam.name === "federal" && (
+                                                        {valueParam.name === "federalId" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
@@ -323,7 +323,7 @@ export const EditContract = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {valueParam.name === "view" && (
+                                                        {valueParam.name === "viewId" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
@@ -345,7 +345,7 @@ export const EditContract = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {valueParam.name === "article" && (
+                                                        {valueParam.name === "articleId" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
@@ -367,7 +367,7 @@ export const EditContract = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {valueParam.name === "division" && (
+                                                        {valueParam.name === "divisionId" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}

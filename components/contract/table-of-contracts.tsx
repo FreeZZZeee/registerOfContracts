@@ -29,23 +29,23 @@ interface colorParam {
 interface contractParam {
   id: string;
   count: number;
-  placementName: string;
+  placementId: string;
   contractNumber: string;
   startDateOfTheAgreement: string;
   endDateOfTheContract: string;
   provider: string;
-  federal: string;
-  type: string;
+  federalId: string;
+  typeId: string;
   theSubjectOfTheAgreement: string;
   actuallyPaidFor: string;
   theAmountOfTheContract: string;
-  divisionName: string;
+  divisionId: string;
   executor: string;
   color: string;
   returnDate: string;
   theAmountOfCollateral: string;
-  view: string;
-  article: string;
+  viewId: string;
+  articleId: string;
   sourceOfFinancing: string;
   MP: boolean;
   subcontractorMP: boolean;
@@ -65,23 +65,23 @@ interface contractParam {
 export const TableOfContracts = ({
   id,
   count,
-  placementName,
+  placementId,
   contractNumber,
   startDateOfTheAgreement,
   endDateOfTheContract,
   provider,
-  federal,
-  type,
+  federalId,
+  typeId,
   theSubjectOfTheAgreement,
   actuallyPaidFor,
   theAmountOfTheContract,
-  divisionName,
+  divisionId,
   executor,
   color,
   returnDate,
   theAmountOfCollateral,
-  view,
-  article,
+  viewId,
+  articleId,
   sourceOfFinancing,
   MP,
   subcontractorMP,
@@ -130,11 +130,11 @@ export const TableOfContracts = ({
     <TableRow>
       <TableCell className="font-medium">{count}</TableCell>
       <TableCell>{contractNumber}</TableCell>
-      <TableCell>{placementName}</TableCell>
+      <TableCell>{placementId}</TableCell>
       <TableCell>{startDateOfTheAgreement}</TableCell>
       <TableCell>{endDateOfTheContract}</TableCell>
       <TableCell>{theSubjectOfTheAgreement}</TableCell>
-      <TableCell>{divisionName}</TableCell>
+      <TableCell>{divisionId}</TableCell>
       <TableCell>{provider}</TableCell>
       <TableCell>{actuallyPaidFor}</TableCell>
       <TableCell>{theAmountOfTheContract}</TableCell>
@@ -143,22 +143,22 @@ export const TableOfContracts = ({
       <TableCell className="flex flex-row gap-x-1 !text-black">
         <EditContract
           id={id}
-          placement={placementName}
+          placementId={placementId}
           contractNumber={contractNumber}
           startDateOfTheAgreement={startDateOfTheAgreement}
           endDateOfTheContract={endDateOfTheContract}
           provider={provider}
-          federal={federal}
-          type={type}
+          federalId={federalId}
+          typeId={typeId}
           theSubjectOfTheAgreement={theSubjectOfTheAgreement}
           actuallyPaidFor={actuallyPaidFor}
           theAmountOfTheContract={theAmountOfCollateral}
-          division={divisionName}
+          divisionId={divisionId}
           contractColor={color}
           returnDate={returnDate}
           theAmountOfCollateral={theAmountOfCollateral}
-          view={view}
-          article={article}
+          viewId={viewId}
+          articleId={articleId}
           sourceOfFinancing={sourceOfFinancing}
           MP={MP}
           subcontractorMP={subcontractorMP}

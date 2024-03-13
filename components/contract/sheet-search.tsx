@@ -67,7 +67,7 @@ export const SheetSearch = ({
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
   const [color, setColor] = useState<string>();
-  // const [contracts, setContracts] = useState<[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
 
   const router = useRouter();
@@ -75,9 +75,9 @@ export const SheetSearch = ({
   const form = useForm<z.infer<typeof SearchContractSchema>>({
     resolver: zodResolver(SearchContractSchema),
     defaultValues: {
-      placement: "",
-      type: "",
-      federal: "",
+      placementId: "",
+      typeId: "",
+      federalId: "",
       contractNumber: "",
       startDateOfTheAgreement: "",
       endDateOfTheContract: "",
@@ -87,9 +87,9 @@ export const SheetSearch = ({
       theAmountOfTheContract: "",
       returnDate: "",
       theAmountOfCollateral: "",
-      view: "",
-      article: "",
-      division: "",
+      viewId: "",
+      articleId: "",
+      divisionId: "",
       sourceOfFinancing: "",
       MP: false,
       subcontractorMP: false,
@@ -109,7 +109,8 @@ export const SheetSearch = ({
 
           if (data.success) {
             setSuccess(data.success);
-            // localStorage.setItem('contracts', JSON.stringify(data.contracts));
+            setOpen(false);
+            localStorage.setItem('contracts', JSON.stringify(data.contracts));
             router.refresh();
           }
         })
@@ -118,7 +119,7 @@ export const SheetSearch = ({
   }
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button variant="outline">Поиск</Button>
       </SheetTrigger>
@@ -187,7 +188,7 @@ export const SheetSearch = ({
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>{valueParam.label}</FormLabel>
-                            {valueParam.name === "placement" && (
+                            {valueParam.name === "placementId" && (
                               <Select
                                 disabled={isPending}
                                 onValueChange={field.onChange}
@@ -208,7 +209,7 @@ export const SheetSearch = ({
                                 </SelectContent>
                               </Select>
                             )}
-                            {valueParam.name === "type" && (
+                            {valueParam.name === "typeId" && (
                               <Select
                                 disabled={isPending}
                                 onValueChange={field.onChange}
@@ -229,7 +230,7 @@ export const SheetSearch = ({
                                 </SelectContent>
                               </Select>
                             )}
-                            {valueParam.name === "federal" && (
+                            {valueParam.name === "federalId" && (
                               <Select
                                 disabled={isPending}
                                 onValueChange={field.onChange}
@@ -273,7 +274,7 @@ export const SheetSearch = ({
                                 </SelectContent>
                               </Select>
                             )}
-                            {valueParam.name === "view" && (
+                            {valueParam.name === "viewId" && (
                               <Select
                                 disabled={isPending}
                                 onValueChange={field.onChange}
@@ -294,7 +295,7 @@ export const SheetSearch = ({
                                 </SelectContent>
                               </Select>
                             )}
-                            {valueParam.name === "article" && (
+                            {valueParam.name === "articleId" && (
                               <Select
                                 disabled={isPending}
                                 onValueChange={field.onChange}
@@ -315,7 +316,7 @@ export const SheetSearch = ({
                                 </SelectContent>
                               </Select>
                             )}
-                            {valueParam.name === "division" && (
+                            {valueParam.name === "divisionId" && (
                               <Select
                                 disabled={isPending}
                                 onValueChange={field.onChange}
@@ -390,9 +391,9 @@ export const SheetSearch = ({
             <FormError message={error} />
             <FormSuccess message={success} />
             <SheetFooter>
-              <SheetClose asChild>
-                <Button type="submit" className="w-full">Поиск</Button>
-              </SheetClose>
+              {/* <SheetClose asChild> */}
+              <Button type="submit" className="w-full">Поиск</Button>
+              {/* </SheetClose> */}
               <SheetClose asChild>
                 <Button>Сбросить все фильтры</Button>
               </SheetClose>
