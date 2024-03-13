@@ -5,14 +5,14 @@ import * as z from "zod";
 import { db } from "@/lib/db";
 import { getUserById } from "@/data/user";
 import { currentUser } from "@/lib/auth";
-import { ContractSchema } from "@/schemas/contract.schema";
+import { ContractSchema, SearchContractSchema } from "@/schemas/contract.schema";
 import { getPlacementByName } from "@/data/placement";
 import { getTypeByName } from "@/data/type";
 import { getFederalByName } from "@/data/federal";
 import { getViewByName } from "@/data/view";
 import { getArticleByName } from "@/data/article";
 import { getDivisionByName } from "@/data/division";
-import { getContractById } from "@/data/contract";
+import { getContractById, getContracts } from "@/data/contract";
 
 export const contractCreate = async (
     values: z.infer<typeof ContractSchema>
@@ -236,4 +236,72 @@ export const contractUpdate = async (
     })
 
     return { success: "Договор изменен!" };
+}
+
+export const contractSearch = async (
+    values: z.infer<typeof SearchContractSchema>
+) => {
+    const user = await currentUser();
+    const validateFields = SearchContractSchema.safeParse(values);
+
+    if (!user) {
+        return { error: "Неавторизованный" };
+    }
+
+    const dbUser = await getUserById(user.id as string);
+
+    if (!dbUser) {
+        return { error: "Неавторизованный" };
+    }
+
+    if (!validateFields.success) {
+        return { error: "Недопустимое поле!" };
+    }
+    console.log(Object.entries(values).filter((value) => value != '' ? { value } : null));
+
+
+    const {
+        placement,
+        type,
+        federal,
+        contractNumber,
+        startDateOfTheAgreement,
+        endDateOfTheContract,
+        provider,
+        theSubjectOfTheAgreement,
+        actuallyPaidFor,
+        theAmountOfTheContract,
+        returnDate,
+        theAmountOfCollateral,
+        view,
+        article,
+        division,
+        sourceOfFinancing,
+        MP,
+        subcontractorMP,
+        transients,
+        additionalInformation,
+        contractColor,
+    } = validateFields.data;
+
+    const dbPlacement = await getPlacementByName(placement as string);
+    const dbDivision = await getDivisionByName(division as string);
+    const dbType = await getTypeByName(type as string);
+    const dbFederal = await getFederalByName(federal as string);
+    const dbView = await getViewByName(view as string);
+    const dbArticle = await getArticleByName(article as string);
+
+    const allContracts = await getContracts() as [];
+
+    // const newContracts = allContracts.map(contract => {
+    //     return Object.entries(contract).filter(([key, value]) => value != '' ? { [key]: value } : null);
+    // })
+
+    // console.log(newContracts);
+
+
+    return {
+        // contracts,
+        success: "Договор изменен!"
+    };
 }

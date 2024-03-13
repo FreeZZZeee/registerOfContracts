@@ -38,3 +38,28 @@ export const ContractSchema = z.object({
     transients: z.optional(z.boolean()),
     userId: z.optional(z.string())
 });
+
+export const SearchContractSchema = z.object({
+    placement: z.string(),
+    type: z.optional(z.string()),
+    federal: z.optional(z.string()),
+    contractNumber: z.optional(z.string()),
+    startDateOfTheAgreement: z.optional(z.string()),
+    endDateOfTheContract: z.optional(z.string()),
+    provider: z.optional(z.string()),
+    contractColor: z.optional(z.string()),
+    theSubjectOfTheAgreement: z.optional(z.string()),
+    actuallyPaidFor: z.optional(z.string()),
+    theAmountOfTheContract: z.optional(z.string()),
+    returnDate: z.optional(z.string()),
+    theAmountOfCollateral: z.optional(z.string()),
+    view: z.optional(z.string()),
+    article: z.optional(z.string()),
+    division: z.optional(z.string()),
+    sourceOfFinancing: z.optional(z.string()),
+    additionalInformation: z.optional(z.string()),
+    MP: z.optional(z.boolean()),
+    subcontractorMP: z.optional(z.boolean()),
+    transients: z.optional(z.boolean()),
+    userId: z.optional(z.string())
+});

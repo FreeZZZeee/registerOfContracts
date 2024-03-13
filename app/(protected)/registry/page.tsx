@@ -1,7 +1,7 @@
 "use server"
 
 import { AddAContract } from "@/components/contract/add-a-contract";
-import { SheetSearch } from "@/components/sheet-search";
+import { SheetSearch } from "@/components/contract/sheet-search";
 import { TableOfContracts } from "@/components/contract/table-of-contracts"
 import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getPlacementById, getPlacements } from "@/data/placement";
@@ -141,7 +141,16 @@ const RegestryPage = async () => {
 
     return (
         <div className="bg-secondary rounded-xl w-full flex flex-wrap items-center justify-between mx-auto p-4 shadow-sm">
-            <SheetSearch />
+            <SheetSearch
+                valuesParam={valuesParam}
+                placements={placements as []}
+                types={types as []}
+                federals={federals as []}
+                views={views as []}
+                articles={articles as []}
+                divisions={divisions as []}
+                colors={colors}
+            />
             <AddAContract
                 valuesParam={valuesParam}
                 placements={placements as []}
