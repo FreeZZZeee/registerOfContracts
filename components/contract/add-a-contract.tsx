@@ -31,6 +31,8 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { contractCreate } from "@/actions/contract";
 import { useRouter } from "next/navigation";
+import { IoCloudUploadOutline } from "react-icons/io5";
+
 
 
 
@@ -211,7 +213,7 @@ export const AddAContract = ({
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  {placements.map(placement => (
+                                  {placements && placements.map(placement => (
                                     <SelectItem value={placement.name} key={placement.name}>
                                       {placement.name}
                                     </SelectItem>
@@ -232,7 +234,7 @@ export const AddAContract = ({
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  {types.map(type => (
+                                  {types && types.map(type => (
                                     <SelectItem value={type.name} key={type.name}>
                                       {type.name}
                                     </SelectItem>
@@ -253,7 +255,7 @@ export const AddAContract = ({
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  {federals.map(federal => (
+                                  {federals && federals.map(federal => (
                                     <SelectItem value={federal.name} key={federal.name}>
                                       {federal.name}
                                     </SelectItem>
@@ -297,7 +299,7 @@ export const AddAContract = ({
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  {views.map(view => (
+                                  {views && views.map(view => (
                                     <SelectItem value={view.name} key={view.name}>
                                       {view.name}
                                     </SelectItem>
@@ -318,7 +320,7 @@ export const AddAContract = ({
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  {articles.map(article => (
+                                  {articles && articles.map(article => (
                                     <SelectItem value={article.name} key={article.name}>
                                       {article.name}
                                     </SelectItem>
@@ -339,7 +341,7 @@ export const AddAContract = ({
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  {divisions.map(division => (
+                                  {divisions && divisions.map(division => (
                                     <SelectItem value={division.name} key={division.name}>
                                       {division.name}
                                     </SelectItem>
@@ -390,6 +392,32 @@ export const AddAContract = ({
                             </FormControl>
                             <FormMessage />
                           </FormItem>
+                        )}
+                      />
+                    )}
+
+                    {valueParam.type === "file" && (
+                      <FormField
+                        control={form.control}
+                        name={valueParam.name as any}
+                        render={({ field }) => (
+                          <div className="max-w-xl">
+                            <label
+                              className="flex justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
+                              <span className="flex items-center space-x-2">
+                                <IoCloudUploadOutline />
+                                <span className="font-medium text-gray-600">
+                                  Перетащите файл для прикрепления или
+                                  <span className="text-blue-600 underline">нажамите</span>
+                                </span>
+                              </span>
+                              <input
+                                type={valueParam.type}
+                                name={valueParam.name as any}
+                                className="hidden"
+                              />
+                            </label>
+                          </div>
                         )}
                       />
                     )}

@@ -3,15 +3,14 @@
 import { AddAContract } from "@/components/contract/add-a-contract";
 import { SheetSearch } from "@/components/contract/sheet-search";
 import { TableOfContracts } from "@/components/contract/table-of-contracts"
-import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { getPlacementById, getPlacements } from "@/data/placement";
-import { getTypeById, getTypes } from "@/data/type";
-import { getFederalById, getFederals } from "@/data/federal";
-import { getViewById, getViews } from "@/data/view";
-import { getArticleById, getArticles } from "@/data/article";
-import { getDivisionById, getDivisions } from "@/data/division";
-import { getContracts } from "@/data/contract";
-import { getUserById } from "@/data/user";
+import { Table, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { getPlacements } from "@/data/placement";
+import { getTypes } from "@/data/type";
+import { getFederals } from "@/data/federal";
+import { getViews } from "@/data/view";
+import { getArticles } from "@/data/article";
+import { getDivisions } from "@/data/division";
+import { getContracts, getNewContracts } from "@/data/contract";
 
 
 const tableRows = [
@@ -52,6 +51,7 @@ const valuesParam = [
     { name: "MP", label: "МП", type: "bool" },
     { name: "subcontractorMP", label: "Субподрядчик МП", type: "bool" },
     { name: "transients", label: "Переходящие", type: "bool" },
+    { name: "pdfFile", label: "Документ", type: "file" },
     { name: "contractColor", label: "Цвет", type: "select" },
 ]
 
@@ -108,53 +108,15 @@ interface References {
 
 const RegestryPage = async () => {
 
-    let count: number = 1;
-
     const placements = await getPlacements() as References[];
     const types = await getTypes() as References[];
     const federals = await getFederals() as References[];
     const views = await getViews() as References[];
     const articles = await getArticles() as References[];
     const divisions = await getDivisions() as References[];
-    let contracts = [] as ContractParam[];
+    const contracts = await getContracts() as ContractParam[];
 
-    let localContract
-
-    if (typeof window !== 'undefined') {
-
-        localContract = await JSON.parse(localStorage.getItem('contracts') as any);
-    }
-
-    console.log(localContract);
-
-
-    if (localContract) {
-        contracts = JSON.parse(localContract);
-    } else {
-        // contracts = await getContracts() as ContractParam[];
-    }
-
-
-    const newContrats: ContractParam[] = await Promise.all(contracts?.map(async (contract) => {
-        const placement = await getPlacementById(contract.placementId as string);
-        const division = await getDivisionById(contract.divisionId as string);
-        const executor = await getUserById(contract.userId as string);
-        const view = await getViewById(contract.viewId as string);
-        const article = await getArticleById(contract.articleId as string);
-        const federal = await getFederalById(contract.federalId as string);
-        const type = await getTypeById(contract.typeId as string);
-
-        return {
-            ...contract,
-            placementId: placement?.name as string,
-            divisionId: division?.name as string,
-            userId: executor?.name as string,
-            viewId: view?.name as string,
-            articleId: article?.name as string,
-            federalId: federal?.name as string,
-            typeId: type?.name as string
-        }
-    }))
+    const newContracts = await getNewContracts(contracts);
 
     return (
         <div className="bg-secondary rounded-xl w-full flex flex-wrap items-center justify-between mx-auto p-4 shadow-sm">
@@ -189,47 +151,17 @@ const RegestryPage = async () => {
                         ))}
                     </TableRow>
                 </TableHeader>
-                <TableBody>
-                    {newContrats?.map((contract) => {
-                        return (
-                            <TableOfContracts
-                                key={contract.id}
-                                id={contract.id as string}
-                                count={count++}
-                                placementId={contract.placementId as string}
-                                contractNumber={contract.contractNumber as string}
-                                startDateOfTheAgreement={contract.startDateOfTheAgreement as string}
-                                endDateOfTheContract={contract.endDateOfTheContract as string}
-                                provider={contract.provider as string}
-                                federalId={contract.federalId as string}
-                                typeId={contract.typeId as string}
-                                theSubjectOfTheAgreement={contract.theSubjectOfTheAgreement as string}
-                                actuallyPaidFor={contract.actuallyPaidFor as string}
-                                theAmountOfTheContract={contract.theAmountOfCollateral as string}
-                                executor={contract.userId as string}
-                                divisionId={contract.divisionId as string}
-                                color={contract.contractColor as string}
-                                returnDate={contract.returnDate as string}
-                                theAmountOfCollateral={contract.theAmountOfCollateral as string}
-                                viewId={contract.viewId as string}
-                                articleId={contract.articleId as string}
-                                sourceOfFinancing={contract.sourceOfFinancing as string}
-                                MP={contract.MP as boolean}
-                                subcontractorMP={contract.subcontractorMP as boolean}
-                                transients={contract.transients as boolean}
-                                additionalInformation={contract.additionalInformation as string}
-                                valuesParam={valuesParam as []}
-                                placements={placements as []}
-                                types={types as []}
-                                federals={federals as []}
-                                views={views as []}
-                                articles={articles as []}
-                                divisions={divisions as []}
-                                colors={colors as []}
-                            />
-                        )
-                    })}
-                </TableBody>
+                <TableOfContracts
+                    contracts={newContracts as []}
+                    valuesParam={valuesParam as []}
+                    placements={placements as []}
+                    types={types as []}
+                    federals={federals as []}
+                    views={views as []}
+                    articles={articles as []}
+                    divisions={divisions as []}
+                    colors={colors as []}
+                />
             </Table>
         </div>
     );

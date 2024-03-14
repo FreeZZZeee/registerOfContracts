@@ -28,6 +28,8 @@ import { Switch } from "../ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { ScrollArea } from "../ui/scroll-area";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { toast } from "sonner";
 
 interface valuesParamProps {
   name: string;
@@ -104,18 +106,30 @@ export const SheetSearch = ({
       contractSearch(values)
         .then((data) => {
           if (data.error) {
-            setError(data.error);
+            toast.error(data.error);
           }
 
           if (data.success) {
-            setSuccess(data.success);
+            toast.success(data.success);
             setOpen(false);
             localStorage.setItem('contracts', JSON.stringify(data.contracts));
-            router.refresh();
+            // window.location.reload();
           }
         })
         .catch(() => setError("Что-то пошло не так!"));
     });
+  }
+
+  const clearSearch = () => {
+    let localContracts;
+
+    typeof window !== 'undefined' ? localContracts = JSON.parse(localStorage.getItem('contracts') as any) : null;
+
+    if (localContracts) {
+      localStorage.removeItem('contracts');
+    }
+    toast.success("Фильтра сброшены");
+    setOpen(false);
   }
 
   return (
@@ -388,15 +402,17 @@ export const SheetSearch = ({
 
               </div>
             </ScrollArea>
-            <FormError message={error} />
-            <FormSuccess message={success} />
+            {/* <FormError message={error} />
+            <FormSuccess message={success} /> */}
             <SheetFooter>
               {/* <SheetClose asChild> */}
               <Button type="submit" className="w-full">Поиск</Button>
               {/* </SheetClose> */}
-              <SheetClose asChild>
-                <Button>Сбросить все фильтры</Button>
-              </SheetClose>
+              <Link className="w-full text-white text-center bg-slate-700 hover:bg-slate-800 focus:ring-4 focus:ring-slate-300 
+              font-medium rounded-lg text-sm px-5 py-2 dark:bg-slate-600 dark:hover:bg-slate-700 focus:outline-none
+               dark:focus:ring-slate-800"
+                href="#"
+                onClick={() => clearSearch()}>Сбросить</Link>
             </SheetFooter>
           </form>
         </Form>

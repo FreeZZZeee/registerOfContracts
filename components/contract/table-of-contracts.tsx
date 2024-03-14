@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  TableBody,
   TableCell,
   TableRow,
 } from "@/components/ui/table"
@@ -9,7 +10,7 @@ import { Button } from "../ui/button";
 import { TiDelete } from "react-icons/ti";
 import { contractDelete } from "@/actions/contract";
 import { toast } from "sonner";
-import { useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 interface valuesParamProps {
@@ -27,30 +28,33 @@ interface colorParam {
 }
 
 interface contractParam {
-  id: string;
-  count: number;
-  placementId: string;
-  contractNumber: string;
-  startDateOfTheAgreement: string;
-  endDateOfTheContract: string;
-  provider: string;
-  federalId: string;
-  typeId: string;
-  theSubjectOfTheAgreement: string;
-  actuallyPaidFor: string;
-  theAmountOfTheContract: string;
-  divisionId: string;
-  executor: string;
-  color: string;
-  returnDate: string;
-  theAmountOfCollateral: string;
-  viewId: string;
-  articleId: string;
-  sourceOfFinancing: string;
-  MP: boolean;
-  subcontractorMP: boolean;
-  transients: boolean;
-  additionalInformation: string;
+  id: string,
+  placementId: string,
+  typeId: string,
+  federalId: string,
+  contractNumber: string,
+  startDateOfTheAgreement: string,
+  endDateOfTheContract: string,
+  provider: string,
+  theSubjectOfTheAgreement: string,
+  actuallyPaidFor: string,
+  theAmountOfTheContract: string,
+  returnDate: string,
+  theAmountOfCollateral: string,
+  viewId: string,
+  articleId: string,
+  divisionId: string,
+  sourceOfFinancing: string,
+  MP: boolean,
+  subcontractorMP: boolean,
+  transients: boolean,
+  additionalInformation: string,
+  contractColor: string
+  userId: string
+}
+
+interface contractParamArr {
+  contracts: contractParam[]
   valuesParam: valuesParamProps[]
   placements: selectParam[]
   types: selectParam[]
@@ -63,30 +67,7 @@ interface contractParam {
 
 
 export const TableOfContracts = ({
-  id,
-  count,
-  placementId,
-  contractNumber,
-  startDateOfTheAgreement,
-  endDateOfTheContract,
-  provider,
-  federalId,
-  typeId,
-  theSubjectOfTheAgreement,
-  actuallyPaidFor,
-  theAmountOfTheContract,
-  divisionId,
-  executor,
-  color,
-  returnDate,
-  theAmountOfCollateral,
-  viewId,
-  articleId,
-  sourceOfFinancing,
-  MP,
-  subcontractorMP,
-  transients,
-  additionalInformation,
+  contracts,
   valuesParam,
   placements,
   types,
@@ -95,11 +76,27 @@ export const TableOfContracts = ({
   articles,
   divisions,
   colors
-}: contractParam
+}: contractParamArr
 ) => {
-
+  const [newContracts, setContracts] = useState(contracts as contractParam[]);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+
+  let count: number = 1;
+
+  useEffect(() => {
+    setInterval(() => {
+      if (typeof window !== 'undefined') {
+        let searchContract = JSON.parse(localStorage.getItem('contracts') as any);
+        if (searchContract) {
+          setContracts(searchContract)
+        } else {
+          setContracts(contracts);
+        }
+      }
+    }, 100);
+  }, [])
+
 
   const getColor = (color: string) => {
     if (color) {
@@ -127,61 +124,67 @@ export const TableOfContracts = ({
   }
 
   return (
-    <TableRow>
-      <TableCell className="font-medium">{count}</TableCell>
-      <TableCell>{contractNumber}</TableCell>
-      <TableCell>{placementId}</TableCell>
-      <TableCell>{startDateOfTheAgreement}</TableCell>
-      <TableCell>{endDateOfTheContract}</TableCell>
-      <TableCell>{theSubjectOfTheAgreement}</TableCell>
-      <TableCell>{divisionId}</TableCell>
-      <TableCell>{provider}</TableCell>
-      <TableCell>{actuallyPaidFor}</TableCell>
-      <TableCell>{theAmountOfTheContract}</TableCell>
-      <TableCell>{executor}</TableCell>
-      <TableCell className={getColor(color)}></TableCell>
-      <TableCell className="flex flex-row gap-x-1 !text-black">
-        <EditContract
-          id={id}
-          placementId={placementId}
-          contractNumber={contractNumber}
-          startDateOfTheAgreement={startDateOfTheAgreement}
-          endDateOfTheContract={endDateOfTheContract}
-          provider={provider}
-          federalId={federalId}
-          typeId={typeId}
-          theSubjectOfTheAgreement={theSubjectOfTheAgreement}
-          actuallyPaidFor={actuallyPaidFor}
-          theAmountOfTheContract={theAmountOfCollateral}
-          divisionId={divisionId}
-          contractColor={color}
-          returnDate={returnDate}
-          theAmountOfCollateral={theAmountOfCollateral}
-          viewId={viewId}
-          articleId={articleId}
-          sourceOfFinancing={sourceOfFinancing}
-          MP={MP}
-          subcontractorMP={subcontractorMP}
-          transients={transients}
-          additionalInformation={additionalInformation}
-          valuesParam={valuesParam as []}
-          placements={placements as []}
-          types={types as []}
-          federals={federals as []}
-          views={views as []}
-          articles={articles as []}
-          divisions={divisions as []}
-          colors={colors as []}
-        />
-        <Button
-          onClick={() => onDelete(id)}
-          variant="destructive"
-          className="w-[50px]"
-          disabled={isPending}
-        >
-          <TiDelete />
-        </Button>
-      </TableCell>
-    </TableRow>
+    <TableBody>
+      {newContracts && newContracts?.map((contract) => {
+        return (
+          <TableRow key={contract.id}>
+            <TableCell className="font-medium">{count++}</TableCell>
+            <TableCell>{contract.contractNumber}</TableCell>
+            <TableCell>{contract.placementId}</TableCell>
+            <TableCell>{contract.startDateOfTheAgreement}</TableCell>
+            <TableCell>{contract.endDateOfTheContract}</TableCell>
+            <TableCell>{contract.theSubjectOfTheAgreement}</TableCell>
+            <TableCell>{contract.divisionId}</TableCell>
+            <TableCell>{contract.provider}</TableCell>
+            <TableCell>{contract.actuallyPaidFor}</TableCell>
+            <TableCell>{contract.theAmountOfTheContract}</TableCell>
+            <TableCell>{contract.userId}</TableCell>
+            <TableCell className={getColor(contract.contractColor)}></TableCell>
+            <TableCell className="flex flex-row gap-x-1 !text-black">
+              <EditContract
+                id={contract.id}
+                placementId={contract.placementId}
+                contractNumber={contract.contractNumber}
+                startDateOfTheAgreement={contract.startDateOfTheAgreement}
+                endDateOfTheContract={contract.endDateOfTheContract}
+                provider={contract.provider}
+                federalId={contract.federalId}
+                typeId={contract.typeId}
+                theSubjectOfTheAgreement={contract.theSubjectOfTheAgreement}
+                actuallyPaidFor={contract.actuallyPaidFor}
+                theAmountOfTheContract={contract.theAmountOfCollateral}
+                divisionId={contract.divisionId}
+                contractColor={contract.contractColor}
+                returnDate={contract.returnDate}
+                theAmountOfCollateral={contract.theAmountOfCollateral}
+                viewId={contract.viewId}
+                articleId={contract.articleId}
+                sourceOfFinancing={contract.sourceOfFinancing}
+                MP={contract.MP}
+                subcontractorMP={contract.subcontractorMP}
+                transients={contract.transients}
+                additionalInformation={contract.additionalInformation}
+                valuesParam={valuesParam as []}
+                placements={placements as []}
+                types={types as []}
+                federals={federals as []}
+                views={views as []}
+                articles={articles as []}
+                divisions={divisions as []}
+                colors={colors as []}
+              />
+              <Button
+                onClick={() => onDelete(contract.id)}
+                variant="destructive"
+                className="w-[50px]"
+                disabled={isPending}
+              >
+                <TiDelete />
+              </Button>
+            </TableCell>
+          </TableRow>
+        )
+      })}
+    </TableBody>
   );
 }

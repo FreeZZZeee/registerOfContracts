@@ -15,6 +15,7 @@ export const ContractSchema = z.object({
         message: "Обязательно к заполнению"
     }),
     contractColor: z.optional(z.string()),
+    pdfFile: z.optional(z.string()),
     theSubjectOfTheAgreement: z.string().min(1, {
         message: "Обязательно к заполнению"
     }),

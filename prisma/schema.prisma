@@ -164,6 +164,7 @@ model Contract {
   theAmountOfTheContract   String?
   returnDate               String?
   theAmountOfCollateral    String?
+  pdfFile                  String?
 
   viewId String
   view   View   @relation(fields: [viewId], references: [id], onDelete: Cascade)

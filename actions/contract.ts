@@ -12,7 +12,7 @@ import { getFederalByName } from "@/data/federal";
 import { getViewByName } from "@/data/view";
 import { getArticleByName } from "@/data/article";
 import { getDivisionByName } from "@/data/division";
-import { getContractById, getContracts } from "@/data/contract";
+import { getContractById, getContracts, getNewContracts } from "@/data/contract";
 import { removeNull } from "@/helpers/remove-null";
 
 export const contractCreate = async (
@@ -313,15 +313,24 @@ export const contractSearch = async (
         searchValues.divisionId = dbDivision?.id as string;
     }
 
-    const contracts = await db.contract.findMany({
+    const dbContracts = await db.contract.findMany({
         where: {
             ...searchValues
         }
     })
 
+    console.log(dbContracts);
+
+
+    if (dbContracts === undefined || dbContracts.length == 0) {
+        return { error: "Договор не найден!" };
+    }
+
+
+    const contracts = await getNewContracts(dbContracts as []);
 
     return {
         contracts,
-        success: "Договор изменен!"
+        success: "Договор найден!"
     };
 }
