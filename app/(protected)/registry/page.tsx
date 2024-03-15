@@ -11,6 +11,7 @@ import { getViews } from "@/data/view";
 import { getArticles } from "@/data/article";
 import { getDivisions } from "@/data/division";
 import { getContracts, getNewContracts } from "@/data/contract";
+import { getUsers } from "@/data/user";
 
 
 const tableRows = [
@@ -99,15 +100,18 @@ interface ContractParam {
     userId: string
 }
 
+interface User {
+    name: string
+}
+
 interface References {
     id: string;
     name: string;
-    createdAt: Date;
-    updatedAt: Date | null;
 }
 
 const RegestryPage = async () => {
 
+    const users = await getUsers() as User[];
     const placements = await getPlacements() as References[];
     const types = await getTypes() as References[];
     const federals = await getFederals() as References[];
@@ -129,6 +133,7 @@ const RegestryPage = async () => {
                 articles={articles as []}
                 divisions={divisions as []}
                 colors={colors}
+                users={users as []}
             />
             <AddAContract
                 valuesParam={valuesParam}

@@ -1,5 +1,18 @@
 import * as z from "zod";
 
+const MAX_UPLOAD_SIZE = 1024 * 1024 * 10; // 10MB
+const ACCEPTED_FILE_TYPES = [
+    'application/pdf',
+    'application/x-pdf',
+    'application/x-bzpdf',
+    'application/x-gzpdf',
+    'applications/vnd.pdf',
+    'application/acrobat',
+    'application/x-google-chrome-pdf',
+    'text/pdf',
+    'text/x-pdf',
+];
+
 export const ContractSchema = z.object({
     placementId: z.optional(z.string()),
     typeId: z.optional(z.string()),
@@ -15,7 +28,14 @@ export const ContractSchema = z.object({
         message: "Обязательно к заполнению"
     }),
     contractColor: z.optional(z.string()),
-    pdfFile: z.optional(z.string()),
+    pdfFile: z.optional(z
+        .instanceof(File)
+        .refine((file) => {
+            return !file || file.size <= MAX_UPLOAD_SIZE;
+        }, 'Размер файла должен быть меньше 10 МБ')
+        .refine((file) => {
+            return ACCEPTED_FILE_TYPES.includes(file?.type as string);
+        }, 'Файл должен быть в формате PDF')),
     theSubjectOfTheAgreement: z.string().min(1, {
         message: "Обязательно к заполнению"
     }),

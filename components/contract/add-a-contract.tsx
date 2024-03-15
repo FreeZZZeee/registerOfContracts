@@ -32,6 +32,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { contractCreate } from "@/actions/contract";
 import { useRouter } from "next/navigation";
 import { IoCloudUploadOutline } from "react-icons/io5";
+import { FILE } from "dns";
 
 
 
@@ -101,7 +102,7 @@ export const AddAContract = ({
       subcontractorMP: false,
       transients: false,
       additionalInformation: "",
-      contractColor: ""
+      contractColor: "",
     }
   });
 
@@ -117,8 +118,8 @@ export const AddAContract = ({
 
           if (data.success) {
             toast.success(data.success);
-            setOpen(false);
-            router.refresh();
+            // setOpen(false);
+            // router.refresh();
           }
         })
         .catch(() => toast.error("Что-то пошло не так!"));
@@ -407,13 +408,16 @@ export const AddAContract = ({
                               <span className="flex items-center space-x-2">
                                 <IoCloudUploadOutline />
                                 <span className="font-medium text-gray-600">
-                                  Перетащите файл для прикрепления или
+                                  Перетащите файл для прикрепления или &nbsp;
                                   <span className="text-blue-600 underline">нажамите</span>
                                 </span>
                               </span>
-                              <input
+                              <Input
+                                {...field}
+                                value={value}
+                                placeholder={valueParam.label}
+                                disabled={isPending}
                                 type={valueParam.type}
-                                name={valueParam.name as any}
                                 className="hidden"
                               />
                             </label>

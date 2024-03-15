@@ -5,6 +5,7 @@ import { Navbar } from "./_components/navbar";
 import { useSession } from "next-auth/react";
 import { useIdleTimer } from 'react-idle-timer'
 import { logout } from "@/actions/logout";
+import { removeItem } from "@/hooks/lokalStorege.removeItem";
 
 interface ProtectedLayoutProps {
     children: React.ReactNode;
@@ -35,7 +36,6 @@ const ProtectedLayout = ({ children }: ProtectedLayoutProps) => {
             const expiresTimeTimestamp = Math.floor(new Date(session?.expires || '').getTime());
             const currentTimestamp = Date.now();
             const timeRemaining = expiresTimeTimestamp - currentTimestamp;
-            let localContracts;
 
             // If the user session will expire before the next session check
             // and the user is not idle, then we want to refresh the session
@@ -46,12 +46,8 @@ const ProtectedLayout = ({ children }: ProtectedLayoutProps) => {
                 // request refresh of backend token here
 
             } else if (timeRemaining < 0) {
-                // session has expired, logout the user and display session expiration message                
-                typeof window !== 'undefined' ? localContracts = JSON.parse(localStorage.getItem('contracts') as any) : null;
-
-                if (localContracts) {
-                    localStorage.removeItem('contracts');
-                }
+                // session has expired, logout the user and display session expiration message       
+                removeItem('contracts');
 
                 logout();
             }

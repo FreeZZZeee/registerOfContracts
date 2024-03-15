@@ -1,9 +1,14 @@
 "use server"
 
 import * as z from "zod";
+import { stat, mkdir, writeFile } from 'fs/promises'
+import { v4 as uuidv4 } from 'uuid';
+import { join } from "path";
+import * as dateFn from "date-fns";
+import mime from "mime";
 
 import { db } from "@/lib/db";
-import { getUserById } from "@/data/user";
+import { getUserById, getUserByName } from "@/data/user";
 import { currentUser } from "@/lib/auth";
 import { ContractSchema, SearchContractSchema } from "@/schemas/contract.schema";
 import { getPlacementByName } from "@/data/placement";
@@ -56,8 +61,15 @@ export const contractCreate = async (
         subcontractorMP,
         transients,
         additionalInformation,
-        contractColor
+        contractColor,
+        pdfFile
     } = validateFields.data;
+
+    const file: File | null = pdfFile as unknown as File
+
+    if (!file) {
+        return { error: "Файл не найден!" }
+    }
 
     const dbPlacement = await getPlacementByName(placementId as string);
     const dbType = await getTypeByName(typeId as string);
@@ -80,45 +92,82 @@ export const contractCreate = async (
         return { error: "Контракт уже существует!" }
     }
 
+    // const fileName = `${uuidv4()}.pdf`;
 
-    if (MP !== undefined
-        && subcontractorMP !== undefined
-        && transients !== undefined
-        && dbView?.id !== undefined
-        && dbPlacement?.id !== undefined
-        && dbType?.id !== undefined
-        && dbFederal?.id !== undefined
-        && dbArticle?.id !== undefined
-        && dbDivision?.id !== undefined) {
-        await db.contract.create({
-            data: {
-                placementId: dbPlacement?.id,
-                typeId: dbType?.id,
-                federalId: dbFederal?.id,
-                contractNumber,
-                startDateOfTheAgreement,
-                endDateOfTheContract,
-                provider,
-                contractColor,
-                theSubjectOfTheAgreement,
-                actuallyPaidFor,
-                theAmountOfTheContract,
-                returnDate,
-                theAmountOfCollateral,
-                viewId: dbView?.id,
-                articleId: dbArticle?.id,
-                divisionId: dbDivision?.id,
-                sourceOfFinancing,
-                additionalInformation,
-                MP,
-                subcontractorMP,
-                transients,
-                userId: user?.id as string
-            }
-        });
+    console.log(values);
+
+
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const relativeUploadDir = `/uploads/${dateFn.format(Date.now(), "dd-MM-Y")}`;
+    const uploadDir = join(process.cwd(), "public", relativeUploadDir);
+
+
+
+    try {
+        await stat(uploadDir);
+    } catch (e: any) {
+        if (e.code === "ENOENT") {
+            await mkdir(uploadDir, { recursive: true });
+        } else {
+            console.error(
+                "Error while trying to create directory when uploading a file\n",
+            );
+            return { error: "Что-то пошло не так!" }
+        }
     }
 
-    return { success: "Договор добавлен" };
+    try {
+        const uniqueSuffix = `${Date.now()}-${uuidv4}`;
+        const filename = `${file.name.replace(
+            /\.[^/.]+$/,
+            ""
+        )}-${uniqueSuffix}.${mime.getExtension(file.type)}`;
+        await writeFile(`${uploadDir}/${filename}`, buffer);
+        return { success: "Файл загружен!" };
+    } catch (e) {
+        console.error("Error while trying to upload a file\n", e);
+        return { error: "Что-то пошло не так!" }
+    }
+
+
+    // if (MP !== undefined
+    //     && subcontractorMP !== undefined
+    //     && transients !== undefined
+    //     && dbView?.id !== undefined
+    //     && dbPlacement?.id !== undefined
+    //     && dbType?.id !== undefined
+    //     && dbFederal?.id !== undefined
+    //     && dbArticle?.id !== undefined
+    //     && dbDivision?.id !== undefined) {
+    //     await db.contract.create({
+    //         data: {
+    //             placementId: dbPlacement?.id,
+    //             typeId: dbType?.id,
+    //             federalId: dbFederal?.id,
+    //             contractNumber,
+    //             startDateOfTheAgreement,
+    //             endDateOfTheContract,
+    //             provider,
+    //             contractColor,
+    //             theSubjectOfTheAgreement,
+    //             actuallyPaidFor,
+    //             theAmountOfTheContract,
+    //             returnDate,
+    //             theAmountOfCollateral,
+    //             viewId: dbView?.id,
+    //             articleId: dbArticle?.id,
+    //             divisionId: dbDivision?.id,
+    //             sourceOfFinancing,
+    //             additionalInformation,
+    //             MP,
+    //             subcontractorMP,
+    //             transients,
+    //             userId: user?.id as string
+    //         }
+    //     });
+    // }
+
+    return { error: "Договор добавлен" };
 }
 
 export const contractDelete = async (id: string) => {
@@ -288,6 +337,10 @@ export const contractSearch = async (
     let searchValues = removeNull(validateFields.data) as searchValuesParams;
 
 
+    if (searchValues.userId) {
+        const findUser = await getUserByName(searchValues.userId as string);
+        searchValues.userId = findUser?.id as string;
+    }
     if (searchValues.placementId) {
         const placement = await getPlacementByName(searchValues.placementId as string);
         searchValues.placementId = placement?.id as string;
@@ -318,9 +371,6 @@ export const contractSearch = async (
             ...searchValues
         }
     })
-
-    console.log(dbContracts);
-
 
     if (dbContracts === undefined || dbContracts.length == 0) {
         return { error: "Договор не найден!" };

@@ -29,3 +29,23 @@ export const getUserByLogin = async (login: string) => {
         return null;
     }
 };
+
+export const getUserByName = async (name: string) => {
+    try {
+        const user = await db.user.findFirst({ where: { name } });
+
+        return user;
+    } catch {
+        return null;
+    }
+};
+
+export const getUsers = async () => {
+    try {
+        const users = await db.user.findMany();
+
+        return users;
+    } catch {
+        return null;
+    }
+}
