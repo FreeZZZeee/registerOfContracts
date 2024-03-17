@@ -21,8 +21,18 @@ import { getContractById, getContracts, getNewContracts } from "@/data/contract"
 import { removeNull } from "@/helpers/remove-null";
 
 export const contractCreate = async (
-    values: z.infer<typeof ContractSchema>
+    values: z.infer<typeof ContractSchema>,
+    form: FormData
 ) => {
+    // let values: any = {} as z.infer<typeof ContractSchema>
+    // form.forEach((key, value) => {
+    //     values[value] = key
+    // });
+
+    values.pdfFile = form.get('pdfFile') as File;
+
+
+
     const user = await currentUser();
     const validateFields = ContractSchema.safeParse(values);
 
@@ -63,7 +73,7 @@ export const contractCreate = async (
         additionalInformation,
         contractColor,
         pdfFile
-    } = validateFields.data;
+    } = values;
 
     const file: File | null = pdfFile as unknown as File
 
@@ -92,15 +102,11 @@ export const contractCreate = async (
         return { error: "Контракт уже существует!" }
     }
 
-    // const fileName = `${uuidv4()}.pdf`;
-
-    console.log(values);
-
-
     const buffer = Buffer.from(await file.arrayBuffer());
-    const relativeUploadDir = `/uploads/${dateFn.format(Date.now(), "dd-MM-Y")}`;
+    const relativeUploadDir = `/uploads/${dateFn.format(Date.now(), "d-MM-yy")}`;
     const uploadDir = join(process.cwd(), "public", relativeUploadDir);
-
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    const filename = `${uniqueSuffix}.${mime.getExtension(file.type)}`;
 
 
     try {
@@ -110,64 +116,61 @@ export const contractCreate = async (
             await mkdir(uploadDir, { recursive: true });
         } else {
             console.error(
-                "Error while trying to create directory when uploading a file\n",
+                "Ошибка при попытке создать каталог при загрузке файла\n",
+                e
             );
             return { error: "Что-то пошло не так!" }
+
         }
     }
 
     try {
-        const uniqueSuffix = `${Date.now()}-${uuidv4}`;
-        const filename = `${file.name.replace(
-            /\.[^/.]+$/,
-            ""
-        )}-${uniqueSuffix}.${mime.getExtension(file.type)}`;
+
         await writeFile(`${uploadDir}/${filename}`, buffer);
-        return { success: "Файл загружен!" };
     } catch (e) {
-        console.error("Error while trying to upload a file\n", e);
+        console.error("Ошибка при попытке загрузить файл\n", e);
         return { error: "Что-то пошло не так!" }
     }
 
+    if (MP !== undefined
+        && subcontractorMP !== undefined
+        && transients !== undefined
+        && dbView?.id !== undefined
+        && dbPlacement?.id !== undefined
+        && dbType?.id !== undefined
+        && dbFederal?.id !== undefined
+        && dbArticle?.id !== undefined
+        && dbDivision?.id !== undefined) {
+        await db.contract.create({
+            data: {
+                placementId: dbPlacement?.id,
+                typeId: dbType?.id,
+                federalId: dbFederal?.id,
+                contractNumber,
+                startDateOfTheAgreement,
+                endDateOfTheContract,
+                provider,
+                contractColor,
+                theSubjectOfTheAgreement,
+                actuallyPaidFor,
+                theAmountOfTheContract,
+                returnDate,
+                theAmountOfCollateral,
+                viewId: dbView?.id,
+                articleId: dbArticle?.id,
+                divisionId: dbDivision?.id,
+                sourceOfFinancing,
+                additionalInformation,
+                MP,
+                subcontractorMP,
+                transients,
+                userId: user?.id as string,
+                pdfFile: `${relativeUploadDir}/${filename}`
+            }
+        });
 
-    // if (MP !== undefined
-    //     && subcontractorMP !== undefined
-    //     && transients !== undefined
-    //     && dbView?.id !== undefined
-    //     && dbPlacement?.id !== undefined
-    //     && dbType?.id !== undefined
-    //     && dbFederal?.id !== undefined
-    //     && dbArticle?.id !== undefined
-    //     && dbDivision?.id !== undefined) {
-    //     await db.contract.create({
-    //         data: {
-    //             placementId: dbPlacement?.id,
-    //             typeId: dbType?.id,
-    //             federalId: dbFederal?.id,
-    //             contractNumber,
-    //             startDateOfTheAgreement,
-    //             endDateOfTheContract,
-    //             provider,
-    //             contractColor,
-    //             theSubjectOfTheAgreement,
-    //             actuallyPaidFor,
-    //             theAmountOfTheContract,
-    //             returnDate,
-    //             theAmountOfCollateral,
-    //             viewId: dbView?.id,
-    //             articleId: dbArticle?.id,
-    //             divisionId: dbDivision?.id,
-    //             sourceOfFinancing,
-    //             additionalInformation,
-    //             MP,
-    //             subcontractorMP,
-    //             transients,
-    //             userId: user?.id as string
-    //         }
-    //     });
-    // }
-
-    return { error: "Договор добавлен" };
+    }
+    return { success: "Договор добавлен" };
 }
 
 export const contractDelete = async (id: string) => {

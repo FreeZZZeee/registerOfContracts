@@ -27,6 +27,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { removeItem } from "@/hooks/lokalStorege.removeItem";
+import { useRouter } from "next/navigation";
 
 interface valuesParamProps {
     name: string;
@@ -68,6 +69,7 @@ export const SheetSearch = ({
     const [color, setColor] = useState<string>();
     const [open, setOpen] = useState<boolean>(false);
     const [isPending, startTransition] = useTransition();
+    const router = useRouter();
 
     const form = useForm<z.infer<typeof SearchContractSchema>>({
         resolver: zodResolver(SearchContractSchema),
@@ -107,7 +109,7 @@ export const SheetSearch = ({
                     if (data.success) {
                         toast.success(data.success);
                         setOpen(false);
-                        localStorage.setItem('contracts', JSON.stringify(data.contracts));
+                        localStorage.setItem('searchContracts', JSON.stringify(data.contracts));
                     }
                 })
                 .catch(() => toast.error("Что-то пошло не так!"));
@@ -115,9 +117,11 @@ export const SheetSearch = ({
     }
 
     const clearSearch = () => {
-        removeItem('contracts');
-        toast.success("Фильтра сброшены");
+        removeItem('searchContracts');
+        toast.success("Фильтр сброшен");
         setOpen(false);
+        window.location.reload()
+
     }
 
     return (
