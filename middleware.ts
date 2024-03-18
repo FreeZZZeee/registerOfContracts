@@ -29,7 +29,16 @@ export default auth((req) => {
     }
 
     if (!isLoggedIn && !isPublicRoute) {
-        return Response.redirect(new URL("/auth/login", nextUrl));
+        let callbackUrl = nextUrl.pathname;
+        if (nextUrl.search) {
+            callbackUrl += nextUrl.search
+        }
+
+        const encodedCallbackUrl = encodeURIComponent(callbackUrl);
+
+        return Response.redirect(new URL(
+            `/auth/login?callbackUrl=${encodedCallbackUrl}`,
+            nextUrl));
     }
 
     return;
@@ -39,5 +48,5 @@ export default auth((req) => {
 // Read more: https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
 export const config = {
     matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
-  }
+}
 

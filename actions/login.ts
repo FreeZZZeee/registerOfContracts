@@ -6,21 +6,24 @@ import { AuthError } from "next-auth";
 import { signIn } from "@/auth";
 import { LoginSchema } from "@/schemas/login.schema";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { 
-    generateVerificationToken, 
-    generateTwoFactorToken 
+import {
+    generateVerificationToken,
+    generateTwoFactorToken
 } from "@/lib/tokens";
 import { getUserByEmail } from "@/data/user";
 import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
-import { 
+import {
     sendVerificationEmail,
     sendTwoFactorTokenEmail
- } from "@/lib/mail";
+} from "@/lib/mail";
 import { db } from "@/lib/db";
 import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 
-export const login = async (values: z.infer<typeof LoginSchema>) => {
-    const validateFields = LoginSchema.safeParse(values);  
+export const login = async (
+    values: z.infer<typeof LoginSchema>,
+    callbackUrl?: string | null
+) => {
+    const validateFields = LoginSchema.safeParse(values);
 
     if (!validateFields.success) {
         return {
@@ -101,7 +104,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
         await signIn("credentials", {
             email,
             password,
-            redirectTo: DEFAULT_LOGIN_REDIRECT
+            redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT
         })
     } catch (error) {
         if (error instanceof AuthError) {
@@ -109,7 +112,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
                 case "CredentialsSignin":
                     return { error: "Неверные учетные данные!" }
                 default:
-                    return { error: "Что-то пошло не так!" }    
+                    return { error: "Что-то пошло не так!" }
             }
         }
 

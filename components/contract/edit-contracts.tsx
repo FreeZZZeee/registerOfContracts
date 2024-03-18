@@ -22,7 +22,7 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form"
-import { useState, useTransition } from "react"
+import { ChangeEvent, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation";
 import { Textarea } from "../ui/textarea";
@@ -31,7 +31,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { ScrollArea } from "../ui/scroll-area";
 import { ContractSchema } from "@/schemas/contract.schema";
 import { contractUpdate } from "@/actions/contract";
-import { FaRegEdit } from "react-icons/fa";
+import { FaRegEdit, FaRegFilePdf } from "react-icons/fa";
+import { IoCloudUploadOutline } from "react-icons/io5";
+import Link from "next/link";
+import { RiDeleteBin2Fill } from "react-icons/ri";
 
 
 interface valuesParamProps {
@@ -71,6 +74,7 @@ type valuesParamPropsArr = {
     transients: boolean,
     additionalInformation: string,
     contractColor: string
+    pdfFile: string | File
     valuesParam: valuesParamProps[]
     placements: selectParam[]
     types: selectParam[]
@@ -105,6 +109,7 @@ export const EditContract = ({
     transients,
     additionalInformation,
     contractColor,
+    pdfFile,
     valuesParam,
     placements,
     types,
@@ -112,11 +117,12 @@ export const EditContract = ({
     views,
     articles,
     divisions,
-    colors
+    colors,
 }: valuesParamPropsArr) => {
     const [open, setOpen] = useState<boolean>(false);
     const [color, setColor] = useState<string>(contractColor);
     const [isPending, startTransition] = useTransition();
+    const [pdf, setPdf] = useState<string>(pdfFile as string);
 
     const router = useRouter();
 
@@ -150,8 +156,16 @@ export const EditContract = ({
     const onSubmit = (values: z.infer<typeof ContractSchema>) => {
         values.contractColor = color;
 
+        let formData: FormData;
+        if (values?.pdfFile !== undefined) {
+            formData = new FormData();
+            formData.append('pdfFile', values.pdfFile as File);
+            values.pdfFile = {} as File;
+        }
+
+
         startTransition(() => {
-            contractUpdate(values, id)
+            contractUpdate(values, id, formData)
                 .then((data) => {
                     if (data.error) {
                         toast.error(data.error);
@@ -166,10 +180,14 @@ export const EditContract = ({
                 .catch(() => toast.error("Что-то пошло не так!"));
         });
     }
+
+    const deletePreview = () => {
+        setPdf('');
+    }
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" className="w-[50px]"><FaRegEdit className="w-full" /></Button>
+                <Button variant="outline" className="w-[50px] p-2"><FaRegEdit className="!w-full !h-full" /></Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[1000px]">
                 <DialogHeader>
@@ -433,6 +451,52 @@ export const EditContract = ({
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>
+                                                )}
+                                            />
+                                        )}
+                                        {valueParam.type === "file" && (
+                                            <FormField
+                                                control={form.control}
+                                                name={valueParam.name as any}
+                                                render={({ field: { value, onChange, ...field } }) => (
+                                                    <div className="max-w-xl">
+                                                        {pdf ? (
+                                                            <>
+                                                                <div className="flex justify-start gap-y-4 items-center">
+                                                                    <FaRegFilePdf className="w-[100px] h-[100px]" />
+                                                                    <Link
+                                                                        href="#"
+                                                                        onClick={() => deletePreview()}><RiDeleteBin2Fill className="w-[30px] h-[30px] text-red-500 text-center" /></Link>
+                                                                </div>
+                                                            </>
+                                                        ) : (
+                                                            <label
+                                                                className="flex justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
+                                                                <span className="flex items-center space-x-2">
+                                                                    <IoCloudUploadOutline />
+                                                                    <span className="font-medium text-gray-600">
+                                                                        Перетащите файл для прикрепления или &nbsp;
+                                                                        <span className="text-blue-600 underline">нажамите</span>
+                                                                    </span>
+                                                                </span>
+                                                                <Input
+                                                                    {...field}
+                                                                    value={value?.fileName}
+                                                                    placeholder={valueParam.label}
+                                                                    disabled={isPending}
+                                                                    type={valueParam.type}
+                                                                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
+
+                                                                        const sellectFile = event.target.files ? event.target.files[0] : null;
+                                                                        setPdf(sellectFile?.name as string)
+                                                                        onChange(sellectFile as File | null);
+                                                                    }}
+                                                                    className="hidden"
+                                                                />
+                                                            </label>
+                                                        )}
+
+                                                    </div>
                                                 )}
                                             />
                                         )}

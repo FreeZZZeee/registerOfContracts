@@ -10,32 +10,32 @@ const tableRows = [
 ]
 
 const PlacementPage = async () => {
-    const placements = await getPlacements(); 
+    const placements = await getPlacements();
     let count = 1;
-    
+
     return (
-        <div className="bg-secondary rounded-xl w-1/2 flex flex-wrap items-center justify-between mx-auto p-4 shadow-sm">  
+        <div className="bg-secondary rounded-xl w-1/2 flex flex-wrap items-center justify-between mx-auto p-4 shadow-sm">
             <AddAPlacement />
             <Table>
                 <TableCaption>Способ размещения</TableCaption>
                 <TableHeader className="h-[80px]">
-                    <TableRow>                        
+                    <TableRow>
                         {tableRows.map(tableRow => (
-                            <TableHead className={tableRow.className}>
+                            <TableHead key={tableRow.name} className={tableRow.className}>
                                 {tableRow.name}
                             </TableHead>
                         ))}
-                    </TableRow>                    
-                </TableHeader>  
+                    </TableRow>
+                </TableHeader>
                 <TableBody>
-                {placements?.map(placement => (
-                    <TablePlacement 
-                        key={placement.id}
-                        id={placement.id}
-                        name={placement.name}   
-                        count={count++}                        
-                    />
-                ))}
+                    {placements?.map(placement => (
+                        <TablePlacement
+                            key={placement.id}
+                            id={placement.id}
+                            name={placement.name}
+                            count={count++}
+                        />
+                    ))}
                 </TableBody>
             </Table>
         </div>

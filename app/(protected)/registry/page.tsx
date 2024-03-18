@@ -98,6 +98,7 @@ interface ContractParam {
     additionalInformation: string,
     contractColor: string
     userId: string
+    pdfFile: string
 }
 
 interface User {
@@ -150,7 +151,7 @@ const RegestryPage = async () => {
                 <TableHeader className="h-[80px]">
                     <TableRow>
                         {tableRows.map(tableRow => (
-                            <TableHead className="w-[80px]">
+                            <TableHead key={tableRow.name} className="w-[80px]">
                                 {tableRow.name}
                             </TableHead>
                         ))}

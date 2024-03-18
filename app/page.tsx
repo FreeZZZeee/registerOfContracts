@@ -11,22 +11,22 @@ const font = Poppins({
 
 export default function Home() {
   return (
-   <main className="flex h-full flex-col items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-400 to-blue-800">
-    <div className="space-y-6 text-center">
-      <h1 className={cn(
-        "text-6xl font-semibold text-white drop-shadow-md",
-        font.className
+    <main className="flex h-full flex-col items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-400 to-blue-800">
+      <div className="space-y-6 text-center">
+        <h1 className={cn(
+          "text-6xl font-semibold text-white drop-shadow-md",
+          font.className
         )}>
-        Авторизация
-      </h1>
-      <div>
-        <LoginButton>
-          <Button variant={"secondary"} size={"lg"}>
-            Вход
-          </Button>
-        </LoginButton>
+          Авторизация
+        </h1>
+        <div>
+          <LoginButton mode="modal" asChild>
+            <Button variant={"secondary"} size={"lg"}>
+              Вход
+            </Button>
+          </LoginButton>
+        </div>
       </div>
-    </div>
-   </main>
+    </main>
   );
 }

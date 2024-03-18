@@ -10,32 +10,32 @@ const tableRows = [
 ]
 
 const ViewPage = async () => {
-    const views = await getViews(); 
+    const views = await getViews();
     let count = 1;
-    
+
     return (
-        <div className="bg-secondary rounded-xl w-1/2 flex flex-wrap items-center justify-between mx-auto p-4 shadow-sm">  
+        <div className="bg-secondary rounded-xl w-1/2 flex flex-wrap items-center justify-between mx-auto p-4 shadow-sm">
             <AddAView />
             <Table>
                 <TableCaption>Вид закупки</TableCaption>
                 <TableHeader className="h-[80px]">
-                    <TableRow>                        
+                    <TableRow>
                         {tableRows.map(tableRow => (
-                            <TableHead className={tableRow.className}>
+                            <TableHead key={tableRow.name} className={tableRow.className}>
                                 {tableRow.name}
                             </TableHead>
                         ))}
-                    </TableRow>                    
-                </TableHeader>  
+                    </TableRow>
+                </TableHeader>
                 <TableBody>
-                {views?.map(view => (
-                    <TableView 
-                        key={view.id}
-                        id={view.id}
-                        name={view.name}   
-                        count={count++}                        
-                    />
-                ))}
+                    {views?.map(view => (
+                        <TableView
+                            key={view.id}
+                            id={view.id}
+                            name={view.name}
+                            count={count++}
+                        />
+                    ))}
                 </TableBody>
             </Table>
         </div>

@@ -24,14 +24,7 @@ export const contractCreate = async (
     values: z.infer<typeof ContractSchema>,
     form: FormData
 ) => {
-    // let values: any = {} as z.infer<typeof ContractSchema>
-    // form.forEach((key, value) => {
-    //     values[value] = key
-    // });
-
     values.pdfFile = form.get('pdfFile') as File;
-
-
 
     const user = await currentUser();
     const validateFields = ContractSchema.safeParse(values);
@@ -88,7 +81,6 @@ export const contractCreate = async (
     const dbArticle = await getArticleByName(articleId as string);
     const dbDivision = await getDivisionByName(divisionId as string);
 
-
     const dbContract = await db.contract.findFirst({
         where: {
             contractNumber,
@@ -105,9 +97,8 @@ export const contractCreate = async (
     const buffer = Buffer.from(await file.arrayBuffer());
     const relativeUploadDir = `/uploads/${dateFn.format(Date.now(), "d-MM-yy")}`;
     const uploadDir = join(process.cwd(), "public", relativeUploadDir);
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    const uniqueSuffix = uuidv4();
     const filename = `${uniqueSuffix}.${mime.getExtension(file.type)}`;
-
 
     try {
         await stat(uploadDir);
@@ -120,12 +111,10 @@ export const contractCreate = async (
                 e
             );
             return { error: "Что-то пошло не так!" }
-
         }
     }
 
     try {
-
         await writeFile(`${uploadDir}/${filename}`, buffer);
     } catch (e) {
         console.error("Ошибка при попытке загрузить файл\n", e);
@@ -196,15 +185,16 @@ export const contractDelete = async (id: string) => {
         where: { id }
     });
 
-
     return { success: "Договор удален!" };
 }
 
 export const contractUpdate = async (
     values: z.infer<typeof ContractSchema>,
-    id: string
+    id: string,
+    form: FormData
 ) => {
     const user = await currentUser();
+    if (form && form.get('pdfFile')) values.pdfFile = form.get('pdfFile') as File;
     const validateFields = ContractSchema.safeParse(values);
 
     if (!user) {
@@ -243,6 +233,7 @@ export const contractUpdate = async (
         transients,
         additionalInformation,
         contractColor,
+        pdfFile
     } = validateFields.data;
 
     const dbPlacement = await getPlacementByName(placementId as string);
@@ -256,6 +247,41 @@ export const contractUpdate = async (
 
     if (!dbContractById) {
         return { error: "Договор не найден!" }
+    }
+
+    let oldFile: string = dbContractById.pdfFile as string;
+
+    const relativeUploadDir = `/uploads/${dateFn.format(Date.now(), "d-MM-yy")}`;
+    const uploadDir = join(process.cwd(), "public", relativeUploadDir);
+    const filename = `${uuidv4()}.pdf`;
+
+    if (pdfFile !== undefined && typeof pdfFile !== 'string') {
+        const file: File | null = pdfFile as unknown as File
+
+        const buffer = Buffer.from(await file.arrayBuffer());
+
+
+        try {
+            await stat(uploadDir);
+        } catch (e: any) {
+            if (e.code === "ENOENT") {
+                await mkdir(uploadDir, { recursive: true });
+            } else {
+                console.error(
+                    "Ошибка при попытке создать каталог при загрузке файла\n",
+                    e
+                );
+                return { error: "Что-то пошло не так!" }
+            }
+        }
+
+        try {
+            await writeFile(`${uploadDir}/${filename}`, buffer);
+            oldFile = `${relativeUploadDir}/${filename}`;
+        } catch (e) {
+            console.error("Ошибка при попытке загрузить файл\n", e);
+            return { error: "Что-то пошло не так!" }
+        }
     }
 
     await db.contract.update({
@@ -284,7 +310,8 @@ export const contractUpdate = async (
             MP,
             subcontractorMP,
             transients,
-            userId: user?.id as string
+            userId: user?.id as string,
+            pdfFile: oldFile
         }
     })
 

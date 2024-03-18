@@ -1,5 +1,7 @@
 import nodemailer from "nodemailer";
 
+const domain = process.env.NEXT_PUBLIC_BASE_URL;
+
 const createConnection = () => {
     const transporter = nodemailer.createTransport({
         host: process.env.NODEMAILER_HOSTNAME,
@@ -11,7 +13,7 @@ const createConnection = () => {
             pass: process.env.NODEMAILER_PASSWORD,
         },
         logger: true
-        });
+    });
 
     return transporter;
 }
@@ -20,7 +22,7 @@ export const sendTwoFactorTokenEmail = async (
     email: string,
     token: string
 ) => {
-    const transporter = createConnection();        
+    const transporter = createConnection();
 
     // send mail with defined transport object
     const info = await transporter.sendMail({
@@ -39,9 +41,9 @@ export const sendPasswordResetEmail = async (
     email: string,
     token: string
 ) => {
-    const resetLink = `http://localhost:3000/auth/new-password?token=${token}`;
+    const resetLink = `${domain}/auth/new-password?token=${token}`;
 
-    const transporter = createConnection();        
+    const transporter = createConnection();
 
     // send mail with defined transport object
     const info = await transporter.sendMail({
@@ -57,14 +59,14 @@ export const sendPasswordResetEmail = async (
 }
 
 export const sendVerificationEmail = async (
-    email: string, 
+    email: string,
     token: string
-    ) => {
-        const confirmLink = `http://localhost:3000/auth/new-verification?token=${token}`;
+) => {
+    const confirmLink = `${domain}/auth/new-verification?token=${token}`;
 
-        const transporter = createConnection();        
+    const transporter = createConnection();
 
-        // send mail with defined transport object
+    // send mail with defined transport object
     const info = await transporter.sendMail({
         from: '"Техническая поддержка" <tech-group@pstu.ru>',
         to: email,
@@ -74,5 +76,5 @@ export const sendVerificationEmail = async (
         // headers: { 'x-myheader': 'test header' }
     });
 
-     return info.response;
+    return info.response;
 }
