@@ -1,0 +1,10 @@
+version: '3'
+services:
+  registerOfContract:
+    image: register-of-contracts:latest
+    container_name: register-of-contracts
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      - ./env:/opt/app/.env
