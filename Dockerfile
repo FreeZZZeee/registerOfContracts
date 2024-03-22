@@ -1,46 +1,48 @@
-# FROM node:20.11.1-alpine
-# WORKDIR /opt/app
-# ADD package.json package.json
-# RUN npm cache clear --force
-# RUN npm install
-# ADD . .
-# RUN npm run build
-# RUN npm prune --production
-# CMD [ "node", "server.js" ]
-
-# Install dependencies only when needed
-FROM node:20.11.1-alpine AS deps
-
-RUN apk add --no-cache libc6-compat
+FROM node:20.11.1-alpine
 WORKDIR /opt/app
-COPY package.json package-lock.json* ./
+
+ADD package.json package.json
 RUN npm cache clear --force
 RUN npm install
+ADD . .
+# RUN npm run build
+# RUN npm prune --production
+ENTRYPOINT [ "npm", "run" ]
 
-# Rebuild the source code only when needed
-# This is where because may be the case that you would try
-# to build the app based on some `X_TAG` in my case (Git commit hash)
-# but the code hasn't changed.
-FROM node:20.11.1-alpine AS builder
+# FROM node:20.11.1-alpine as dependencies
 
-# ENV NODE_ENV=production
-WORKDIR /opt/app
 
-COPY --from=deps /opt/app/node_modules ./node_modules
-COPY . .
-# COPY --from=deps /opt/app/node_modules ./node_modules
-RUN npm run build
+# # set working directory
+# WORKDIR /usr/src/app
 
-# Production image, copy all the files and run next
-FROM node:20.11.1-alpine AS runner
+# # Copy package and lockfile
+# COPY package.json ./
+# COPY prisma ./prisma/
 
-ARG X_TAG
-WORKDIR /opt/app
-# ENV NODE_ENV=production
-COPY --from=builder /opt/app/next.config.mjs ./
-COPY --from=builder /opt/app/public ./public
-COPY --from=builder /opt/app/.next ./.next
-COPY --from=builder /opt/app/node_modules ./node_modules
-COPY --from=builder /opt/app/package.json ./package.json
-RUN npm prune --production
-CMD ["npm", "start"]
+# # install dependencies
+# RUN npm install
+
+# COPY . .
+
+# # ---- Build ----
+# FROM dependencies as build
+# # install all dependencies
+
+# # build project
+# RUN npm run build
+
+# # ---- Release ----
+# FROM dependencies as release
+# # copy build
+# COPY --from=build /usr/src/app/.next ./.next
+# COPY --from=build /usr/src/app/public ./public
+
+# # dont run as root
+# USER node
+
+# # expose and set port number to 3000
+# EXPOSE 3000
+# ENV PORT 3000
+
+# # start app
+# ENTRYPOINT [ "npm", "run" ]

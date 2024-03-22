@@ -1,10 +1,27 @@
-version: '3'
+version: '3.1'
 services:
+  postgres:
+    image: postgres:16.2
+    restart: always
+    container_name: postgres
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./docker-data/user-register:/var/lib/postgresql/data
+
   registerOfContract:
     image: register-of-contracts:latest
     container_name: register-of-contracts
     restart: always
+    command: dev
     ports:
       - 3000:3000
     volumes:
-      - ./env:/opt/app/.env
+      - ./.env:/opt/app/.env
+    depends_on:
+      - postgres
