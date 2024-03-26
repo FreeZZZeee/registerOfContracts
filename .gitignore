@@ -40,3 +40,6 @@ next-env.d.ts
 
 /docker-data
 /public/uploads
+
+next.config.mjs
+docker-compose.yml

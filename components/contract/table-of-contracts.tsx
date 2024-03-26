@@ -140,8 +140,8 @@ export const TableOfContracts = ({
             <TableCell>{contract.theSubjectOfTheAgreement}</TableCell>
             <TableCell>{contract.divisionId}</TableCell>
             <TableCell>{contract.provider}</TableCell>
-            <TableCell>{contract.actuallyPaidFor}</TableCell>
             <TableCell>{contract.theAmountOfTheContract}</TableCell>
+            <TableCell>{contract.actuallyPaidFor}</TableCell>
             <TableCell>{contract.userId}</TableCell>
             <TableCell className={getColor(contract.contractColor)}></TableCell>
             <TableCell className="flex flex-row gap-x-1 !text-black">

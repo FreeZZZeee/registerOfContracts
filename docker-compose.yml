@@ -13,15 +13,14 @@ services:
       - '5432:5432'
     volumes:
       - ./docker-data/user-register:/var/lib/postgresql/data
-
-  registerOfContract:
-    image: register-of-contracts:latest
-    container_name: register-of-contracts
-    restart: always
-    command: dev
-    ports:
-      - 3000:3000
-    volumes:
-      - ./.env:/opt/app/.env
-    depends_on:
-      - postgres
+  # registerOfContract:
+  #   image: register-of-contracts:latest
+  #   container_name: register-of-contracts
+  #   restart: always
+  #   command: dev
+  #   ports:
+  #     - 3000:3000
+  #   volumes:
+  #     - ./.env:/opt/app/.env
+  #   depends_on:
+  #     - postgres
