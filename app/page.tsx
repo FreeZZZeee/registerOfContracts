@@ -1,12 +1,12 @@
-import { Poppins } from "next/font/google";
+import { Roboto } from "next/font/google";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button"
 import { LoginButton } from "@/components/auth/login-button";
 
-const font = Poppins({
+const font = Roboto({
   subsets: ["latin"],
-  weight: ["600"]
+  weight: ["500"]
 })
 
 export default function Home() {

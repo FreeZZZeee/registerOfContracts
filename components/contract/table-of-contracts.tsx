@@ -12,7 +12,7 @@ import { contractDelete } from "@/actions/contract";
 import { toast } from "sonner";
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { InfoContract } from "./info-contract";
+import { InfoContract } from "@/components/contract/info-contract";
 
 interface valuesParamProps {
   name: string;
@@ -129,91 +129,90 @@ export const TableOfContracts = ({
 
   return (
     <TableBody>
-      {contracts && contracts?.map((contract) => {
-        return (
-          <TableRow key={contract.id}>
-            <TableCell className="font-medium">{count++}</TableCell>
-            <TableCell>{contract.contractNumber}</TableCell>
-            <TableCell>{contract.placementId}</TableCell>
-            <TableCell>{contract.startDateOfTheAgreement}</TableCell>
-            <TableCell>{contract.endDateOfTheContract}</TableCell>
-            <TableCell>{contract.theSubjectOfTheAgreement}</TableCell>
-            <TableCell>{contract.divisionId}</TableCell>
-            <TableCell>{contract.provider}</TableCell>
-            <TableCell>{contract.theAmountOfTheContract}</TableCell>
-            <TableCell>{contract.actuallyPaidFor}</TableCell>
-            <TableCell>{contract.userId}</TableCell>
-            <TableCell className={getColor(contract.contractColor)}></TableCell>
-            <TableCell className="flex flex-row gap-x-1 !text-black">
-              <InfoContract
-                placementId={contract.placementId}
-                contractNumber={contract.contractNumber}
-                startDateOfTheAgreement={contract.startDateOfTheAgreement}
-                endDateOfTheContract={contract.endDateOfTheContract}
-                provider={contract.provider}
-                federalId={contract.federalId}
-                typeId={contract.typeId}
-                theSubjectOfTheAgreement={contract.theSubjectOfTheAgreement}
-                actuallyPaidFor={contract.actuallyPaidFor}
-                theAmountOfTheContract={contract.theAmountOfCollateral}
-                divisionId={contract.divisionId}
-                contractColor={contract.contractColor}
-                returnDate={contract.returnDate}
-                theAmountOfCollateral={contract.theAmountOfCollateral}
-                viewId={contract.viewId}
-                articleId={contract.articleId}
-                sourceOfFinancing={contract.sourceOfFinancing}
-                MP={contract.MP}
-                subcontractorMP={contract.subcontractorMP}
-                transients={contract.transients}
-                additionalInformation={contract.additionalInformation}
-                pdfFile={contract.pdfFile}
-              />
-              <EditContract
-                id={contract.id}
-                placementId={contract.placementId}
-                contractNumber={contract.contractNumber}
-                startDateOfTheAgreement={contract.startDateOfTheAgreement}
-                endDateOfTheContract={contract.endDateOfTheContract}
-                provider={contract.provider}
-                federalId={contract.federalId}
-                typeId={contract.typeId}
-                theSubjectOfTheAgreement={contract.theSubjectOfTheAgreement}
-                actuallyPaidFor={contract.actuallyPaidFor}
-                theAmountOfTheContract={contract.theAmountOfCollateral}
-                divisionId={contract.divisionId}
-                contractColor={contract.contractColor}
-                returnDate={contract.returnDate}
-                theAmountOfCollateral={contract.theAmountOfCollateral}
-                viewId={contract.viewId}
-                articleId={contract.articleId}
-                sourceOfFinancing={contract.sourceOfFinancing}
-                MP={contract.MP}
-                subcontractorMP={contract.subcontractorMP}
-                transients={contract.transients}
-                additionalInformation={contract.additionalInformation}
-                pdfFile={contract.pdfFile}
-                valuesParam={valuesParam as []}
-                placements={placements as []}
-                types={types as []}
-                federals={federals as []}
-                views={views as []}
-                articles={articles as []}
-                divisions={divisions as []}
-                colors={colors as []}
-              />
-              <Button
-                onClick={() => onDelete(contract.id)}
-                variant="destructive"
-                className="w-[50px] p-2"
-                disabled={isPending}
-              >
-                <TiDelete className="!w-full !h-full" />
-              </Button>
-            </TableCell>
-          </TableRow>
-        )
-      })}
+      {contracts && contracts?.map((contract) => (
+        <TableRow key={contract.id}>
+          <TableCell className="font-medium">{count++}</TableCell>
+          <TableCell>{contract.contractNumber}</TableCell>
+          <TableCell>{contract.placementId}</TableCell>
+          <TableCell>{contract.startDateOfTheAgreement}</TableCell>
+          <TableCell>{contract.endDateOfTheContract}</TableCell>
+          <TableCell>{contract.theSubjectOfTheAgreement}</TableCell>
+          <TableCell>{contract.divisionId}</TableCell>
+          <TableCell>{contract.provider}</TableCell>
+          <TableCell>{contract.theAmountOfTheContract}</TableCell>
+          <TableCell>{contract.actuallyPaidFor}</TableCell>
+          <TableCell>{contract.userId}</TableCell>
+          <TableCell className={getColor(contract.contractColor)}></TableCell>
+          <TableCell className="flex flex-row gap-x-1 !text-black">
+            <InfoContract
+              placementId={contract.placementId}
+              contractNumber={contract.contractNumber}
+              startDateOfTheAgreement={contract.startDateOfTheAgreement}
+              endDateOfTheContract={contract.endDateOfTheContract}
+              provider={contract.provider}
+              federalId={contract.federalId}
+              typeId={contract.typeId}
+              theSubjectOfTheAgreement={contract.theSubjectOfTheAgreement}
+              actuallyPaidFor={contract.actuallyPaidFor}
+              theAmountOfTheContract={contract.theAmountOfCollateral}
+              divisionId={contract.divisionId}
+              contractColor={contract.contractColor}
+              returnDate={contract.returnDate}
+              theAmountOfCollateral={contract.theAmountOfCollateral}
+              viewId={contract.viewId}
+              articleId={contract.articleId}
+              sourceOfFinancing={contract.sourceOfFinancing}
+              MP={contract.MP}
+              subcontractorMP={contract.subcontractorMP}
+              transients={contract.transients}
+              additionalInformation={contract.additionalInformation}
+              pdfFile={contract.pdfFile}
+            />
+            <EditContract
+              id={contract.id}
+              placementId={contract.placementId}
+              contractNumber={contract.contractNumber}
+              startDateOfTheAgreement={contract.startDateOfTheAgreement}
+              endDateOfTheContract={contract.endDateOfTheContract}
+              provider={contract.provider}
+              federalId={contract.federalId}
+              typeId={contract.typeId}
+              theSubjectOfTheAgreement={contract.theSubjectOfTheAgreement}
+              actuallyPaidFor={contract.actuallyPaidFor}
+              theAmountOfTheContract={contract.theAmountOfCollateral}
+              divisionId={contract.divisionId}
+              contractColor={contract.contractColor}
+              returnDate={contract.returnDate}
+              theAmountOfCollateral={contract.theAmountOfCollateral}
+              viewId={contract.viewId}
+              articleId={contract.articleId}
+              sourceOfFinancing={contract.sourceOfFinancing}
+              MP={contract.MP}
+              subcontractorMP={contract.subcontractorMP}
+              transients={contract.transients}
+              additionalInformation={contract.additionalInformation}
+              pdfFile={contract.pdfFile}
+              valuesParam={valuesParam as []}
+              placements={placements as []}
+              types={types as []}
+              federals={federals as []}
+              views={views as []}
+              articles={articles as []}
+              divisions={divisions as []}
+              colors={colors as []}
+            />
+            <Button
+              onClick={() => onDelete(contract.id)}
+              variant="destructive"
+              className="w-[50px] p-2"
+              disabled={isPending}
+            >
+              <TiDelete className="!w-full !h-full" />
+            </Button>
+          </TableCell>
+        </TableRow>
+      )
+      )}
     </TableBody>
   );
 }

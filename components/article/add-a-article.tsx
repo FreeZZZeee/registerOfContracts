@@ -48,7 +48,6 @@ export const AddAArticle = () => {
         .then((data) => {
           if (data.error) {
             toast.error(data.error);
-            // setOpen(true);
           }
 
           if (data.success) {
@@ -57,7 +56,7 @@ export const AddAArticle = () => {
             router.refresh();
           }
         })
-        .catch(() => toast.error("Что-то пошло не так!"));
+        .catch((e) => toast.error(e));
     });
   }
 

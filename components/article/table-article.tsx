@@ -22,7 +22,7 @@ export const TableArticle = ({
     id,
     name,
     count
-}: TableOfArticleProps) => {
+}: TableOfArticleProps): JSX.Element => {
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
 

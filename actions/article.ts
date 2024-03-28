@@ -14,16 +14,6 @@ export const articleCreate = async (
     const user = await currentUser();
     const validateFields = ArticleSchema.safeParse(values);
 
-    if (!user) {
-        return { error: "Неавторизованный" };
-    }
-
-    const dbUser = await getUserById(user.id as string);
-
-    if (!dbUser) {
-        return { error: "Неавторизованный" };
-    }
-
     if (!validateFields.success) {
         return { error: "Недопустимое поле!" };
     }
@@ -33,16 +23,28 @@ export const articleCreate = async (
     const dbArticle = await getArticleByName(name)
 
     if (dbArticle) {
-        return { error: "Статья расходов уже существует!" }
+        return { error: "Статья расходов уже существует!" };
     }
 
-    await db.article.create({
-        data: {
-            name
-        }
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/clause`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            name,
+            user
+        }),
     });
 
-    return { success: "Статья расходов добавлена" };
+    let result = await response.json();
+
+    if (response?.ok) {
+        return { success: result.message }
+    }
+
+    return { error: result.message };
 }
 
 export const artcleUpdate = async (

@@ -1,7 +1,9 @@
+"use client"
 import { AddAArticle } from "@/components/article/add-a-article";
 import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TableArticle } from "@/components/article/table-article";
 import { getArticles } from "@/data/article";
+import { useEffect, useState } from "react";
 
 const tableRows = [
     { name: "№", className: "w-[50px]" },
@@ -9,8 +11,23 @@ const tableRows = [
     { name: "", className: "w-[100px]" },
 ]
 
-const ArticlePage = async () => {
-    const articles = await getArticles();
+interface TableOfArticleProps {
+    id: string;
+    name: string;
+}
+
+const ArticlePage = () => {
+    const [articles, setArticles] = useState<TableOfArticleProps[]>([])
+
+    const fetchBooks = async () => {
+        const articles = await getArticles() as TableOfArticleProps[];
+        setArticles(articles)
+    }
+    useEffect(() => {
+        fetchBooks()
+    }, [])
+
+
     let count = 1;
 
     return (

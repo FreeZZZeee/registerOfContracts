@@ -6,7 +6,8 @@
 
 export const publicRoutes = [
    "/",
-   "/auth/new-verification"
+   "/auth/new-verification",
+   "/api/article"
 ];
 
 /**
@@ -21,6 +22,16 @@ export const authRoutes = [
    "/auth/error",
    "/auth/reset",
    "/auth/new-password"
+];
+
+/**
+ * The prefix for API routes
+   Routes that start with this prefix are used for API
+   @type { Array }
+*/
+
+export const apiPrefix = [
+   "/api/clause"
 ];
 
 /**

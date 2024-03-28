@@ -1,3 +1,4 @@
+import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 
 export const getArticleByName = async (name: string) => {
@@ -26,9 +27,19 @@ export const getArticleById = async (id: string) => {
 
 export const getArticles = async () => {
     try {
-        const article = await db.article.findMany();        
 
-        return article;
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/clause`, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        let result = await response.json();
+
+        if (response?.ok) {
+            return result
+        }
+
     } catch {
         return null;
     }
