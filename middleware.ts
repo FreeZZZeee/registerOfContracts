@@ -29,6 +29,7 @@ export default auth((req) => {
         }
         return;
     }
+    console.log(isApiRoute);
 
     if (isApiRoute) {
         return;

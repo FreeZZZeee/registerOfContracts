@@ -7,7 +7,8 @@ import { getUserById } from "@/data/user";
 import { currentUser } from "@/lib/auth";
 import { ArticleSchema } from "@/schemas/article.schema";
 import { getArticleById, getArticleByName } from "@/data/article";
-import axios from "axios";
+import { guideDelete } from "@/helpers/guide-delete";
+import { User } from "@/interfaces/user";
 
 export const articleCreate = async (
     values: z.infer<typeof ArticleSchema>
@@ -27,16 +28,25 @@ export const articleCreate = async (
         return { error: "Статья расходов уже существует!" };
     }
 
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/clause`, {
-        name,
-        user
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/clause`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            name,
+            user
+        }),
     });
 
-    if (response?.statusText === 'OK') {
-        return { success: response.data?.message }
+    let result = await response.json();
+
+    if (response?.ok) {
+        return { success: result.message }
     }
 
-    return { error: response.data?.message };
+    return { error: result.message };
 }
 
 export const artcleUpdate = async (
@@ -84,8 +94,8 @@ export const artcleUpdate = async (
     return { success: "Статья расходов добавлена!" };
 }
 
-export const articleDelete = async (id: string) => {
-    const user = await currentUser();
+export const guideDeleteAction = async (dbName: string, id: string) => {
+    const user: User = await currentUser() as User;
 
     if (!user) {
         return { error: "Неавторизованный" };
@@ -97,16 +107,9 @@ export const articleDelete = async (id: string) => {
         return { error: "Неавторизованный" };
     }
 
-    const dbArticle = await getArticleById(id);
+    const res = await guideDelete(dbName, id);
 
-    if (!dbArticle) {
-        return { error: "Статья расходов не существует!" }
-    }
+    if (!res.error) return { success: res.success };
 
-    await db.article.delete({
-        where: { id }
-    });
-
-
-    return { success: "Статья расходов удалена!" };
+    return { error: res.error };
 }

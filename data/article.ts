@@ -1,5 +1,6 @@
-import { currentUser } from "@/lib/auth";
+import { Referece } from "@/interfaces/references.interface";
 import { db } from "@/lib/db";
+import axios from "axios";
 
 export const getArticleByName = async (name: string) => {
     try {
@@ -27,19 +28,9 @@ export const getArticleById = async (id: string) => {
 
 export const getArticles = async () => {
     try {
+        const { data: clause } = await axios.get<Referece[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/clause`);
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/clause`, {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
-        let result = await response.json();
-
-        if (response?.ok) {
-            return result
-        }
-
+        return clause;
     } catch {
         return null;
     }
