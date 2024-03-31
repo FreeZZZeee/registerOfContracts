@@ -4,4 +4,5 @@ export interface GeneralTableInterface {
         id: string;
         name: string;
     }[];
+    dbName: string;
 };

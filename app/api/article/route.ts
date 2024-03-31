@@ -24,7 +24,7 @@ export async function POST(req: Request) {
         }
     });
 
-    return NextResponse.json({ message: "Статья расходов создана!" }, { status: 200 });
+    return NextResponse.json({ status: 200 });
 }
 
 export async function GET() {

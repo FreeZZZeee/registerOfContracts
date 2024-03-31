@@ -13,7 +13,8 @@ import { toast } from "sonner"
 
 export const GeneralTable = ({
     caprion,
-    dataDB
+    dataDB,
+    dbName
 }: GeneralTableInterface): JSX.Element => {
     let count = 1;
 
@@ -22,7 +23,7 @@ export const GeneralTable = ({
 
     const onDelete = (id: string) => {
         startTransition(() => {
-            guideDeleteAction("article", id)
+            guideDeleteAction(dbName, id)
                 .then((data) => {
                     if (data.error) {
                         toast.error(data.error);
@@ -39,7 +40,7 @@ export const GeneralTable = ({
 
     return (
         <Table>
-            <TableCaption>${caprion}</TableCaption>
+            <TableCaption>{caprion}</TableCaption>
             <TableHeader className="h-[80px]">
                 <TableRow>
                     {tableRows.map(tableRow => (

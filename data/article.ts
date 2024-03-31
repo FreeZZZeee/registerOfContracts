@@ -28,9 +28,9 @@ export const getArticleById = async (id: string) => {
 
 export const getArticles = async () => {
     try {
-        const { data: clause } = await axios.get<Referece[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/clause`);
+        const { data: article } = await axios.get<Referece[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/api/article`);
 
-        return clause;
+        return article;
     } catch {
         return null;
     }

@@ -5,6 +5,7 @@ import { TableArticle } from "@/components/article/table-article";
 import { getArticles } from "@/data/article";
 import { Referece } from "@/interfaces/references.interface";
 import { GeneralTable } from "../_components/table";
+import { CreateGuideForm } from "../_components/createForm";
 
 const tableRows = [
     { name: "№", className: "w-[50px]" },
@@ -20,10 +21,11 @@ const ArticlePage = async () => {
 
     return (
         <div className="bg-secondary rounded-xl w-1/2 flex flex-wrap items-center justify-between mx-auto p-4 shadow-sm">
-            <AddAArticle />
+            <CreateGuideForm />
             <GeneralTable
                 caprion="Статья расходов"
                 dataDB={articles}
+                dbName="article"
             />
             {/* <Table>
                 <TableCaption>Статья расходов</TableCaption>
