@@ -1,13 +1,11 @@
 "use server"
 
 import * as z from "zod";
+import axios from "axios";
 
-import { db } from "@/lib/db";
 import { getUserById } from "@/data/user";
 import { currentUser } from "@/lib/auth";
-import { getArticleById, getArticleByName } from "@/data/article";
 import { User } from "@/interfaces/user";
-import axios from "axios";
 import { GuideSchema } from "@/schemas/guide.schema";
 
 export const guideCreateAction = async (
@@ -23,10 +21,10 @@ export const guideCreateAction = async (
 
     const data = validateFields.data;
 
-    const dbArticle = await getArticleByName(data.name)
+    const guideFromDB = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}/guide/${data.name}`);
 
-    if (dbArticle) {
-        return { error: "Справочник уже существует!" };
+    if (guideFromDB.data) {
+        return { error: "Справочник уже существует!" }
     }
 
     const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}`, {
@@ -35,28 +33,19 @@ export const guideCreateAction = async (
     });
 
     if (res?.statusText === 'OK') {
-        return { success: "Справочник создан!" }
+        return { success: res.data?.message }
     }
 
     return { error: res.data?.message };
 }
 
-export const artcleUpdate = async (
+export const guideUpdateAction = async (
     values: z.infer<typeof GuideSchema>,
-    id: string
+    id: string,
+    dbName: string,
 ) => {
     const user = await currentUser();
     const validateFields = GuideSchema.safeParse(values);
-
-    if (!user) {
-        return { error: "Неавторизованный" };
-    }
-
-    const dbUser = await getUserById(user.id as string);
-
-    if (!dbUser) {
-        return { error: "Неавторизованный" };
-    }
 
     if (!validateFields.success) {
         return { error: "Недопустимое поле!" };
@@ -64,26 +53,28 @@ export const artcleUpdate = async (
 
     const { name } = validateFields.data;
 
-    const dbArticle = await getArticleByName(name)
-    const dbArticleById = await getArticleById(id);
+    const guideFromDB = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}/guide/${name}`);
+    const guideIDFromDB = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}/${id}`)
 
-    if (dbArticle) {
-        return { error: "Статья расходов уже существует!" }
+
+    if (guideFromDB.data) {
+        return { error: "Справочник уже существует!" }
     }
 
-    if (!dbArticleById) {
-        return { error: "Статья расходов не найдена!" }
+    if (!guideIDFromDB.data) {
+        return { error: "Справочник не существует!" }
     }
 
-    await db.article.update({
-        where: {
-            id: dbArticleById.id
-        },
-        data: { name }
-    });
+    const res = await axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}/${guideIDFromDB.data.id}`, {
+        name,
+        user
+    })
 
+    if (res?.statusText === 'OK') {
+        return { success: res.data?.message }
+    }
 
-    return { success: "Статья расходов добавлена!" };
+    return { error: res.data?.message };
 }
 
 export const guideDeleteAction = async (dbName: string, id: string) => {
@@ -99,9 +90,9 @@ export const guideDeleteAction = async (dbName: string, id: string) => {
         return { error: "Неавторизованный" };
     }
 
-    const dbArticle = await getArticleById(id);
+    const guideFromDB = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}/${id}`)
 
-    if (!dbArticle) {
+    if (!guideFromDB.data) {
         return { error: "Справочник не существует!" }
     }
 

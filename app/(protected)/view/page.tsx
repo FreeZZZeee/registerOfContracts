@@ -1,43 +1,20 @@
-import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { AddAView } from "@/components/view/add-a-view";
-import { TableView } from "@/components/view/table-type";
-import { getViews } from "@/data/view";
-
-const tableRows = [
-    { name: "№", className: "w-[50px]" },
-    { name: "Наименование", className: "" },
-    { name: "", className: "w-[100px]" },
-]
-
+import axios from "axios";
+import { CreateGuideForm } from "../_components/createForm";
+import { GeneralTable } from "../_components/table";
 const ViewPage = async () => {
-    const views = await getViews();
-    let count = 1;
+    const dbName: string = "view";
+    const { data: placement } = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}`);
 
     return (
         <div className="bg-secondary rounded-xl w-1/2 flex flex-wrap items-center justify-between mx-auto p-4 shadow-sm">
-            <AddAView />
-            <Table>
-                <TableCaption>Вид закупки</TableCaption>
-                <TableHeader className="h-[80px]">
-                    <TableRow>
-                        {tableRows.map(tableRow => (
-                            <TableHead key={tableRow.name} className={tableRow.className}>
-                                {tableRow.name}
-                            </TableHead>
-                        ))}
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {views?.map(view => (
-                        <TableView
-                            key={view.id}
-                            id={view.id}
-                            name={view.name}
-                            count={count++}
-                        />
-                    ))}
-                </TableBody>
-            </Table>
+            <CreateGuideForm
+                dbName={dbName}
+            />
+            <GeneralTable
+                caprion="Вид закупки"
+                dataDB={placement}
+                dbName={dbName}
+            />
         </div>
     );
 }

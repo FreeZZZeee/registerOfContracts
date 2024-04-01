@@ -11,14 +11,9 @@ import { db } from "@/lib/db";
 import { getUserById, getUserByName } from "@/data/user";
 import { currentUser } from "@/lib/auth";
 import { ContractSchema, SearchContractSchema } from "@/schemas/contract.schema";
-import { getPlacementByName } from "@/data/placement";
-import { getTypeByName } from "@/data/type";
-import { getFederalByName } from "@/data/federal";
-import { getViewByName } from "@/data/view";
-import { getArticleByName } from "@/data/article";
-import { getDivisionByName } from "@/data/division";
-import { getContractById, getContracts, getNewContracts } from "@/data/contract";
+import { getContractById, getNewContracts } from "@/data/contract";
 import { removeNull } from "@/helpers/remove-null";
+import axios from "axios";
 
 export const contractCreate = async (
     values: z.infer<typeof ContractSchema>,
@@ -74,19 +69,19 @@ export const contractCreate = async (
         return { error: "Файл не найден!" }
     }
 
-    const dbPlacement = await getPlacementByName(placementId as string);
-    const dbType = await getTypeByName(typeId as string);
-    const dbFederal = await getFederalByName(federalId as string);
-    const dbView = await getViewByName(viewId as string);
-    const dbArticle = await getArticleByName(articleId as string);
-    const dbDivision = await getDivisionByName(divisionId as string);
+    const dbPlacement = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/placement/${placementId}`);
+    const dbType = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/type/${typeId}`);
+    const dbFederal = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/federal/${federalId}`);
+    const dbView = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/view/${viewId}`);
+    const dbArticle = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/article/${articleId}`);
+    const dbDivision = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/division/${divisionId}`);
 
     const dbContract = await db.contract.findFirst({
         where: {
             contractNumber,
             startDateOfTheAgreement,
             provider,
-            divisionId: dbDivision?.id
+            divisionId: dbDivision.data.id
         }
     })
 
@@ -124,17 +119,17 @@ export const contractCreate = async (
     if (MP !== undefined
         && subcontractorMP !== undefined
         && transients !== undefined
-        && dbView?.id !== undefined
-        && dbPlacement?.id !== undefined
-        && dbType?.id !== undefined
-        && dbFederal?.id !== undefined
-        && dbArticle?.id !== undefined
-        && dbDivision?.id !== undefined) {
+        && dbView?.data.id !== undefined
+        && dbPlacement?.data.id !== undefined
+        && dbType?.data.id !== undefined
+        && dbFederal?.data.id !== undefined
+        && dbArticle?.data.id !== undefined
+        && dbDivision?.data.id !== undefined) {
         await db.contract.create({
             data: {
-                placementId: dbPlacement?.id,
-                typeId: dbType?.id,
-                federalId: dbFederal?.id,
+                placementId: dbPlacement?.data.id,
+                typeId: dbType?.data.id,
+                federalId: dbFederal?.data.id,
                 contractNumber,
                 startDateOfTheAgreement,
                 endDateOfTheContract,
@@ -145,9 +140,9 @@ export const contractCreate = async (
                 theAmountOfTheContract,
                 returnDate,
                 theAmountOfCollateral,
-                viewId: dbView?.id,
-                articleId: dbArticle?.id,
-                divisionId: dbDivision?.id,
+                viewId: dbView?.data.id,
+                articleId: dbArticle?.data.id,
+                divisionId: dbDivision?.data.id,
                 sourceOfFinancing,
                 additionalInformation,
                 MP,
@@ -236,12 +231,12 @@ export const contractUpdate = async (
         pdfFile
     } = validateFields.data;
 
-    const dbPlacement = await getPlacementByName(placementId as string);
-    const dbDivision = await getDivisionByName(divisionId as string);
-    const dbType = await getTypeByName(typeId as string);
-    const dbFederal = await getFederalByName(federalId as string);
-    const dbView = await getViewByName(viewId as string);
-    const dbArticle = await getArticleByName(articleId as string);
+    const dbPlacement = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/placement/${placementId}`);
+    const dbType = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/type/${typeId}`);
+    const dbFederal = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/federal/${federalId}`);
+    const dbView = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/view/${viewId}`);
+    const dbArticle = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/article/${articleId}`);
+    const dbDivision = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/division/${divisionId}`);
     const dbContractById = await getContractById(id);
 
 
@@ -289,9 +284,9 @@ export const contractUpdate = async (
             id: dbContractById.id
         },
         data: {
-            placementId: dbPlacement?.id,
-            typeId: dbType?.id,
-            federalId: dbFederal?.id,
+            placementId: dbPlacement?.data.id,
+            typeId: dbType?.data.id,
+            federalId: dbFederal?.data.id,
             contractNumber,
             startDateOfTheAgreement,
             endDateOfTheContract,
@@ -302,9 +297,9 @@ export const contractUpdate = async (
             theAmountOfTheContract,
             returnDate,
             theAmountOfCollateral,
-            viewId: dbView?.id,
-            articleId: dbArticle?.id,
-            divisionId: dbDivision?.id,
+            viewId: dbView?.data.id,
+            articleId: dbArticle?.data.id,
+            divisionId: dbDivision?.data.id,
             sourceOfFinancing,
             additionalInformation,
             MP,
@@ -366,34 +361,33 @@ export const contractSearch = async (
 
     let searchValues = removeNull(validateFields.data) as searchValuesParams;
 
-
     if (searchValues.userId) {
         const findUser = await getUserByName(searchValues.userId as string);
         searchValues.userId = findUser?.id as string;
     }
     if (searchValues.placementId) {
-        const placement = await getPlacementByName(searchValues.placementId as string);
-        searchValues.placementId = placement?.id as string;
+        const placement = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/placement/guide/${searchValues.placementId}`);
+        searchValues.placementId = placement?.data.id as string;
     }
     if (searchValues.typeId) {
-        const dbType = await getTypeByName(searchValues.typeId as string);
-        searchValues.typeId = dbType?.id as string;
+        const dbType = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/type/guide/${searchValues.typeId}`);
+        searchValues.typeId = dbType?.data.id as string;
     }
     if (searchValues.federalId) {
-        const dbFederal = await getFederalByName(searchValues.federalId as string);
-        searchValues.federalId = dbFederal?.id as string;
+        const dbFederal = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/federal/guide/${searchValues.federalId}`);
+        searchValues.federalId = dbFederal?.data.id as string;
     }
     if (searchValues.viewId) {
-        const dbView = await getViewByName(searchValues.viewId as string);
-        searchValues.viewId = dbView?.id as string;
+        const dbView = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/view/guide/${searchValues.viewId}`);
+        searchValues.viewId = dbView?.data.id as string;
     }
     if (searchValues.articleId) {
-        const dbArticle = await getArticleByName(searchValues.articleId as string);
-        searchValues.articleId = dbArticle?.id as string;
+        const dbArticle = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/article/guide/${searchValues.articleId}`);
+        searchValues.articleId = dbArticle?.data.id as string;
     }
     if (searchValues.divisionId) {
-        const dbDivision = await getDivisionByName(searchValues.divisionId as string);
-        searchValues.divisionId = dbDivision?.id as string;
+        const dbDivision = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/division/guide/${searchValues.divisionId}`);
+        searchValues.divisionId = dbDivision?.data.id as string;
     }
 
     const dbContracts = await db.contract.findMany({

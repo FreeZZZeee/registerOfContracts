@@ -22,29 +22,40 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form"
-import { useEffect, useState, useTransition } from "react"
+import { useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
+import { FaRegEdit } from "react-icons/fa";
 import { ArticleSchema } from "@/schemas/article.schema";
 import { useRouter } from "next/navigation";
-import { guideCreateAction } from "@/actions/guide";
+import { guideUpdateAction } from "@/actions/guide";
+
+interface EditGuidProps {
+    id: string;
+    name: string;
+    dbName: string
+}
 
 
-export const CreateGuideForm = ({ dbName }: { dbName: string }) => {
-    const [value, setValues] = useState<string>();
+export const UpdateGuideForm = ({
+    id,
+    name,
+    dbName
+}: EditGuidProps) => {
+    const [open, setOpen] = useState<boolean>(false);
     const [isPending, startTransition] = useTransition();
-    const [open, setOpen] = useState(false);
+
     const router = useRouter();
 
     const form = useForm<z.infer<typeof ArticleSchema>>({
         resolver: zodResolver(ArticleSchema),
         defaultValues: {
-            name: "",
+            name: name || undefined
         }
     });
 
     const onSubmit = (values: z.infer<typeof ArticleSchema>) => {
         startTransition(() => {
-            guideCreateAction(values, dbName)
+            guideUpdateAction(values, id, dbName)
                 .then((data) => {
                     if (data.error) {
                         toast.error(data.error);
@@ -59,17 +70,10 @@ export const CreateGuideForm = ({ dbName }: { dbName: string }) => {
                 .catch(() => toast.error("Что-то пошло не так!"));
         });
     }
-
-    useEffect(() => {
-        if (value) {
-            setValues("");
-        }
-    }, [value])
-
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">Добавить</Button>
+                <Button variant="outline" className="w-[50px]"><FaRegEdit className="w-full" /></Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
@@ -89,7 +93,6 @@ export const CreateGuideForm = ({ dbName }: { dbName: string }) => {
                                     <FormControl>
                                         <Input
                                             {...field}
-                                            value={value}
                                             placeholder="Наименование"
                                             disabled={isPending}
                                             type="text"

@@ -32,6 +32,17 @@ export const authRoutes = [
 
 export const apiPrefix = [
    "/api/article",
+   "/api/article/guide",
+   "/api/division",
+   "/api/division/guide",
+   "/api/federal",
+   "/api/federal/guide",
+   "/api/placement",
+   "/api/placement/guide",
+   "/api/type",
+   "/api/type/guide",
+   "/api/view",
+   "/api/view/guide",
 ];
 
 /**

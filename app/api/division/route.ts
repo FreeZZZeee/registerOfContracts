@@ -18,7 +18,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ message: "Неавторизованный!" }, { status: 401 });
     }
 
-    await db.article.create({
+    await db.division.create({
         data: {
             name
         }
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
 
 export async function GET() {
 
-    const article = await db.article.findMany();
+    const division = await db.division.findMany();
 
-    return NextResponse.json(article);
+    return NextResponse.json(division);
 }

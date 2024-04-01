@@ -4,14 +4,14 @@ import { getUserById } from "@/data/user";
 
 export async function DELETE(req: NextResponse, { params }: { params: { id: string } }) {
 
-    await db.article.delete({ where: { id: params.id } });
+    await db.federal.delete({ where: { id: params.id } });
 
     return NextResponse.json({ message: "Справочник удалён!" }, { status: 200 });
 }
 
 export async function GET(req: NextResponse, { params }: { params: { id: string } }) {
     try {
-        const article = await db.article.findUnique({
+        const article = await db.federal.findUnique({
             where: { id: params.id }
         });
 
@@ -37,7 +37,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
         return NextResponse.json({ message: "Неавторизованный!" }, { status: 401 });
     }
 
-    await db.article.update({
+    await db.federal.update({
         where: {
             id: params.id
         },

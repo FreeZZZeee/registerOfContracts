@@ -1,7 +1,6 @@
 "use client"
 
 import { TiDelete } from "react-icons/ti"
-import { EditArticle } from "@/components/article/edit-article"
 import { Button } from "@/components//ui/button"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { tableRows } from "@/data/tableRows"
@@ -10,6 +9,7 @@ import { useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { guideDeleteAction } from "@/actions/guide"
 import { toast } from "sonner"
+import { UpdateGuideForm } from "./updateForm"
 
 export const GeneralTable = ({
     caprion,
@@ -53,12 +53,13 @@ export const GeneralTable = ({
             <TableBody>
                 {dataDB?.map(data => (
                     <TableRow key={data.id}>
-                        <TableCell className="font-medium">{count}</TableCell>
+                        <TableCell className="font-medium">{count++}</TableCell>
                         <TableCell>{data.name}</TableCell>
                         <TableCell className="flex flex-row gap-x-1">
-                            <EditArticle
+                            <UpdateGuideForm
                                 id={data.id}
                                 name={data.name}
+                                dbName={dbName}
                             />
                             <Button
                                 onClick={() => onDelete(data.id)}
