@@ -25,9 +25,9 @@ import {
 import { useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { FaRegEdit } from "react-icons/fa";
-import { ArticleSchema } from "@/schemas/article.schema";
 import { useRouter } from "next/navigation";
 import { guideUpdateAction } from "@/actions/guide";
+import { GuideSchema } from "@/schemas/guide.schema";
 
 interface EditGuidProps {
     id: string;
@@ -46,14 +46,14 @@ export const UpdateGuideForm = ({
 
     const router = useRouter();
 
-    const form = useForm<z.infer<typeof ArticleSchema>>({
-        resolver: zodResolver(ArticleSchema),
+    const form = useForm<z.infer<typeof GuideSchema>>({
+        resolver: zodResolver(GuideSchema),
         defaultValues: {
             name: name || undefined
         }
     });
 
-    const onSubmit = (values: z.infer<typeof ArticleSchema>) => {
+    const onSubmit = (values: z.infer<typeof GuideSchema>) => {
         startTransition(() => {
             guideUpdateAction(values, id, dbName)
                 .then((data) => {

@@ -43,6 +43,8 @@ export const apiPrefix = [
    "/api/type/guide",
    "/api/view",
    "/api/view/guide",
+   "/api/contract",
+   "/api/contract/guide",
 ];
 
 /**

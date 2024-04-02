@@ -24,9 +24,9 @@ import {
 } from "@/components/ui/form"
 import { useEffect, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
-import { ArticleSchema } from "@/schemas/article.schema";
 import { useRouter } from "next/navigation";
 import { guideCreateAction } from "@/actions/guide";
+import { GuideSchema } from "@/schemas/guide.schema";
 
 
 export const CreateGuideForm = ({ dbName }: { dbName: string }) => {
@@ -35,14 +35,14 @@ export const CreateGuideForm = ({ dbName }: { dbName: string }) => {
     const [open, setOpen] = useState(false);
     const router = useRouter();
 
-    const form = useForm<z.infer<typeof ArticleSchema>>({
-        resolver: zodResolver(ArticleSchema),
+    const form = useForm<z.infer<typeof GuideSchema>>({
+        resolver: zodResolver(GuideSchema),
         defaultValues: {
             name: "",
         }
     });
 
-    const onSubmit = (values: z.infer<typeof ArticleSchema>) => {
+    const onSubmit = (values: z.infer<typeof GuideSchema>) => {
         startTransition(() => {
             guideCreateAction(values, dbName)
                 .then((data) => {

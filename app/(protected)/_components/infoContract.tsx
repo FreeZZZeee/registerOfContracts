@@ -12,7 +12,7 @@ import {
     DialogClose
 } from "@/components/ui/dialog"
 import { FcInfo } from "react-icons/fc";
-import { ScrollArea } from "../ui/scroll-area";
+import { ScrollArea } from "../../../components/ui/scroll-area";
 import Link from "next/link";
 
 type valuesParamPropsArr = {

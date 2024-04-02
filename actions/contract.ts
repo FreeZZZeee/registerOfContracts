@@ -20,141 +20,31 @@ export const contractCreate = async (
     form: FormData
 ) => {
     values.pdfFile = form.get('pdfFile') as File;
+    if (typeof values.pdfFile === 'string') values.pdfFile = null;
 
     const user = await currentUser();
     const validateFields = ContractSchema.safeParse(values);
-
-    if (!user) {
-        return { error: "Неавторизованный" };
-    }
-
-    const dbUser = await getUserById(user.id as string);
-
-    if (!dbUser) {
-        return { error: "Неавторизованный" };
-    }
 
     if (!validateFields.success) {
         return { error: "Недопустимые поля!" };
     }
 
-    const {
-        placementId,
-        typeId,
-        federalId,
-        contractNumber,
-        startDateOfTheAgreement,
-        endDateOfTheContract,
-        provider,
-        theSubjectOfTheAgreement,
-        actuallyPaidFor,
-        theAmountOfTheContract,
-        returnDate,
-        theAmountOfCollateral,
-        viewId,
-        articleId,
-        divisionId,
-        sourceOfFinancing,
-        MP,
-        subcontractorMP,
-        transients,
-        additionalInformation,
-        contractColor,
-        pdfFile
-    } = values;
+    const data = validateFields.data;
 
-    const file: File | null = pdfFile as unknown as File
+    console.log(data);
 
-    if (!file) {
-        return { error: "Файл не найден!" }
+
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/contract`, {
+        data,
+        user
+    });
+
+    if (res?.statusText === 'OK') {
+        return { success: res.data?.message }
     }
 
-    const dbPlacement = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/placement/${placementId}`);
-    const dbType = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/type/${typeId}`);
-    const dbFederal = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/federal/${federalId}`);
-    const dbView = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/view/${viewId}`);
-    const dbArticle = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/article/${articleId}`);
-    const dbDivision = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/division/${divisionId}`);
+    return { error: res.data?.message };
 
-    const dbContract = await db.contract.findFirst({
-        where: {
-            contractNumber,
-            startDateOfTheAgreement,
-            provider,
-            divisionId: dbDivision.data.id
-        }
-    })
-
-    if (dbContract) {
-        return { error: "Контракт уже существует!" }
-    }
-
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const relativeUploadDir = `/uploads/${dateFn.format(Date.now(), "d-MM-yy")}`;
-    const uploadDir = join(process.cwd(), "public", relativeUploadDir);
-    const uniqueSuffix = uuidv4();
-    const filename = `${uniqueSuffix}.${mime.getExtension(file.type)}`;
-
-    try {
-        await stat(uploadDir);
-    } catch (e: any) {
-        if (e.code === "ENOENT") {
-            await mkdir(uploadDir, { recursive: true });
-        } else {
-            console.error(
-                "Ошибка при попытке создать каталог при загрузке файла\n",
-                e
-            );
-            return { error: "Что-то пошло не так!" }
-        }
-    }
-
-    try {
-        await writeFile(`${uploadDir}/${filename}`, buffer);
-    } catch (e) {
-        console.error("Ошибка при попытке загрузить файл\n", e);
-        return { error: "Что-то пошло не так!" }
-    }
-
-    if (MP !== undefined
-        && subcontractorMP !== undefined
-        && transients !== undefined
-        && dbView?.data.id !== undefined
-        && dbPlacement?.data.id !== undefined
-        && dbType?.data.id !== undefined
-        && dbFederal?.data.id !== undefined
-        && dbArticle?.data.id !== undefined
-        && dbDivision?.data.id !== undefined) {
-        await db.contract.create({
-            data: {
-                placementId: dbPlacement?.data.id,
-                typeId: dbType?.data.id,
-                federalId: dbFederal?.data.id,
-                contractNumber,
-                startDateOfTheAgreement,
-                endDateOfTheContract,
-                provider,
-                contractColor,
-                theSubjectOfTheAgreement,
-                actuallyPaidFor,
-                theAmountOfTheContract,
-                returnDate,
-                theAmountOfCollateral,
-                viewId: dbView?.data.id,
-                articleId: dbArticle?.data.id,
-                divisionId: dbDivision?.data.id,
-                sourceOfFinancing,
-                additionalInformation,
-                MP,
-                subcontractorMP,
-                transients,
-                userId: user?.id as string,
-                pdfFile: `${relativeUploadDir}/${filename}`
-            }
-        });
-
-    }
-    return { success: "Договор добавлен" };
 }
 
 export const contractDelete = async (id: string) => {

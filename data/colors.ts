@@ -1,0 +1,17 @@
+export const colors = [
+    { color: "bg-yellow-950" },
+    { color: "bg-red-600" },
+    { color: "bg-orange-700" },
+    { color: "bg-yellow-600" },
+    { color: "bg-amber-500" },
+    { color: "bg-lime-400" },
+    { color: "bg-blue-700" },
+    { color: "bg-lime-800" },
+    { color: "bg-indigo-300" },
+    { color: "bg-indigo-600" },
+    { color: "bg-blue-400" },
+    { color: "bg-cyan-500" },
+    { color: "bg-blue-800" },
+    { color: "bg-blue-900" },
+    { color: "bg-fuchsia-700" },
+]

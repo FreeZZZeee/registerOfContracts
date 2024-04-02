@@ -1,11 +1,6 @@
 import { db } from "@/lib/db";
-import { getPlacementById } from "./placement";
-import { getDivisionById } from "./division";
+import axios from "axios";
 import { getUserById } from "./user";
-import { getViewById } from "./view";
-import { getArticleById } from "./article";
-import { getFederalById } from "./federal";
-import { getTypeById } from "./type";
 
 export const getContractById = async (id: string) => {
     try {
@@ -57,23 +52,23 @@ interface ContractParam {
 
 export const getNewContracts = async (contracts: ContractParam[]) => {
     const newContrats = await Promise.all(contracts?.map(async (contract) => {
-        const placement = await getPlacementById(contract.placementId as string);
-        const division = await getDivisionById(contract.divisionId as string);
+        const placement = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/placement/${contract.placementId}`);
+        const division = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/division/${contract.divisionId}`);
         const executor = await getUserById(contract.userId as string);
-        const view = await getViewById(contract.viewId as string);
-        const article = await getArticleById(contract.articleId as string);
-        const federal = await getFederalById(contract.federalId as string);
-        const type = await getTypeById(contract.typeId as string);
+        const view = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/view/${contract.viewId}`);
+        const article = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/article/${contract.articleId}`);
+        const federal = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/federal/${contract.federalId}`);
+        const type = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/type/${contract.typeId}`);
 
         return {
             ...contract,
-            placementId: placement?.name as string,
-            divisionId: division?.name as string,
+            placementId: placement?.data ? placement?.data.name : null,
+            divisionId: division?.data.name as string,
             userId: executor?.name as string,
-            viewId: view?.name as string,
-            articleId: article?.name as string,
-            federalId: federal?.name as string,
-            typeId: type?.name as string
+            viewId: view?.data.name as string,
+            articleId: article?.data.name as string,
+            federalId: federal?.data ? federal.data.name : null,
+            typeId: type?.data ? type.data.name : null
         }
     }))
 

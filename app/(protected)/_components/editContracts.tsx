@@ -2,13 +2,6 @@
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RiDeleteBin2Fill } from "react-icons/ri";
-import { FaRegFilePdf } from "react-icons/fa";
-import { useRouter } from "next/navigation";
-import { IoCloudUploadOutline } from "react-icons/io5";
-import Link from "next/link";
-import { ChangeEvent, useEffect, useState, useTransition } from "react"
-import { useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -29,95 +22,102 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form"
+import { ChangeEvent, useState, useTransition } from "react"
+import { useForm } from "react-hook-form"
+import { useRouter } from "next/navigation";
+import { Textarea } from "../../../components/ui/textarea";
+import { Switch } from "../../../components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
+import { ScrollArea } from "../../../components/ui/scroll-area";
 import { ContractSchema } from "@/schemas/contract.schema";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
-import { contractCreate } from "@/actions/contract";
+import { contractUpdate } from "@/actions/contract";
+import { FaRegEdit, FaRegFilePdf } from "react-icons/fa";
+import { IoCloudUploadOutline } from "react-icons/io5";
+import Link from "next/link";
+import { RiDeleteBin2Fill } from "react-icons/ri";
+import { formParams } from "@/data/form-params"
+import { valuesParamPropsArr } from "@/interfaces/editContract.interface";
 
 
-
-interface valuesParamProps {
-    name: string;
-    label: string;
-    type: string;
-}
-
-interface selectParam {
-    name: string;
-}
-
-interface colorParam {
-    color: string;
-}
-
-type valuesParamPropsArr = {
-    valuesParam: valuesParamProps[]
-    placements: selectParam[]
-    types: selectParam[]
-    federals: selectParam[]
-    views: selectParam[]
-    articles: selectParam[]
-    divisions: selectParam[]
-    colors: colorParam[]
-}
-
-export const AddAContract = ({
-    valuesParam,
+export const EditContract = ({
+    id,
+    placementId,
+    typeId,
+    federalId,
+    contractNumber,
+    startDateOfTheAgreement,
+    endDateOfTheContract,
+    provider,
+    theSubjectOfTheAgreement,
+    actuallyPaidFor,
+    theAmountOfTheContract,
+    returnDate,
+    theAmountOfCollateral,
+    viewId,
+    articleId,
+    divisionId,
+    sourceOfFinancing,
+    MP,
+    subcontractorMP,
+    transients,
+    additionalInformation,
+    contractColor,
+    pdfFile,
     placements,
     types,
     federals,
     views,
     articles,
     divisions,
-    colors
+    colors,
 }: valuesParamPropsArr) => {
-    const [values, setValues] = useState<string>();
-    const [color, setColor] = useState<string>();
-    const [open, setOpen] = useState(false);
-    const [pdf, setPdf] = useState<string>();
-
+    const [open, setOpen] = useState<boolean>(false);
+    const [color, setColor] = useState<string>(contractColor);
     const [isPending, startTransition] = useTransition();
+    const [pdf, setPdf] = useState<string>(pdfFile as string);
+
     const router = useRouter();
 
     const form = useForm<z.infer<typeof ContractSchema>>({
         resolver: zodResolver(ContractSchema),
         defaultValues: {
-            placementId: "",
-            typeId: "",
-            federalId: "",
-            contractNumber: "",
-            startDateOfTheAgreement: "",
-            endDateOfTheContract: "",
-            provider: "",
-            theSubjectOfTheAgreement: "",
-            actuallyPaidFor: "",
-            theAmountOfTheContract: "",
-            returnDate: "",
-            theAmountOfCollateral: "",
-            viewId: "",
-            articleId: "",
-            divisionId: "",
-            sourceOfFinancing: "",
-            MP: false,
-            subcontractorMP: false,
-            transients: false,
-            additionalInformation: "",
-            contractColor: "",
+            placementId: placementId || undefined,
+            typeId: typeId || undefined,
+            federalId: federalId || undefined,
+            contractNumber: contractNumber || undefined,
+            startDateOfTheAgreement: startDateOfTheAgreement || undefined,
+            endDateOfTheContract: endDateOfTheContract || undefined,
+            provider: provider || undefined,
+            theSubjectOfTheAgreement: theSubjectOfTheAgreement || undefined,
+            actuallyPaidFor: actuallyPaidFor || undefined,
+            theAmountOfTheContract: theAmountOfTheContract || undefined,
+            returnDate: returnDate || undefined,
+            theAmountOfCollateral: theAmountOfCollateral || undefined,
+            viewId: viewId || undefined,
+            articleId: articleId || undefined,
+            divisionId: divisionId || undefined,
+            sourceOfFinancing: sourceOfFinancing || undefined,
+            MP: MP || undefined,
+            subcontractorMP: subcontractorMP || undefined,
+            transients: transients || undefined,
+            additionalInformation: additionalInformation || undefined,
+            contractColor: contractColor || undefined
         }
     });
-
 
     const onSubmit = (values: z.infer<typeof ContractSchema>) => {
         values.contractColor = color;
 
-        const formData = new FormData();
-        formData.append('pdfFile', values.pdfFile as File);
-        values.pdfFile = {} as File;
+        let formData: FormData;
+        if (values?.pdfFile !== undefined) {
+            formData = new FormData();
+            formData.append('pdfFile', values.pdfFile as File);
+            values.pdfFile = {} as File;
+        }
+
 
         startTransition(() => {
-            contractCreate(values, formData)
+            contractUpdate(values, id, formData)
                 .then((data) => {
                     if (data.error) {
                         toast.error(data.error);
@@ -136,21 +136,14 @@ export const AddAContract = ({
     const deletePreview = () => {
         setPdf('');
     }
-
-    useEffect(() => {
-        if (values) {
-            setValues("");
-        }
-    }, [values])
-
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">Добавить договор</Button>
+                <Button variant="outline" className="w-[50px] p-2"><FaRegEdit className="!w-full !h-full" /></Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[1000px]">
                 <DialogHeader>
-                    <DialogTitle>Добавить</DialogTitle>
+                    <DialogTitle>Редактировать</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form
@@ -159,22 +152,21 @@ export const AddAContract = ({
                     >
                         <ScrollArea className="h-[600px] w-full rounded-md border p-4">
                             <div className="flex flex-col flex-wrap gap-2">
-                                {valuesParam.map(valueParam => (
-                                    <div className="w-auto" key={valueParam.name}>
-                                        {valueParam.type === "text" && (
+                                {formParams.map(formParam => (
+                                    <div className="w-auto" key={formParam.name}>
+                                        {formParam.type === "text" && (
                                             <FormField
                                                 control={form.control}
-                                                name={valueParam.name as any}
+                                                name={formParam.name as any}
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>{valueParam.label}</FormLabel>
+                                                        <FormLabel>{formParam.label}</FormLabel>
                                                         <FormControl>
                                                             <Input
                                                                 {...field}
-                                                                value={values}
-                                                                placeholder={valueParam.label}
+                                                                placeholder={formParam.label}
                                                                 disabled={isPending}
-                                                                type={valueParam.type}
+                                                                type={formParam.type}
                                                             />
                                                         </FormControl>
                                                         <FormMessage />
@@ -183,20 +175,19 @@ export const AddAContract = ({
                                             />
                                         )}
 
-                                        {valueParam.type === "date" && (
+                                        {formParam.type === "date" && (
                                             <FormField
                                                 control={form.control}
-                                                name={valueParam.name as any}
+                                                name={formParam.name as any}
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>{valueParam.label}</FormLabel>
+                                                        <FormLabel>{formParam.label}</FormLabel>
                                                         <FormControl className="w-[200px]">
                                                             <Input
                                                                 {...field}
-                                                                value={values}
-                                                                placeholder={valueParam.label}
+                                                                placeholder={formParam.label}
                                                                 disabled={isPending}
-                                                                type={valueParam.type}
+                                                                type={formParam.type}
                                                             />
                                                         </FormControl>
                                                         <FormMessage />
@@ -205,27 +196,28 @@ export const AddAContract = ({
                                             />
                                         )}
 
-                                        {valueParam.type === "select" && (
+                                        {formParam.type === "select" && (
                                             <FormField
                                                 control={form.control}
-                                                name={valueParam.name as any}
+                                                name={formParam.name as any}
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>{valueParam.label}</FormLabel>
-                                                        {valueParam.name === "placementId" && (
+                                                        <FormLabel>{formParam.label}</FormLabel>
+                                                        {formParam.name === "placementId" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
+                                                                defaultValue={field.value}
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
                                                                         <SelectValue
-                                                                            placeholder={valueParam.label}
+                                                                            placeholder={formParam.label}
                                                                         />
                                                                     </SelectTrigger>
                                                                 </FormControl>
                                                                 <SelectContent>
-                                                                    {placements && placements.map(placement => (
+                                                                    {placements.map(placement => (
                                                                         <SelectItem value={placement.name} key={placement.name}>
                                                                             {placement.name}
                                                                         </SelectItem>
@@ -233,20 +225,21 @@ export const AddAContract = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {valueParam.name === "typeId" && (
+                                                        {formParam.name === "typeId" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
+                                                                defaultValue={field.value}
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
                                                                         <SelectValue
-                                                                            placeholder={valueParam.label}
+                                                                            placeholder={formParam.label}
                                                                         />
                                                                     </SelectTrigger>
                                                                 </FormControl>
                                                                 <SelectContent>
-                                                                    {types && types.map(type => (
+                                                                    {types.map(type => (
                                                                         <SelectItem value={type.name} key={type.name}>
                                                                             {type.name}
                                                                         </SelectItem>
@@ -254,20 +247,21 @@ export const AddAContract = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {valueParam.name === "federalId" && (
+                                                        {formParam.name === "federalId" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
+                                                                defaultValue={field.value}
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
                                                                         <SelectValue
-                                                                            placeholder={valueParam.label}
+                                                                            placeholder={formParam.label}
                                                                         />
                                                                     </SelectTrigger>
                                                                 </FormControl>
                                                                 <SelectContent>
-                                                                    {federals && federals.map(federal => (
+                                                                    {federals.map(federal => (
                                                                         <SelectItem value={federal.name} key={federal.name}>
                                                                             {federal.name}
                                                                         </SelectItem>
@@ -275,10 +269,11 @@ export const AddAContract = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {valueParam.name === "contractColor" && (
+                                                        {formParam.name === "contractColor" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={(value) => setColor(value)}
+                                                                defaultValue={field.value}
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger className={`${color} w-[250px]`}>
@@ -298,20 +293,21 @@ export const AddAContract = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {valueParam.name === "viewId" && (
+                                                        {formParam.name === "viewId" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
+                                                                defaultValue={field.value}
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
                                                                         <SelectValue
-                                                                            placeholder={valueParam.label}
+                                                                            placeholder={formParam.label}
                                                                         />
                                                                     </SelectTrigger>
                                                                 </FormControl>
                                                                 <SelectContent>
-                                                                    {views && views.map(view => (
+                                                                    {views.map(view => (
                                                                         <SelectItem value={view.name} key={view.name}>
                                                                             {view.name}
                                                                         </SelectItem>
@@ -319,20 +315,21 @@ export const AddAContract = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {valueParam.name === "articleId" && (
+                                                        {formParam.name === "articleId" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
+                                                                defaultValue={field.value}
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
                                                                         <SelectValue
-                                                                            placeholder={valueParam.label}
+                                                                            placeholder={formParam.label}
                                                                         />
                                                                     </SelectTrigger>
                                                                 </FormControl>
                                                                 <SelectContent>
-                                                                    {articles && articles.map(article => (
+                                                                    {articles.map(article => (
                                                                         <SelectItem value={article.name} key={article.name}>
                                                                             {article.name}
                                                                         </SelectItem>
@@ -340,20 +337,21 @@ export const AddAContract = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {valueParam.name === "divisionId" && (
+                                                        {formParam.name === "divisionId" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
+                                                                defaultValue={field.value}
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
                                                                         <SelectValue
-                                                                            placeholder={valueParam.label}
+                                                                            placeholder={formParam.label}
                                                                         />
                                                                     </SelectTrigger>
                                                                 </FormControl>
                                                                 <SelectContent>
-                                                                    {divisions && divisions.map(division => (
+                                                                    {divisions.map(division => (
                                                                         <SelectItem value={division.name} key={division.name}>
                                                                             {division.name}
                                                                         </SelectItem>
@@ -367,20 +365,21 @@ export const AddAContract = ({
                                             />
                                         )}
 
-                                        {valueParam.type === "bool" && (
+                                        {formParam.type === "bool" && (
                                             <FormField
                                                 control={form.control}
-                                                name={valueParam.name as any}
+                                                name={formParam.name as any}
                                                 render={({ field }) => (
                                                     <FormItem className="flex flex-row items-center justify-between
                                     rounded-lg border p-3 shadow-sm w-[250px]">
                                                         <div className="space-y-0.5">
-                                                            <FormLabel>{valueParam.label}</FormLabel>
+                                                            <FormLabel>{formParam.label}</FormLabel>
                                                         </div>
                                                         <FormControl>
                                                             <Switch
                                                                 disabled={isPending}
                                                                 onCheckedChange={field.onChange}
+                                                                checked={field.value}
                                                             />
                                                         </FormControl>
                                                     </FormItem>
@@ -388,13 +387,13 @@ export const AddAContract = ({
                                             />
                                         )}
 
-                                        {valueParam.type === "textArea" && (
+                                        {formParam.type === "textArea" && (
                                             <FormField
                                                 control={form.control}
-                                                name={valueParam.name as any}
+                                                name={formParam.name as any}
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>{valueParam.label}</FormLabel>
+                                                        <FormLabel>{formParam.label}</FormLabel>
                                                         <FormControl>
                                                             <Textarea
                                                                 placeholder="Дополнительная информация" id="message-2"
@@ -407,11 +406,10 @@ export const AddAContract = ({
                                                 )}
                                             />
                                         )}
-
-                                        {valueParam.type === "file" && (
+                                        {formParam.type === "file" && (
                                             <FormField
                                                 control={form.control}
-                                                name={valueParam.name as any}
+                                                name={formParam.name as any}
                                                 render={({ field: { value, onChange, ...field } }) => (
                                                     <div className="max-w-xl">
                                                         {pdf ? (
@@ -422,9 +420,6 @@ export const AddAContract = ({
                                                                         href="#"
                                                                         onClick={() => deletePreview()}><RiDeleteBin2Fill className="w-[30px] h-[30px] text-red-500 text-center" /></Link>
                                                                 </div>
-                                                                <span className="font-medium text-gray-600">
-                                                                    {pdf}
-                                                                </span>
                                                             </>
                                                         ) : (
                                                             <label
@@ -439,14 +434,14 @@ export const AddAContract = ({
                                                                 <Input
                                                                     {...field}
                                                                     value={value?.fileName}
-                                                                    placeholder={valueParam.label}
+                                                                    placeholder={formParam.label}
                                                                     disabled={isPending}
-                                                                    type={valueParam.type}
+                                                                    type={formParam.type}
                                                                     onChange={(event: ChangeEvent<HTMLInputElement>) => {
 
                                                                         const sellectFile = event.target.files ? event.target.files[0] : null;
-                                                                        setPdf(sellectFile?.name)
-                                                                        onChange(sellectFile);
+                                                                        setPdf(sellectFile?.name as string)
+                                                                        onChange(sellectFile as File | null);
                                                                     }}
                                                                     className="hidden"
                                                                 />

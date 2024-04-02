@@ -35,7 +35,7 @@ export const ContractSchema = z.object({
         }, 'Размер файла должен быть меньше 10 МБ')
         .refine((file) => {
             return ACCEPTED_FILE_TYPES.includes(file?.type as string);
-        }, 'Файл должен быть в формате PDF')),
+        }, 'Файл должен быть в формате PDF')).nullable(),
     theSubjectOfTheAgreement: z.string().min(1, {
         message: "Обязательно к заполнению"
     }),
