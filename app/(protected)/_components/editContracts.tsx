@@ -115,7 +115,6 @@ export const EditContract = ({
             values.pdfFile = {} as File;
         }
 
-
         startTransition(() => {
             contractUpdate(values, id, formData)
                 .then((data) => {

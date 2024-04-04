@@ -1,17 +1,12 @@
 import { NextResponse } from "next/server";
-import { stat, mkdir, writeFile } from 'fs/promises'
-import { v4 as uuidv4 } from 'uuid';
-import { join } from "path";
-import * as dateFn from "date-fns";
-import mime from "mime";
 import { db } from "@/lib/db";
 import { getUserById } from "@/data/user";
-import { getPlacementById } from "@/data/placement";
-import { getDivisionById } from "@/data/division";
-import { getViewById } from "@/data/view";
-import { getArticleById } from "@/data/article";
-import { getFederalById } from "@/data/federal";
-import { getTypeById } from "@/data/type";
+import { getPlacementById, getPlacementByName } from "@/data/placement";
+import { getDivisionById, getDivisionByName } from "@/data/division";
+import { getViewById, getViewByName } from "@/data/view";
+import { getArticleById, getArticleByName } from "@/data/article";
+import { getFederalById, getFederalByName } from "@/data/federal";
+import { getTypeById, getTypeByName } from "@/data/type";
 
 export async function POST(req: Request) {
     const {
@@ -54,47 +49,12 @@ export async function POST(req: Request) {
         pdfFile
     } = data;
 
-    const file: File | null = pdfFile as unknown as File
-
-    let filePath: string = "";
-
-    if (file) {
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const relativeUploadDir = `/uploads/${dateFn.format(Date.now(), "d-MM-yy")}`;
-        const uploadDir = join(process.cwd(), "public", relativeUploadDir);
-        const uniqueSuffix = uuidv4();
-        const filename = `${uniqueSuffix}.${mime.getExtension(file.type)}`;
-
-        filePath = `${relativeUploadDir}/${filename}`
-
-        try {
-            await stat(uploadDir);
-        } catch (e: any) {
-            if (e.code === "ENOENT") {
-                await mkdir(uploadDir, { recursive: true });
-            } else {
-                console.error(
-                    "Ошибка при попытке создать каталог при загрузке файла\n",
-                    e
-                );
-                return { error: "Что-то пошло не так!" }
-            }
-        }
-
-        try {
-            await writeFile(`${uploadDir}/${filename}`, buffer);
-        } catch (e) {
-            console.error("Ошибка при попытке загрузить файл\n", e);
-            return { error: "Что-то пошло не так!" }
-        }
-    }
-
-    const dbPlacement = await getPlacementById(placementId);
-    const dbType = await getTypeById(typeId);
-    const dbFederal = await getFederalById(federalId);
-    const dbView = await getViewById(viewId);
-    const dbArticle = await getArticleById(articleId);
-    const dbDivision = await getDivisionById(divisionId);
+    const dbPlacement = await getPlacementByName(placementId);
+    const dbType = await getTypeByName(typeId);
+    const dbFederal = await getFederalByName(federalId);
+    const dbView = await getViewByName(viewId);
+    const dbArticle = await getArticleByName(articleId);
+    const dbDivision = await getDivisionByName(divisionId);
 
     const dbContract = await db.contract.findFirst({
         where: {
@@ -136,7 +96,7 @@ export async function POST(req: Request) {
                 subcontractorMP,
                 transients,
                 userId: user?.id as string,
-                pdfFile: filePath
+                pdfFile: pdfFile
             }
         });
 

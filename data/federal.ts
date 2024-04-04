@@ -11,3 +11,15 @@ export const getFederalById = async (id: string) => {
         return null;
     }
 }
+
+export const getFederalByName = async (name: string) => {
+    try {
+        const federal = await db.federal.findUnique({
+            where: { name }
+        });
+
+        return federal;
+    } catch {
+        return null;
+    }
+}

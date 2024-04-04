@@ -14,32 +14,7 @@ import {
 import { FcInfo } from "react-icons/fc";
 import { ScrollArea } from "../../../components/ui/scroll-area";
 import Link from "next/link";
-
-type valuesParamPropsArr = {
-    placementId: string,
-    typeId: string,
-    federalId: string,
-    contractNumber: string,
-    startDateOfTheAgreement: string,
-    endDateOfTheContract: string,
-    provider: string,
-    theSubjectOfTheAgreement: string,
-    actuallyPaidFor: string,
-    theAmountOfTheContract: string,
-    returnDate: string,
-    theAmountOfCollateral: string,
-    viewId: string,
-    articleId: string,
-    divisionId: string,
-    sourceOfFinancing: string,
-    MP: boolean,
-    subcontractorMP: boolean,
-    transients: boolean,
-    additionalInformation: string,
-    contractColor: string
-    pdfFile: string
-}
-
+import { valuesParamPropsArr } from "@/interfaces/editContract.interface";
 
 export const InfoContract = ({
     placementId,
@@ -62,7 +37,6 @@ export const InfoContract = ({
     subcontractorMP,
     transients,
     additionalInformation,
-    contractColor,
     pdfFile
 }: valuesParamPropsArr) => {
     const contractParams = [
@@ -103,7 +77,7 @@ export const InfoContract = ({
                                 <div className="tracking-wide text-lg text-black font-semibold">{contractParam.name}:</div>
 
                                 {contractParam.link ? (
-                                    <Link target="_blank" href={contractParam.link}>{contractParam.label}</Link>
+                                    <Link target="_blank" href={contractParam.link as string}>{contractParam.label}</Link>
                                 ) : (
                                     <p className="mt-2 text-gray-500">{contractParam.label}</p>
                                 )}
