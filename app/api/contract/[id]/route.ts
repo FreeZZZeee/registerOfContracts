@@ -3,7 +3,7 @@ import { stat, unlink } from 'fs/promises'
 import { db } from "@/lib/db";
 import { getUserById } from "@/data/user";
 import { getContractById } from "@/data/contract";
-import { getPlacementById, getPlacementByName } from "@/data/placement";
+import { getPlacementByName } from "@/data/placement";
 import { getTypeByName } from "@/data/type";
 import { getFederalByName } from "@/data/federal";
 import { getViewByName } from "@/data/view";
@@ -125,8 +125,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     if (dbContractById?.pdfFile !== null) {
         try {
             const stats = await stat(`./public${dbContractById?.pdfFile as string}`)
-            console.log(stats);
-
             if (stats.isFile()) {
                 unlink(`./public${dbContractById?.pdfFile as string}`);
             }

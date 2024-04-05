@@ -160,7 +160,6 @@ export const TableOfContracts = ({
                                 actuallyPaidFor={contract.actuallyPaidFor}
                                 theAmountOfTheContract={contract.theAmountOfCollateral}
                                 divisionId={contract.divisionId}
-                                contractColor={contract.contractColor}
                                 returnDate={contract.returnDate}
                                 theAmountOfCollateral={contract.theAmountOfCollateral}
                                 viewId={contract.viewId}
@@ -170,8 +169,7 @@ export const TableOfContracts = ({
                                 subcontractorMP={contract.subcontractorMP}
                                 transients={contract.transients}
                                 additionalInformation={contract.additionalInformation}
-                                pdfFile={contract.pdfFile}
-                            />
+                                pdfFile={contract.pdfFile} />
                             <EditContract
                                 id={contract.id}
                                 placementId={contract.placementId}
