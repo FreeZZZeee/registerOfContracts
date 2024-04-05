@@ -30,22 +30,24 @@ export async function DELETE(req: NextResponse, { params }: { params: { id: stri
     if (!dbContract) {
         return NextResponse.json({ message: "Договор уже существует!" }, { status: 409 });
     }
+    if (dbContract?.pdfFile !== null) {
+        try {
+            const stats = await stat(`./public${dbContract?.pdfFile as string}`)
 
-    try {
-        const stats = await stat(`./public${dbContract?.pdfFile as string}`)
 
-        if (stats.isFile()) {
-            unlink(`./public${dbContract?.pdfFile as string}`);
-        }
-    } catch (e: any) {
-        if (e.code === "ENOENT") {
-            return NextResponse.json({ message: "Что-то пошло не так!" }, { status: 400 });
-        } else {
-            console.error(
-                "Ошибка при попытке создать каталог при загрузке файла\n",
-                e
-            );
-            return NextResponse.json({ message: "Что-то пошло не так!" }, { status: 400 });
+            if (stats.isFile()) {
+                unlink(`./public${dbContract?.pdfFile as string}`);
+            }
+        } catch (e: any) {
+            if (e.code === "ENOENT") {
+                return NextResponse.json({ message: "Что-то пошло не так!" }, { status: 400 });
+            } else {
+                console.error(
+                    "Ошибка при попытке создать каталог при загрузке файла\n",
+                    e
+                );
+                return NextResponse.json({ message: "Что-то пошло не так!" }, { status: 400 });
+            }
         }
     }
 
@@ -56,7 +58,7 @@ export async function DELETE(req: NextResponse, { params }: { params: { id: stri
     return NextResponse.json({ message: "Договор удален!" }, { status: 200 });
 }
 
-export async function GET(req: NextResponse, { params }: { params: { id: string } }) {
+export async function GET({ params }: { params: { id: string } }) {
     try {
         const contract = await db.contract.findUnique({
             where: { id: params.id }
