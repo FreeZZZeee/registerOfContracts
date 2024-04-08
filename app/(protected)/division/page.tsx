@@ -1,10 +1,11 @@
+import { Referece } from "@/interfaces/references.interface";
 import { CreateGuideForm } from "../_components/createForm";
 import { GeneralTable } from "../_components/table";
-import axios from "axios";
+import { getGuideFromAxios } from "@/data/guide";
 
 const DivisionPage = async () => {
     const dbName: string = "division";
-    const { data: divisions } = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}`);
+    const divisions: Referece[] = await getGuideFromAxios(dbName);
 
     return (
         <div className="bg-secondary rounded-xl w-1/2 flex flex-wrap items-center justify-between mx-auto p-4 shadow-sm">
