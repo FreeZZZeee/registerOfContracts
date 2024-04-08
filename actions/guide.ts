@@ -33,10 +33,10 @@ export const guideCreateAction = async (
     });
 
     if (res?.statusText === 'OK') {
-        return { success: res.data?.message }
+        return { success: res?.data?.message }
     }
 
-    return { error: res.data?.message };
+    return { error: res?.data?.message };
 }
 
 export const guideUpdateAction = async (
@@ -71,10 +71,10 @@ export const guideUpdateAction = async (
     })
 
     if (res?.statusText === 'OK') {
-        return { success: res.data?.message }
+        return { success: res?.data?.message }
     }
 
-    return { error: res.data?.message };
+    return { error: res?.data?.message };
 }
 
 export const guideDeleteAction = async (dbName: string, id: string) => {
@@ -99,8 +99,8 @@ export const guideDeleteAction = async (dbName: string, id: string) => {
     const res: any = await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}/${id}`)
 
     if (res?.statusText === 'OK') {
-        return { success: res.data?.message }
+        return { success: res?.data?.message }
     }
 
-    return { error: res.data?.message };
+    return { error: res?.data?.message };
 }

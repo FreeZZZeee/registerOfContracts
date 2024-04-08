@@ -98,10 +98,10 @@ export const contractDelete = async (id: string) => {
     const res: any = await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/contract/${id}?id=${user?.id}`)
 
     if (res?.statusText === 'OK') {
-        return { success: res.data?.message }
+        return { success: res?.data?.message }
     }
 
-    return { error: res.data?.message };
+    return { error: res?.data?.message };
 }
 
 export const contractUpdate = async (
@@ -172,10 +172,10 @@ export const contractUpdate = async (
     })
 
     if (res?.statusText === 'OK') {
-        return { success: res.data?.message }
+        return { success: res?.data?.message }
     }
 
-    return { error: res.data?.message };
+    return { error: res?.data?.message };
 }
 
 interface searchValuesParams {
