@@ -19,30 +19,30 @@ const RegestryPage = async () => {
     return (
         <div className="bg-secondary rounded-xl w-full flex flex-wrap items-center justify-between mx-auto p-4 shadow-sm">
             <SheetSearch
-                placements={data.placements as []}
-                types={data.types as []}
-                federals={data.federals as []}
-                views={data.views as []}
-                articles={data.articles as []}
-                divisions={data.divisions as []}
+                placements={data?.placements as []}
+                types={data?.types as []}
+                federals={data?.federals as []}
+                views={data?.views as []}
+                articles={data?.articles as []}
+                divisions={data?.divisions as []}
                 users={users as []}
             />
             <AddAContract
-                placements={data.placements as []}
-                types={data.types as []}
-                federals={data.federals as []}
-                views={data.views as []}
-                articles={data.articles as []}
-                divisions={data.divisions as []}
+                placements={data?.placements as []}
+                types={data?.types as []}
+                federals={data?.federals as []}
+                views={data?.views as []}
+                articles={data?.articles as []}
+                divisions={data?.divisions as []}
             />
             <TableOfContracts
-                contracts={data.contracts as []}
-                placements={data.placements as []}
-                types={data.types as []}
-                federals={data.federals as []}
-                views={data.views as []}
-                articles={data.articles as []}
-                divisions={data.divisions as []}
+                contracts={data?.contracts as []}
+                placements={data?.placements as []}
+                types={data?.types as []}
+                federals={data?.federals as []}
+                views={data?.views as []}
+                articles={data?.articles as []}
+                divisions={data?.divisions as []}
             />
         </div>
     );
