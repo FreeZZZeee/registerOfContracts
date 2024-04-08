@@ -23,7 +23,7 @@ export const guideCreateAction = async (
 
     const guideFromDB = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}/guide/${data.name}`);
 
-    if (guideFromDB.data) {
+    if (guideFromDB?.data) {
         return { error: "Справочник уже существует!" }
     }
 
@@ -57,11 +57,11 @@ export const guideUpdateAction = async (
     const guideIDFromDB = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}/${id}`)
 
 
-    if (guideFromDB.data) {
+    if (guideFromDB?.data) {
         return { error: "Справочник уже существует!" }
     }
 
-    if (!guideIDFromDB.data) {
+    if (!guideIDFromDB?.data) {
         return { error: "Справочник не существует!" }
     }
 
@@ -92,7 +92,7 @@ export const guideDeleteAction = async (dbName: string, id: string) => {
 
     const guideFromDB = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}/${id}`)
 
-    if (!guideFromDB.data) {
+    if (!guideFromDB?.data) {
         return { error: "Справочник не существует!" }
     }
 

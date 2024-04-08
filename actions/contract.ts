@@ -11,7 +11,7 @@ import { db } from "@/lib/db";
 import { getUserById, getUserByName } from "@/data/user";
 import { currentUser } from "@/lib/auth";
 import { ContractSchema, SearchContractSchema } from "@/schemas/contract.schema";
-import { getContractById, getNewContracts } from "@/data/contract";
+import { getNewContracts } from "@/data/contract";
 import { removeNull } from "@/helpers/remove-null";
 import axios from "axios";
 
