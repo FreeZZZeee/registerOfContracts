@@ -169,7 +169,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
             MP,
             subcontractorMP,
             transients,
-            userId: user?.id as string,
+            userId: dbContractById?.id as string,
             pdfFile: pdfFile
         }
     })

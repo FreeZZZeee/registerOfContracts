@@ -27,21 +27,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { removeItem } from "@/hooks/lokalStorege.removeItem";
-import { useRouter } from "next/navigation";
 import { formParams } from "@/data/form-params"
 import { colors } from "@/data/colors";
-import { selectParam } from "@/interfaces/guide.interface";
-
-
-type valuesParamPropsArr = {
-    placements: selectParam[]
-    types: selectParam[]
-    federals: selectParam[]
-    views: selectParam[]
-    articles: selectParam[]
-    divisions: selectParam[]
-    users: selectParam[]
-}
+import { valuesParamPropsArr } from "@/interfaces/searchContract.interface";
 
 export const SheetSearch = ({
     placements,
@@ -55,7 +43,6 @@ export const SheetSearch = ({
     const [color, setColor] = useState<string>();
     const [open, setOpen] = useState<boolean>(false);
     const [isPending, startTransition] = useTransition();
-    const router = useRouter();
 
     const form = useForm<z.infer<typeof SearchContractSchema>>({
         resolver: zodResolver(SearchContractSchema),
