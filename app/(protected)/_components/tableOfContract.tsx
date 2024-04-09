@@ -303,7 +303,7 @@ export function TableOfContracts({
                                             )}
                                         </TableCell>
                                     ))}
-                                    <TableCell>
+                                    <TableCell className="flex flex-row gap-x-1 !text-black">
                                         <InfoContract
                                             placementId={row.original.placementId}
                                             contractNumber={row.original.contractNumber}
