@@ -41,33 +41,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { selectParam } from "@/interfaces/guide.interface";
+import { contractParam } from "@/interfaces/contract.intarface";
 
-export interface contractParam {
-    id: string,
-    placementId: string,
-    typeId: string,
-    federalId: string,
-    contractNumber: string,
-    startDateOfTheAgreement: string,
-    endDateOfTheContract: string,
-    provider: string,
-    theSubjectOfTheAgreement: string,
-    actuallyPaidFor: string,
-    theAmountOfTheContract: string,
-    returnDate: string,
-    theAmountOfCollateral: string,
-    viewId: string,
-    articleId: string,
-    divisionId: string,
-    sourceOfFinancing: string,
-    MP: boolean,
-    subcontractorMP: boolean,
-    transients: boolean,
-    additionalInformation: string,
-    contractColor: string
-    userId: string
-    pdfFile: string
-}
 
 interface contractParamArr {
     data: contractParam[]
@@ -80,6 +55,12 @@ interface contractParamArr {
 }
 
 export const columns: ColumnDef<contractParam>[] = [
+    {
+        header: "№",
+        cell: ({ row }) => (
+            <div className="capitalize">{row.index + 1}</div>
+        ),
+    },
     {
         accessorKey: "contractNumber",
         header: "Номер договора",
