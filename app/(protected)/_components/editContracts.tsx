@@ -36,7 +36,25 @@ import { IoCloudUploadOutline } from "react-icons/io5";
 import Link from "next/link";
 import { RiDeleteBin2Fill } from "react-icons/ri";
 import { formParams } from "@/data/form-params"
-import { valuesParamPropsArr } from "@/interfaces/editContract.interface";
+import { valuesParamPropsArr } from "@/interfaces/formContract.interface";
+
+const colors = [
+    { color: "bg-yellow-950" },
+    { color: "bg-red-600" },
+    { color: "bg-orange-700" },
+    { color: "bg-yellow-600" },
+    { color: "bg-amber-500" },
+    { color: "bg-lime-400" },
+    { color: "bg-blue-700" },
+    { color: "bg-lime-800" },
+    { color: "bg-indigo-300" },
+    { color: "bg-indigo-600" },
+    { color: "bg-blue-400" },
+    { color: "bg-cyan-500" },
+    { color: "bg-blue-800" },
+    { color: "bg-blue-900" },
+    { color: "bg-fuchsia-700" },
+]
 
 
 export const EditContract = ({
@@ -69,7 +87,6 @@ export const EditContract = ({
     views,
     articles,
     divisions,
-    colors,
 }: valuesParamPropsArr) => {
     const [open, setOpen] = useState<boolean>(false);
     const [color, setColor] = useState<string>(contractColor);
@@ -137,7 +154,7 @@ export const EditContract = ({
     }
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
+            <DialogTrigger asChild className="mx-1">
                 <Button variant="outline" className="w-[50px] p-2"><FaRegEdit className="!w-full !h-full" /></Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[1000px]">

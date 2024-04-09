@@ -36,7 +36,7 @@ const RegestryPage = async () => {
                 divisions={data?.divisions as []}
             />
             <TableOfContracts
-                contracts={data?.contracts as []}
+                data={data?.contracts as []}
                 placements={data?.placements as []}
                 types={data?.types as []}
                 federals={data?.federals as []}
