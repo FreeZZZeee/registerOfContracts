@@ -252,7 +252,7 @@ export function TableOfContracts({
             <div className="rounded-md border">
                 <Table>
                     <TableHeader>
-                        {table && table.getHeaderGroups().map((headerGroup) => (
+                        {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
                                     return (
@@ -270,7 +270,7 @@ export function TableOfContracts({
                         ))}
                     </TableHeader>
                     <TableBody>
-                        {table && table.getRowModel().rows?.length ? (
+                        {table?.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
