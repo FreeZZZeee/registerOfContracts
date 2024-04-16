@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-const domain = process.env.NEXT_PUBLIC_BASE_URL;
+const domain = process.env.NODEMAILER_HOST;
 
 const createConnection = () => {
     const transporter = nodemailer.createTransport({
