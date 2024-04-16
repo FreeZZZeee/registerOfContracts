@@ -7,6 +7,7 @@ RUN npm install
 ADD . .
 RUN npm run build
 RUN npm prune --production
+RUN npx prisma generate
 ENTRYPOINT [ "npm", "run" ]
 
 # FROM node:20.11.1-alpine as dependencies

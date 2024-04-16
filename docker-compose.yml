@@ -13,22 +13,29 @@ services:
       - '5432:5432'
     volumes:
       - ./docker-data/user-register:/var/lib/postgresql/data
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - 80:80
-      - 443:443
-  registerOfContract:
-    image: register-of-contracts:latest
-    container_name: register-of-contracts
-    restart: always
-    command: dev
-    ports:
-      - 3000:3000
-    volumes:
-      - ./.env:/opt/app/.env
-    depends_on:
-      - postgres
+    # restart:
+    #   always      
+    # nginx:
+    #   image: nginx:latest
+    #   container_name: nginx
+    #   volumes:
+    #     #- ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    #     - ./nginx/zakupki.conf:/etc/nginx/conf.d/default.conf
+    #     - ./certificates/:/etc/nginx/ssl
+    #   ports:
+    #     - 80:80
+    #     - 443:443
+    #   restart:
+    #     always
+    # registerOfContract:
+    #   image: zakupki:latest
+    #   container_name: register-of-contracts
+    #   restart: always
+    #   command: dev
+    #   ports:
+    #     - 3000:3000
+    #   volumes:
+    #     - ./.env:/opt/app/.env
+    #   depends_on:
+    #     - postgres
+    #     - nginx
