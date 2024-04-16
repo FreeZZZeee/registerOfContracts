@@ -5,8 +5,8 @@ ADD package.json package.json
 RUN npm cache clear --force
 RUN npm install
 ADD . .
-# RUN npm run build
-# RUN npm prune --production
+RUN npm run build
+RUN npm prune --production
 ENTRYPOINT [ "npm", "run" ]
 
 # FROM node:20.11.1-alpine as dependencies
