@@ -1,11 +1,6 @@
 import { db } from "@/lib/db";
 import axios from "axios";
 import { getUserById } from "./user";
-import * as https from "https";
-
-const httpsAgent = new https.Agent({
-    rejectUnauthorized: false,
-});
 
 export const getContractById = async (id: string) => {
     try {
@@ -31,12 +26,9 @@ export const getContracts = async () => {
 
 export const getContractsFromAxios = async (id: string) => {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/contract?user=${id}`)
-            .then(response => response.json())
-            .then(json => json)
-        // const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/contract?user=${id}`, { httpsAgent });
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/contract?user=${id}`);
 
-        return res;
+        return res?.data;
     } catch {
         return null;
     }

@@ -13,6 +13,18 @@ services:
       - '5432:5432'
     volumes:
       - ./docker-data/user-register:/var/lib/postgresql/data
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4:latest
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PG_ADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PG_ADMIN_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - ./docker-data/pgadmin-dаta:/var/lib/pgadmin
     # restart:
     #   always      
     # nginx:
