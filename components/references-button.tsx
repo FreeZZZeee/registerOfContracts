@@ -1,11 +1,11 @@
 "use client"
 
-import { 
+import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger
- } from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -16,6 +16,7 @@ const DropMenuLinks = [
     { href: "/view", name: "Вид закупки" },
     { href: "/article", name: "Статья расходов" },
     { href: "/division", name: "Подразделение" },
+    { href: "/provider", name: "Поставщики" },
 ]
 
 export const ReferencesButton = () => {
@@ -28,12 +29,12 @@ export const ReferencesButton = () => {
             <DropdownMenuContent className="w-100" align="end">
                 {DropMenuLinks.map(DropMenuLink => (
                     <Link href={DropMenuLink.href} key={DropMenuLink.href}>
-                    <DropdownMenuItem>
-                        {DropMenuLink.name}
-                    </DropdownMenuItem>
-                </Link>
-                ))}   
+                        <DropdownMenuItem>
+                            {DropMenuLink.name}
+                        </DropdownMenuItem>
+                    </Link>
+                ))}
             </DropdownMenuContent>
         </DropdownMenu>
     );
- };
+};

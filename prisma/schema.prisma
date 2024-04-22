@@ -143,6 +143,16 @@ model Division {
   updatedAt DateTime? @updatedAt
 }
 
+model Provider {
+  id   String @id @default(cuid())
+  name String @unique
+
+  contract Contract[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
 model Contract {
   id String @id @default(cuid())
 
@@ -155,13 +165,19 @@ model Contract {
   federalId String?
   federal   Federal? @relation(fields: [federalId], references: [id], onDelete: Cascade)
 
-  contractNumber           String
-  startDateOfTheAgreement  String
-  endDateOfTheContract     String?
-  provider                 String
+  contractNumber          String
+  startDateOfTheAgreement String
+  endDateOfTheContract    String?
+
+  providerId String
+  provider   Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
   contractColor            String?
   theSubjectOfTheAgreement String
   theAmountOfTheContract   String?
+  thePostagePeriod         String?
+  point                    String?
+  subItem                  String?
   returnDate               String?
   theAmountOfCollateral    String?
   pdfFile                  String?
@@ -182,6 +198,9 @@ model Contract {
   MP                    Boolean @default(false)
   subcontractorMP       Boolean @default(false)
   transients            Boolean @default(false)
+  micro                 Boolean @default(false)
+  small                 Boolean @default(false)
+  average               Boolean @default(false)
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

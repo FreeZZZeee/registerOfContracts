@@ -21,9 +21,12 @@ import { valuesParamPropsArr } from "@/interfaces/infoContract.interface";
 export const InfoContract = ({
     placementId,
     typeId,
+    point,
+    subItem,
     federalId,
     contractNumber,
     startDateOfTheAgreement,
+    thePostagePeriod,
     endDateOfTheContract,
     provider,
     theSubjectOfTheAgreement,
@@ -36,6 +39,9 @@ export const InfoContract = ({
     divisionId,
     sourceOfFinancing,
     MP,
+    micro,
+    small,
+    average,
     subcontractorMP,
     transients,
     additionalInformation,
@@ -44,8 +50,11 @@ export const InfoContract = ({
     const contractParams = [
         { name: "Способ размещения", label: placementId },
         { name: "Тип ЕП", label: typeId },
+        { name: "П.", label: point },
+        { name: "ПП.", label: subItem },
         { name: "Федеральный закон", label: federalId },
         { name: "Дата начала действия договора", label: startDateOfTheAgreement },
+        { name: "Срок поставки", label: thePostagePeriod },
         { name: "Дата окончания договора", label: endDateOfTheContract },
         { name: "Поставщик, подрядчик, исполнитель", label: provider },
         { name: "Передмет договора", label: theSubjectOfTheAgreement },
@@ -59,6 +68,9 @@ export const InfoContract = ({
         { name: "Источники финансирования", label: sourceOfFinancing },
         { name: "Дополнительная информация", label: additionalInformation },
         { name: "МП", label: MP ? "Да" : "Нет" },
+        { name: "Микро", label: micro ? "Да" : "Нет" },
+        { name: "Малое", label: small ? "Да" : "Нет" },
+        { name: "Среднее", label: average ? "Да" : "Нет" },
         { name: "Субподрядчик МП", label: subcontractorMP ? "Да" : "Нет" },
         { name: "Переходящие", label: transients ? "Да" : "Нет" },
         { name: "Документ", label: pdfFile ? "Скачать" : "Файл не загружен", link: pdfFile ? pdfFile : "#" },
@@ -89,29 +101,17 @@ export const InfoContract = ({
                                                 {contractParam.link.split("/").pop()}
                                             </span>
                                         </div>
-                                        <a href={contractParam.link} className="text-blue-700 hover:underline">
+                                        <Link href={contractParam.link} className="text-blue-700 hover:underline">
                                             Скачать
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
-                                // <Link target="_blank" href={contractParam.link}>{contractParam.label}</Link>
                             ) : (
                                 <p>
                                     {contractParam.label}
                                 </p>
                             )}
                         </div>
-                        // <div key={contractParam.name} className="w-full mx-auto bg-white rounded-xl shadow-md overflow-hidden m-1">
-                        //     <div className="p-2">
-                        //         <div className="tracking-wide text-lg text-black font-semibold">{contractParam.name}:</div>
-
-                        //         {contractParam.link ? (
-                        //             <Link target="_blank" href={contractParam.link}>{contractParam.label}</Link>
-                        //         ) : (
-                        //             <p className="mt-2 text-gray-500">{contractParam.label}</p>
-                        //         )}
-                        //     </div>
-                        // </div>
                     ))}
                 </ScrollArea>
                 <DialogFooter>

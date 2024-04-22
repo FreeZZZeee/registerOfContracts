@@ -27,7 +27,10 @@ export const ContractSchema = z.object({
     provider: z.string().min(1, {
         message: "Обязательно к заполнению"
     }),
+    thePostagePeriod: z.optional(z.string()),
     contractColor: z.optional(z.string()),
+    point: z.optional(z.string()),
+    subItem: z.optional(z.string()),
     pdfFile: z.optional(z
         .instanceof(File)
         .refine((file) => {
@@ -57,6 +60,9 @@ export const ContractSchema = z.object({
     MP: z.optional(z.boolean()),
     subcontractorMP: z.optional(z.boolean()),
     transients: z.optional(z.boolean()),
+    micro: z.optional(z.boolean()),
+    small: z.optional(z.boolean()),
+    average: z.optional(z.boolean()),
     userId: z.optional(z.string())
 });
 
@@ -70,6 +76,9 @@ export const SearchContractSchema = z.object({
     provider: z.optional(z.string()),
     contractColor: z.optional(z.string()),
     theSubjectOfTheAgreement: z.optional(z.string()),
+    thePostagePeriod: z.optional(z.string()),
+    point: z.optional(z.string()),
+    subItem: z.optional(z.string()),
     actuallyPaidFor: z.optional(z.string()),
     theAmountOfTheContract: z.optional(z.string()),
     returnDate: z.optional(z.string()),
@@ -82,5 +91,8 @@ export const SearchContractSchema = z.object({
     MP: z.optional(z.boolean()),
     subcontractorMP: z.optional(z.boolean()),
     transients: z.optional(z.boolean()),
+    micro: z.optional(z.boolean()),
+    small: z.optional(z.boolean()),
+    average: z.optional(z.boolean()),
     userId: z.optional(z.string())
 });
