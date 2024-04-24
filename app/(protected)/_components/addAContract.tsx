@@ -7,7 +7,7 @@ import { FaRegFilePdf } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import Link from "next/link";
-import { ChangeEvent, useEffect, useState, useTransition } from "react"
+import { ChangeEvent, useEffect, useRef, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
@@ -37,6 +37,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { contractCreate } from "@/actions/contract";
 import { formParams } from "@/data/form-params"
 import { valuesParamPropsArr } from "@/interfaces/addContract.interface";
+import { Provider } from "@/interfaces/provider.interface";
+import { useAutocomplete } from "@/hooks/useAutocomplete";
+import { Card, CardContent } from "@/components/ui/card";
 
 const colors = [
     { color: "bg-yellow-950" },
@@ -64,11 +67,14 @@ export const AddAContract = ({
     views,
     articles,
     divisions,
+    providers
 }: valuesParamPropsArr) => {
     const [values, setValues] = useState<string>();
     const [color, setColor] = useState<string>();
     const [open, setOpen] = useState(false);
     const [pdf, setPdf] = useState<string>();
+
+    const inputSearchRef = useRef<HTMLInputElement>(null);
 
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
@@ -84,7 +90,7 @@ export const AddAContract = ({
             endDateOfTheContract: "",
             provider: "",
             theSubjectOfTheAgreement: "",
-            actuallyPaidFor: "",
+            paid: [],
             theAmountOfTheContract: "",
             thePostagePeriod: "",
             point: "",
@@ -106,13 +112,35 @@ export const AddAContract = ({
         }
     });
 
+    useEffect(() => {
+        if (values) {
+            setValues("");
+        }
+
+        if (inputSearchRef.current) {
+            inputSearchRef.current.focus();
+        }
+    }, [values])
+
+    const {
+        searchedValue,
+        suggestions,
+        selectedSuggestion,
+        activeSuggestion,
+        handleChange,
+        handleKeyDown,
+        handleClick,
+    } = useAutocomplete(providers, inputSearchRef.current);
+
 
     const onSubmit = (values: z.infer<typeof ContractSchema>) => {
         values.contractColor = color;
+        values.provider = searchedValue
 
         const formData = new FormData();
         formData.append('pdfFile', values.pdfFile as File);
         values.pdfFile = {} as File;
+
 
         startTransition(() => {
             contractCreate(values, formData)
@@ -135,12 +163,6 @@ export const AddAContract = ({
         setPdf('');
     }
 
-    useEffect(() => {
-        if (values) {
-            setValues("");
-        }
-    }, [values])
-
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -159,7 +181,32 @@ export const AddAContract = ({
                             <div className="flex flex-col flex-wrap gap-2">
                                 {formParams.map(formParam => (
                                     <div className="w-auto" key={formParam.name}>
-                                        {formParam.type === "text" && (
+                                        {formParam.type === "text"
+                                            && formParam.name !== "provider"
+                                            && formParam.name !== "actuallyPaidFor"
+                                            && (
+                                                <FormField
+                                                    control={form.control}
+                                                    name={formParam.name as any}
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>{formParam.label}</FormLabel>
+                                                            <FormControl>
+                                                                <Input
+                                                                    {...field}
+                                                                    value={values}
+                                                                    placeholder={formParam.label}
+                                                                    disabled={isPending}
+                                                                    type={formParam.type}
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            )}
+
+                                        {formParam.type === "text" && formParam.name === "provider" && (
                                             <FormField
                                                 control={form.control}
                                                 name={formParam.name as any}
@@ -167,13 +214,62 @@ export const AddAContract = ({
                                                     <FormItem>
                                                         <FormLabel>{formParam.label}</FormLabel>
                                                         <FormControl>
-                                                            <Input
-                                                                {...field}
-                                                                value={values}
-                                                                placeholder={formParam.label}
-                                                                disabled={isPending}
-                                                                type={formParam.type}
-                                                            />
+                                                            <div className="pt-2 flex flex-col justify-center">
+                                                                <Input
+                                                                    {...field}
+                                                                    value={searchedValue}
+                                                                    placeholder={formParam.label}
+                                                                    onChangeCapture={handleChange}
+                                                                    onKeyDown={handleKeyDown}
+                                                                    ref={inputSearchRef}
+                                                                    disabled={isPending}
+                                                                    type={formParam.type}
+                                                                />
+                                                                <Card className="mt-1 border-none">
+                                                                    {!suggestions.length &&
+                                                                        searchedValue.length &&
+                                                                        !selectedSuggestion.length ? (
+                                                                        <></>
+                                                                    ) : (
+                                                                        <>
+                                                                            {suggestions.map(({ name }: Provider, index) => (
+                                                                                <CardContent key={index} className="p-0">
+                                                                                    <p
+                                                                                        className={`h-full pt-1 text-center hover:cursor-pointer hover:bg-gray-100 ${index === activeSuggestion - 1 ? "bg-gray-100" : ""
+                                                                                            }`}
+                                                                                        onClick={() => handleClick(name)}
+                                                                                    >{name}</p>
+                                                                                </CardContent>
+
+                                                                            ))}
+                                                                        </>
+                                                                    )}
+                                                                </Card>
+                                                            </div>
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        )}
+
+                                        {formParam.type === "text" && formParam.name === "actuallyPaidFor" && (
+                                            <FormField
+                                                control={form.control}
+                                                name={formParam.name as any}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>{formParam.label}</FormLabel>
+                                                        <FormControl>
+                                                            <div className="pt-2 flex flex-col justify-center w-48">
+                                                                <Input
+                                                                    {...field}
+                                                                    value={values}
+                                                                    placeholder={formParam.label}
+                                                                    disabled={isPending}
+                                                                    type={formParam.type}
+                                                                />
+                                                            </div>
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>

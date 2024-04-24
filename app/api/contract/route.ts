@@ -7,6 +7,7 @@ import { getViewById, getViewByName } from "@/data/view";
 import { getArticleById, getArticleByName } from "@/data/article";
 import { getFederalById, getFederalByName } from "@/data/federal";
 import { getTypeById, getTypeByName } from "@/data/type";
+import { getProviderByName } from "@/data/provider";
 
 export async function POST(req: Request) {
     const {
@@ -33,7 +34,6 @@ export async function POST(req: Request) {
         endDateOfTheContract,
         provider,
         theSubjectOfTheAgreement,
-        actuallyPaidFor,
         theAmountOfTheContract,
         thePostagePeriod,
         point,
@@ -61,12 +61,22 @@ export async function POST(req: Request) {
     const dbView = await getViewByName(viewId);
     const dbArticle = await getArticleByName(articleId);
     const dbDivision = await getDivisionByName(divisionId);
+    let dbProvider = await getProviderByName(provider);
+
+    if (!dbProvider) {
+        await db.provider.create({
+            data: {
+                name: provider
+            }
+        })
+        dbProvider = await getProviderByName(provider);
+    }
 
     const dbContract = await db.contract.findFirst({
         where: {
             contractNumber,
             startDateOfTheAgreement,
-            provider,
+            providerId: dbProvider?.id,
             divisionId: dbDivision?.id as string
         }
     })
@@ -86,7 +96,6 @@ export async function POST(req: Request) {
                 contractNumber,
                 startDateOfTheAgreement,
                 endDateOfTheContract,
-                provider,
                 contractColor,
                 theSubjectOfTheAgreement,
                 theAmountOfTheContract,
@@ -98,6 +107,7 @@ export async function POST(req: Request) {
                 viewId: dbView?.id as string,
                 articleId: dbArticle?.id as string,
                 divisionId: dbDivision?.id as string,
+                providerId: dbProvider?.id as string,
                 sourceOfFinancing,
                 additionalInformation,
                 MP,
@@ -137,6 +147,7 @@ export async function GET(req: Request) {
     const views = await db.view.findMany();
     const articles = await db.article.findMany();
     const divisions = await db.division.findMany();
+    const providers = await db.provider.findMany();
     let contracts = await db.contract.findMany();
 
     contracts = await Promise.all(contracts?.map(async (contract) => {
@@ -167,6 +178,7 @@ export async function GET(req: Request) {
         federals,
         views,
         articles,
-        divisions
+        divisions,
+        providers
     });
 }

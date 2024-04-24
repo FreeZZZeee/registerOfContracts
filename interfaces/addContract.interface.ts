@@ -1,4 +1,5 @@
 import { selectParam } from "./guide.interface"
+import { Provider } from "./provider.interface"
 
 export interface valuesParamPropsArr {
     placements: selectParam[]
@@ -7,4 +8,5 @@ export interface valuesParamPropsArr {
     views: selectParam[]
     articles: selectParam[]
     divisions: selectParam[]
+    providers: Provider[]
 }

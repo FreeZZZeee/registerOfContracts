@@ -105,7 +105,7 @@ export const columns: ColumnDef<contractParam>[] = [
     },
     {
         accessorKey: "provider",
-        header: "Постовщик",
+        header: "Поставщик",
         cell: ({ row }) => (
             <div className="capitalize">{row.getValue("provider")}</div>
         ),
