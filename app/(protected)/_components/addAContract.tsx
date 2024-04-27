@@ -40,6 +40,9 @@ import { valuesParamPropsArr } from "@/interfaces/addContract.interface";
 import { Provider } from "@/interfaces/provider.interface";
 import { useAutocomplete } from "@/hooks/useAutocomplete";
 import { Card, CardContent } from "@/components/ui/card";
+import { TiDelete } from "react-icons/ti";
+import { GrUpdate } from "react-icons/gr";
+
 
 const colors = [
     { color: "bg-yellow-950" },
@@ -58,7 +61,6 @@ const colors = [
     { color: "bg-blue-900" },
     { color: "bg-fuchsia-700" },
 ]
-
 
 export const AddAContract = ({
     placements,
@@ -163,6 +165,9 @@ export const AddAContract = ({
         setPdf('');
     }
 
+    const addInputs = () => {
+    }
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -261,15 +266,60 @@ export const AddAContract = ({
                                                     <FormItem>
                                                         <FormLabel>{formParam.label}</FormLabel>
                                                         <FormControl>
-                                                            <div className="pt-2 flex flex-col justify-center w-48">
-                                                                <Input
-                                                                    {...field}
-                                                                    value={values}
-                                                                    placeholder={formParam.label}
-                                                                    disabled={isPending}
-                                                                    type={formParam.type}
-                                                                />
-                                                            </div>
+                                                            <>
+                                                                <div className="pt-2 flex justify-center gap-x-2">
+                                                                    <Input
+                                                                        {...field}
+                                                                        value={values}
+                                                                        placeholder="Сумма платежа"
+                                                                        disabled={isPending}
+                                                                        type="text"
+                                                                    />
+                                                                    <Input
+                                                                        {...field}
+                                                                        value={values}
+                                                                        placeholder="Дата регистрации платежа"
+                                                                        disabled={isPending}
+                                                                        type="date"
+                                                                    />
+                                                                    <Input
+                                                                        {...field}
+                                                                        value={values}
+                                                                        placeholder="Подразделение"
+                                                                        disabled={isPending}
+                                                                        type="text"
+                                                                    />
+                                                                    <Input
+                                                                        {...field}
+                                                                        value={values}
+                                                                        placeholder="№ платежного поручения"
+                                                                        disabled={isPending}
+                                                                        type="text"
+                                                                    />
+                                                                    <Button
+                                                                        onClick={() => { }}
+                                                                        variant="secondary"
+                                                                        className="w-[100px] p-2"
+                                                                        disabled={isPending}
+                                                                    >
+                                                                        <GrUpdate className="!w-full !h-full" />
+                                                                    </Button>
+                                                                    <Button
+                                                                        onClick={() => { }}
+                                                                        variant="destructive"
+                                                                        className="w-[100px] p-2"
+                                                                        disabled={isPending}
+                                                                    >
+                                                                        <TiDelete className="!w-full !h-full" />
+                                                                    </Button>
+                                                                </div>
+                                                                <div className="flex flex-col">
+                                                                    <Button variant="outline" className="w-56 ml-auto my-2">
+                                                                        Добавить
+                                                                    </Button>
+                                                                    <p className="font-bold mr-2 ml-auto">Итого: <span className="font-medium">0</span></p>
+                                                                </div>
+                                                            </>
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>
