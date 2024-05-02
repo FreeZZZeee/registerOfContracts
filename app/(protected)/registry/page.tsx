@@ -7,6 +7,8 @@ import { TableOfContracts } from "../_components/tableOfContract";
 import { getUsers } from "@/data/user";
 import { currentUser } from "@/lib/auth";
 import { getContractsFromAxios } from "@/data/contract";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 
 
@@ -27,15 +29,9 @@ const RegestryPage = async () => {
                 divisions={data?.divisions as []}
                 users={users as []}
             />
-            <AddAContract
-                placements={data?.placements as []}
-                types={data?.types as []}
-                federals={data?.federals as []}
-                views={data?.views as []}
-                articles={data?.articles as []}
-                divisions={data?.divisions as []}
-                providers={data?.providers as []}
-            />
+            <Button variant="outline" asChild>
+                <Link href="/add-contract">Добавить договор</Link>
+            </Button>
             {data && (
                 <TableOfContracts
                     data={data?.contracts as []}
