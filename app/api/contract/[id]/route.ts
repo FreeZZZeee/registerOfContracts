@@ -59,6 +59,7 @@ export async function DELETE(req: NextResponse, { params }: { params: { id: stri
 }
 
 export async function GET({ params }: { params: { id: string } }) {
+
     try {
         const contract = await db.contract.findUnique({
             where: { id: params.id }

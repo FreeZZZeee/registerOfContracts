@@ -34,6 +34,16 @@ export const getContractsFromAxios = async (id: string) => {
     }
 }
 
+export const getContractFromAxios = async (id: string) => {
+    try {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/contract/${id}`);
+
+        return res?.data;
+    } catch {
+        return null;
+    }
+}
+
 interface ContractParam {
     id: string,
     placementId: string,

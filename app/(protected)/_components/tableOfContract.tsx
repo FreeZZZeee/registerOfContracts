@@ -42,6 +42,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { selectParam } from "@/interfaces/guide.interface";
 import { contractParam } from "@/interfaces/contract.intarface";
+import { FaRegEdit } from "react-icons/fa";
+import Link from "next/link";
 
 
 interface contractParamArr {
@@ -313,7 +315,12 @@ export function TableOfContracts({
                                             transients={row.original.transients}
                                             additionalInformation={row.original.additionalInformation}
                                             pdfFile={row.original.pdfFile} />
-                                        <EditContract
+                                        <Button variant="outline" className="w-[50px] p-2" asChild>
+                                            <Link href={`/edit-contract?id=${row.original.id}`}>
+                                                <FaRegEdit className="!w-full !h-full" />
+                                            </Link>
+                                        </Button>
+                                        {/* <EditContract
                                             id={row.original.id}
                                             placementId={row.original.placementId}
                                             contractNumber={row.original.contractNumber}
@@ -349,7 +356,7 @@ export function TableOfContracts({
                                             articles={articles as []}
                                             divisions={divisions as []}
                                             colors={colors as []}
-                                        />
+                                        /> */}
                                         <Button
                                             onClick={() => onDelete(row.original.id)}
                                             variant="destructive"

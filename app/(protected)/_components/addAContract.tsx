@@ -82,7 +82,6 @@ export const AddAContract = ({
             endDateOfTheContract: "",
             provider: "",
             theSubjectOfTheAgreement: "",
-            paid: [],
             theAmountOfTheContract: "",
             thePostagePeriod: "",
             point: "",
@@ -144,6 +143,7 @@ export const AddAContract = ({
                     if (data.success) {
                         toast.success(data.success);
                         router.push('/registry');
+                        router.refresh();
                     }
                 })
                 .catch(() => toast.error("Что-то пошло не так!"));
@@ -157,7 +157,7 @@ export const AddAContract = ({
     return (
         <Form {...form}>
             <form
-                className="grid gap-4 py-4"
+                className="grid gap-4 py-4 w-full"
                 onSubmit={form.handleSubmit(onSubmit)}
             >
                 <div className="flex flex-col flex-wrap gap-2">
@@ -236,72 +236,10 @@ export const AddAContract = ({
                             )}
 
                             {formParam.type === "text" && formParam.name === "actuallyPaidFor" && (
-                                <FormField
-                                    control={form.control}
-                                    name={formParam.name as any}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>{formParam.label}</FormLabel>
-                                            <FormControl>
-                                                <>
-                                                    <div className="pt-2 flex justify-center gap-x-2">
-                                                        <Input
-                                                            {...field}
-                                                            value={values}
-                                                            placeholder="Сумма платежа"
-                                                            disabled={isPending}
-                                                            type="text"
-                                                        />
-                                                        <Input
-                                                            {...field}
-                                                            value={values}
-                                                            placeholder="Дата регистрации платежа"
-                                                            disabled={isPending}
-                                                            type="date"
-                                                        />
-                                                        <Input
-                                                            {...field}
-                                                            value={values}
-                                                            placeholder="Подразделение"
-                                                            disabled={isPending}
-                                                            type="text"
-                                                        />
-                                                        <Input
-                                                            {...field}
-                                                            value={values}
-                                                            placeholder="№ платежного поручения"
-                                                            disabled={isPending}
-                                                            type="text"
-                                                        />
-                                                        <Button
-                                                            onClick={() => { }}
-                                                            variant="secondary"
-                                                            className="w-[100px] p-2"
-                                                            disabled={isPending}
-                                                        >
-                                                            <GrUpdate className="!w-full !h-full" />
-                                                        </Button>
-                                                        <Button
-                                                            onClick={() => { }}
-                                                            variant="destructive"
-                                                            className="w-[100px] p-2"
-                                                            disabled={isPending}
-                                                        >
-                                                            <TiDelete className="!w-full !h-full" />
-                                                        </Button>
-                                                    </div>
-                                                    <div className="flex flex-col">
-                                                        <Button variant="outline" className="w-56 ml-auto my-2">
-                                                            Добавить
-                                                        </Button>
-                                                        <p className="font-bold mr-2 ml-auto">Итого: <span className="font-medium">0</span></p>
-                                                    </div>
-                                                </>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                <>
+                                    <span className="text-sm block my-3 font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{formParam.label}</span>
+                                    <p className="font-bold mr-2 ml-auto">Итого: <span className="font-medium">0</span></p>
+                                </>
                             )}
 
                             {formParam.type === "date" && (

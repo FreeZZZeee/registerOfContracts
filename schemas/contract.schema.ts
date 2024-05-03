@@ -42,7 +42,6 @@ export const ContractSchema = z.object({
     theSubjectOfTheAgreement: z.string().min(1, {
         message: "Обязательно к заполнению"
     }),
-    paid: z.optional(z.string().array()),
     theAmountOfTheContract: z.optional(z.string()),
     returnDate: z.optional(z.string()),
     theAmountOfCollateral: z.optional(z.string()),
