@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { InfoContract } from "./infoContract";
-import { colors } from "@/data/colors";
+
 import {
     ChevronDownIcon,
 } from "@radix-ui/react-icons"
@@ -40,7 +40,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { selectParam } from "@/interfaces/guide.interface";
 import { contractParam } from "@/interfaces/contract.intarface";
 import { FaRegEdit } from "react-icons/fa";
 import Link from "next/link";
@@ -48,12 +47,6 @@ import Link from "next/link";
 
 interface contractParamArr {
     data: contractParam[]
-    placements: selectParam[]
-    types: selectParam[]
-    federals: selectParam[]
-    views: selectParam[]
-    articles: selectParam[]
-    divisions: selectParam[]
 }
 
 export const columns: ColumnDef<contractParam>[] = [
@@ -145,12 +138,6 @@ export const columns: ColumnDef<contractParam>[] = [
 
 export function TableOfContracts({
     data,
-    placements,
-    types,
-    federals,
-    views,
-    articles,
-    divisions,
 }: contractParamArr
 ) {
     const [sorting, setSorting] = useState<SortingState>([])

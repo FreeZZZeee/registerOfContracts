@@ -35,12 +35,6 @@ const RegestryPage = async () => {
             {data && (
                 <TableOfContracts
                     data={data?.contracts as []}
-                    placements={data?.placements as []}
-                    types={data?.types as []}
-                    federals={data?.federals as []}
-                    views={data?.views as []}
-                    articles={data?.articles as []}
-                    divisions={data?.divisions as []}
                 />
             )}
         </div>

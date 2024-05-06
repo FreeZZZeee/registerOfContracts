@@ -49,9 +49,13 @@ interface ContractParam {
     placementId: string,
     typeId: string,
     federalId: string,
+    providerId: string,
     contractNumber: string,
     startDateOfTheAgreement: string,
     endDateOfTheContract: string,
+    point: string,
+    subItem: string,
+    thePostagePeriod: string,
     provider: string,
     theSubjectOfTheAgreement: string,
     actuallyPaidFor: string,
@@ -65,9 +69,13 @@ interface ContractParam {
     MP: boolean,
     subcontractorMP: boolean,
     transients: boolean,
+    micro: boolean,
+    small: boolean,
+    average: boolean,
     additionalInformation: string,
     contractColor: string
-    userId: string
+    userId: string,
+    pdfFile: string | File
 }
 
 export const getNewContracts = async (contracts: ContractParam[]) => {
@@ -79,6 +87,7 @@ export const getNewContracts = async (contracts: ContractParam[]) => {
         const article = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/article/${contract.articleId}`);
         const federal = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/federal/${contract.federalId}`);
         const type = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/type/${contract.typeId}`);
+        const provider = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/provider/${contract.providerId}`);
 
         return {
             ...contract,
@@ -88,7 +97,8 @@ export const getNewContracts = async (contracts: ContractParam[]) => {
             viewId: view?.data.name as string,
             articleId: article?.data.name as string,
             federalId: federal?.data ? federal.data.name : null,
-            typeId: type?.data ? type.data.name : null
+            typeId: type?.data ? type.data.name : null,
+            providerId: provider.data ? provider.data.name : null,
         }
     }))
 

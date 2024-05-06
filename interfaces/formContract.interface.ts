@@ -36,5 +36,6 @@ export interface valuesParamPropsArr {
     views: selectParam[]
     articles: selectParam[]
     divisions: selectParam[]
+    providers: selectParam[]
     colors: colorParam[]
 }

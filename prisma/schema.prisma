@@ -138,6 +138,7 @@ model Division {
   name String @unique
 
   contract Contract[]
+  paid     Paid[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
@@ -212,10 +213,15 @@ model Contract {
 model Paid {
   id String @id @default(cuid())
 
-  amount String?
+  amount                  String?
+  paymentRegistrationDate DateTime?
+  paymentOrderNumber      String?
 
   contractId String
   contract   Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  divisionId String
+  division   Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt

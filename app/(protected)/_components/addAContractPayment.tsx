@@ -25,10 +25,10 @@ import {
 import { useEffect, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation";
-import { guideCreateAction } from "@/actions/guide";
 import { PaymentSchema } from "@/schemas/payment.schema";
 import { GrUpdate } from "react-icons/gr";
 import { TiDelete } from "react-icons/ti";
+import { payCreateAction } from "@/actions/payment";
 
 
 export const addAContractPayment = () => {
@@ -47,7 +47,7 @@ export const addAContractPayment = () => {
 
     const onSubmit = (values: z.infer<typeof PaymentSchema>) => {
         startTransition(() => {
-            guideCreateAction(values, dbName)
+            payCreateAction(values)
                 .then((data) => {
                     if (data.error) {
                         toast.error(data.error);

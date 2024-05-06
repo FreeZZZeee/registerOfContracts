@@ -31,8 +31,6 @@ import { valuesParamPropsArr } from "@/interfaces/addContract.interface";
 import { Provider } from "@/interfaces/provider.interface";
 import { useAutocomplete } from "@/hooks/useAutocomplete";
 import { Card, CardContent } from "@/components/ui/card";
-import { TiDelete } from "react-icons/ti";
-import { GrUpdate } from "react-icons/gr";
 
 
 const colors = [

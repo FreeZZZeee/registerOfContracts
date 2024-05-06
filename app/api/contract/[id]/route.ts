@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { stat, unlink } from 'fs/promises'
 import { db } from "@/lib/db";
 import { getUserById } from "@/data/user";
@@ -58,8 +58,7 @@ export async function DELETE(req: NextResponse, { params }: { params: { id: stri
     return NextResponse.json({ message: "Договор удален!" }, { status: 200 });
 }
 
-export async function GET({ params }: { params: { id: string } }) {
-
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
     try {
         const contract = await db.contract.findUnique({
             where: { id: params.id }
@@ -71,7 +70,7 @@ export async function GET({ params }: { params: { id: string } }) {
     }
 }
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
     const {
         data,
         user,
