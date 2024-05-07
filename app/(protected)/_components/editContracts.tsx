@@ -31,6 +31,7 @@ import { valuesParamPropsArr } from "@/interfaces/formContract.interface";
 import { useAutocomplete } from "@/hooks/useAutocomplete";
 import { Card, CardContent } from "@/components/ui/card";
 import { Provider } from "@/interfaces/provider.interface";
+import { AddAContractPayment } from "./addAContractPayment";
 
 const colors = [
     { color: "bg-yellow-950" },
@@ -53,11 +54,11 @@ const colors = [
 
 export const EditContract = ({
     id,
-    placementId,
-    typeId,
+    placement,
+    type,
     point,
     subItem,
-    federalId,
+    federal,
     contractNumber,
     startDateOfTheAgreement,
     thePostagePeriod,
@@ -67,9 +68,9 @@ export const EditContract = ({
     theAmountOfTheContract,
     returnDate,
     theAmountOfCollateral,
-    viewId,
-    articleId,
-    divisionId,
+    view,
+    article,
+    division,
     sourceOfFinancing,
     MP,
     micro,
@@ -116,11 +117,11 @@ export const EditContract = ({
     const form = useForm<z.infer<typeof ContractSchema>>({
         resolver: zodResolver(ContractSchema),
         defaultValues: {
-            placementId: placementId || undefined,
-            typeId: typeId || undefined,
+            placement: placement || undefined,
+            type: type || undefined,
             point: point || undefined,
             subItem: subItem || undefined,
-            federalId: federalId || undefined,
+            federal: federal || undefined,
             contractNumber: contractNumber || undefined,
             startDateOfTheAgreement: startDateOfTheAgreement || undefined,
             thePostagePeriod: thePostagePeriod || undefined,
@@ -130,9 +131,9 @@ export const EditContract = ({
             theAmountOfTheContract: theAmountOfTheContract || undefined,
             returnDate: returnDate || undefined,
             theAmountOfCollateral: theAmountOfCollateral || undefined,
-            viewId: viewId || undefined,
-            articleId: articleId || undefined,
-            divisionId: divisionId || undefined,
+            view: view || undefined,
+            article: article || undefined,
+            division: division || undefined,
             sourceOfFinancing: sourceOfFinancing || undefined,
             MP: MP || undefined,
             micro: micro || undefined,
@@ -186,7 +187,7 @@ export const EditContract = ({
                     {formParams.map(formParam => (
                         <div className="w-auto" key={formParam.name}>
 
-                            {formParam.type === "text" && formParam.name !== "provider" && (
+                            {formParam.type === "text" && formParam.name !== "provider" && formParam.name !== "actuallyPaidFor" && (
                                 <FormField
                                     control={form.control}
                                     name={formParam.name as any}
@@ -205,6 +206,13 @@ export const EditContract = ({
                                         </FormItem>
                                     )}
                                 />
+                            )}
+
+                            {formParam.type === "text" && formParam.name === "actuallyPaidFor" && (
+                                <>
+                                    <FormLabel className="block my-3">{formParam.label}</FormLabel>
+                                    <AddAContractPayment />
+                                </>
                             )}
 
                             {formParam.type === "text" && formParam.name === "provider" && (
@@ -283,7 +291,7 @@ export const EditContract = ({
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>{formParam.label}</FormLabel>
-                                            {formParam.name === "placementId" && (
+                                            {formParam.name === "placement" && (
                                                 <Select
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}
@@ -305,7 +313,7 @@ export const EditContract = ({
                                                     </SelectContent>
                                                 </Select>
                                             )}
-                                            {formParam.name === "typeId" && (
+                                            {formParam.name === "type" && (
                                                 <Select
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}
@@ -327,7 +335,7 @@ export const EditContract = ({
                                                     </SelectContent>
                                                 </Select>
                                             )}
-                                            {formParam.name === "federalId" && (
+                                            {formParam.name === "federal" && (
                                                 <Select
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}
@@ -373,7 +381,7 @@ export const EditContract = ({
                                                     </SelectContent>
                                                 </Select>
                                             )}
-                                            {formParam.name === "viewId" && (
+                                            {formParam.name === "view" && (
                                                 <Select
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}
@@ -395,7 +403,7 @@ export const EditContract = ({
                                                     </SelectContent>
                                                 </Select>
                                             )}
-                                            {formParam.name === "articleId" && (
+                                            {formParam.name === "article" && (
                                                 <Select
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}
@@ -417,7 +425,7 @@ export const EditContract = ({
                                                     </SelectContent>
                                                 </Select>
                                             )}
-                                            {formParam.name === "divisionId" && (
+                                            {formParam.name === "division" && (
                                                 <Select
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}

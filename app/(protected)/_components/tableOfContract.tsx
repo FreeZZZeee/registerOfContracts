@@ -3,13 +3,11 @@
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { EditContract } from "./editContracts";
 import { Button } from "@/components/ui/button";
 import { TiDelete } from "react-icons/ti";
 import { contractDelete } from "@/actions/contract";
@@ -64,10 +62,10 @@ export const columns: ColumnDef<contractParam>[] = [
         ),
     },
     {
-        accessorKey: "placementId",
+        accessorKey: "placement",
         header: "Способ размещения",
         cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("placementId")}</div>
+            <div className="capitalize">{row.getValue("placement")}</div>
         ),
     },
     {
@@ -85,17 +83,17 @@ export const columns: ColumnDef<contractParam>[] = [
         ),
     },
     {
-        accessorKey: "actuallyPaidFor",
+        accessorKey: "theSubjectOfTheAgreement",
         header: "Предмет договора",
         cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("actuallyPaidFor")}</div>
+            <div className="capitalize">{row.getValue("theSubjectOfTheAgreement")}</div>
         ),
     },
     {
-        accessorKey: "divisionId",
+        accessorKey: "division",
         header: "Подразделение",
         cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("divisionId")}</div>
+            <div className="capitalize">{row.getValue("division")}</div>
         ),
     },
     {
@@ -127,10 +125,10 @@ export const columns: ColumnDef<contractParam>[] = [
         ),
     },
     {
-        accessorKey: "userId",
+        accessorKey: "user",
         header: "Исполнитель",
         cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("userId")}</div>
+            <div className="capitalize">{row.getValue("user")}</div>
         ),
     },
 ]
@@ -275,7 +273,7 @@ export function TableOfContracts({
                                     ))}
                                     <TableCell className="flex flex-row gap-x-1 !text-black">
                                         <InfoContract
-                                            placementId={row.original.placementId}
+                                            placement={row.original.placement}
                                             contractNumber={row.original.contractNumber}
                                             point={row.original.point}
                                             subItem={row.original.subItem}
@@ -283,16 +281,16 @@ export function TableOfContracts({
                                             thePostagePeriod={row.original.thePostagePeriod}
                                             endDateOfTheContract={row.original.endDateOfTheContract}
                                             provider={row.original.provider}
-                                            federalId={row.original.federalId}
-                                            typeId={row.original.typeId}
+                                            federal={row.original.federal}
+                                            type={row.original.type}
                                             theSubjectOfTheAgreement={row.original.theSubjectOfTheAgreement}
                                             actuallyPaidFor={row.original.actuallyPaidFor}
                                             theAmountOfTheContract={row.original.theAmountOfCollateral}
-                                            divisionId={row.original.divisionId}
+                                            division={row.original.division}
                                             returnDate={row.original.returnDate}
                                             theAmountOfCollateral={row.original.theAmountOfCollateral}
-                                            viewId={row.original.viewId}
-                                            articleId={row.original.articleId}
+                                            view={row.original.view}
+                                            article={row.original.article}
                                             sourceOfFinancing={row.original.sourceOfFinancing}
                                             MP={row.original.MP}
                                             micro={row.original.micro}

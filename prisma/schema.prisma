@@ -42,7 +42,6 @@ model User {
   password              String?
   role                  UserRole               @default(USER)
   accounts              Account[]
-  contracts             Contract[]
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
 }
@@ -84,71 +83,63 @@ model TwoFactorConfirmation {
 }
 
 model Placement {
-  id   String @id @default(cuid())
-  name String @unique
+  id String @id @default(cuid())
 
-  contract Contract[]
+  name String @unique
 
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 }
 
 model Type {
-  id   String @id @default(cuid())
-  name String @unique
+  id String @id @default(cuid())
 
-  contract Contract[]
+  name String @unique
 
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 }
 
 model Federal {
-  id   String @id @default(cuid())
-  name String @unique
+  id String @id @default(cuid())
 
-  contract Contract[]
+  name String @unique
 
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 }
 
 model View {
-  id   String @id @default(cuid())
-  name String @unique
+  id String @id @default(cuid())
 
-  contract Contract[]
+  name String @unique
 
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 }
 
 model Article {
-  id   String @id @default(cuid())
-  name String @unique
+  id String @id @default(cuid())
 
-  contract Contract[]
+  name String @unique
 
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 }
 
 model Division {
-  id   String @id @default(cuid())
-  name String @unique
+  id String @id @default(cuid())
 
-  contract Contract[]
-  paid     Paid[]
+  name String @unique
 
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 }
 
 model Provider {
-  id   String @id @default(cuid())
-  name String @unique
+  id String @id @default(cuid())
 
-  contract Contract[]
+  name String @unique
 
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
@@ -157,22 +148,13 @@ model Provider {
 model Contract {
   id String @id @default(cuid())
 
-  placementId String?
-  placement   Placement? @relation(fields: [placementId], references: [id], onDelete: Cascade)
-
-  typeId String?
-  type   Type?   @relation(fields: [typeId], references: [id], onDelete: Cascade)
-
-  federalId String?
-  federal   Federal? @relation(fields: [federalId], references: [id], onDelete: Cascade)
-
-  contractNumber          String
-  startDateOfTheAgreement String
-  endDateOfTheContract    String?
-
-  providerId String
-  provider   Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
-
+  placement                String
+  type                     String
+  federal                  String
+  contractNumber           String
+  startDateOfTheAgreement  String
+  endDateOfTheContract     String?
+  provider                 String
   contractColor            String?
   theSubjectOfTheAgreement String
   theAmountOfTheContract   String?
@@ -182,29 +164,18 @@ model Contract {
   returnDate               String?
   theAmountOfCollateral    String?
   pdfFile                  String?
-
-  paid Paid[]
-
-  viewId String
-  view   View   @relation(fields: [viewId], references: [id], onDelete: Cascade)
-
-  articleId String
-  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
-
-  divisionId String
-  division   Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
-
-  sourceOfFinancing     String?
-  additionalInformation String? @db.Text
-  MP                    Boolean @default(false)
-  subcontractorMP       Boolean @default(false)
-  transients            Boolean @default(false)
-  micro                 Boolean @default(false)
-  small                 Boolean @default(false)
-  average               Boolean @default(false)
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  view                     String
+  article                  String
+  division                 String
+  sourceOfFinancing        String?
+  additionalInformation    String? @db.Text
+  MP                       Boolean @default(false)
+  subcontractorMP          Boolean @default(false)
+  transients               Boolean @default(false)
+  micro                    Boolean @default(false)
+  small                    Boolean @default(false)
+  average                  Boolean @default(false)
+  user                     String
 
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
@@ -216,12 +187,8 @@ model Paid {
   amount                  String?
   paymentRegistrationDate DateTime?
   paymentOrderNumber      String?
-
-  contractId String
-  contract   Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
-
-  divisionId String
-  division   Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+  contract                String
+  division                String
 
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt

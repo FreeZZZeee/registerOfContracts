@@ -1,9 +1,9 @@
 export const formParams = [
-    { name: "placementId", label: "Способ размещения", type: "select" },
-    { name: "typeId", label: "Тип ЕП", type: "select" },
+    { name: "placement", label: "Способ размещения", type: "select" },
+    { name: "type", label: "Тип ЕП", type: "select" },
     { name: "point", label: "П.", type: "text" },
     { name: "subItem", label: "ПП.", type: "text" },
-    { name: "federalId", label: "Федеральный закон", type: "select" },
+    { name: "federal", label: "Федеральный закон", type: "select" },
     { name: "contractNumber", label: "Номер договора", type: "text" },
     { name: "startDateOfTheAgreement", label: "Дата начала действия договора", type: "date" },
     { name: "thePostagePeriod", label: "Срок поставки", type: "date" },
@@ -14,9 +14,9 @@ export const formParams = [
     { name: "theAmountOfTheContract", label: "Сумма договора", type: "text" },
     { name: "returnDate", label: "Дата возврата", type: "date" },
     { name: "theAmountOfCollateral", label: "Сумма обеспечения", type: "text" },
-    { name: "viewId", label: "Вид закупки", type: "select" },
-    { name: "articleId", label: "Статья расходов", type: "select" },
-    { name: "divisionId", label: "Подразделение", type: "select" },
+    { name: "view", label: "Вид закупки", type: "select" },
+    { name: "article", label: "Статья расходов", type: "select" },
+    { name: "division", label: "Подразделение", type: "text" },
     { name: "sourceOfFinancing", label: "Источники финансирования", type: "text" },
     { name: "additionalInformation", label: "Дополнительная информация", type: "textArea" },
     { name: "MP", label: "МП", type: "bool" },
@@ -27,4 +27,11 @@ export const formParams = [
     { name: "transients", label: "Переходящие", type: "bool" },
     { name: "pdfFile", label: "Документ", type: "file" },
     { name: "contractColor", label: "Цвет", type: "select" },
+]
+
+export const formParamsPayment = [
+    { name: "amount", label: "Сумма платежа", type: "text" },
+    { name: "paymentRegistationDate", label: "Дата регистрации платежа", type: "date" },
+    { name: "division", label: "Подразделение", type: "text" },
+    { name: "paymentOrderNumber", label: "№ платежного поручения.", type: "text" },
 ]

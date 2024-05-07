@@ -3,12 +3,6 @@ import { stat, unlink } from 'fs/promises'
 import { db } from "@/lib/db";
 import { getUserById } from "@/data/user";
 import { getContractById } from "@/data/contract";
-import { getPlacementByName } from "@/data/placement";
-import { getTypeByName } from "@/data/type";
-import { getFederalByName } from "@/data/federal";
-import { getViewByName } from "@/data/view";
-import { getArticleByName } from "@/data/article";
-import { getDivisionByName } from "@/data/division";
 
 export async function DELETE(req: NextResponse, { params }: { params: { id: string } }) {
 
@@ -86,42 +80,6 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         return NextResponse.json({ message: "Неавторизованный!" }, { status: 401 });
     }
 
-    const {
-        placementId,
-        typeId,
-        point,
-        subItem,
-        federalId,
-        contractNumber,
-        startDateOfTheAgreement,
-        thePostagePeriod,
-        endDateOfTheContract,
-        provider,
-        theSubjectOfTheAgreement,
-        theAmountOfTheContract,
-        returnDate,
-        theAmountOfCollateral,
-        viewId,
-        articleId,
-        divisionId,
-        sourceOfFinancing,
-        MP,
-        micro,
-        small,
-        average,
-        subcontractorMP,
-        transients,
-        additionalInformation,
-        contractColor,
-        pdfFile
-    } = data;
-
-    const dbPlacement = await getPlacementByName(placementId);
-    const dbType = await getTypeByName(typeId);
-    const dbFederal = await getFederalByName(federalId);
-    const dbView = await getViewByName(viewId);
-    const dbArticle = await getArticleByName(articleId);
-    const dbDivision = await getDivisionByName(divisionId);
     const dbContractById = await getContractById(params.id);
 
 
@@ -153,34 +111,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
             id: dbContractById.id
         },
         data: {
-            placementId: dbPlacement?.id,
-            typeId: dbType?.id,
-            federalId: dbFederal?.id,
-            point,
-            subItem,
-            contractNumber,
-            startDateOfTheAgreement,
-            thePostagePeriod,
-            endDateOfTheContract,
-            provider,
-            contractColor,
-            theSubjectOfTheAgreement,
-            theAmountOfTheContract,
-            returnDate,
-            theAmountOfCollateral,
-            viewId: dbView?.id,
-            articleId: dbArticle?.id,
-            divisionId: dbDivision?.id,
-            sourceOfFinancing,
-            additionalInformation,
-            MP,
-            micro,
-            small,
-            average,
-            subcontractorMP,
-            transients,
-            userId: dbContractById?.userId as string,
-            pdfFile: pdfFile
+            ...data,
+            user: dbContractById.user,
+            pdfFile: data.pdfFile
         }
     })
 

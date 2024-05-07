@@ -31,6 +31,7 @@ import { valuesParamPropsArr } from "@/interfaces/addContract.interface";
 import { Provider } from "@/interfaces/provider.interface";
 import { useAutocomplete } from "@/hooks/useAutocomplete";
 import { Card, CardContent } from "@/components/ui/card";
+import { AutocompleteInput } from "@/components/autocompleteInput";
 
 
 const colors = [
@@ -72,9 +73,9 @@ export const AddAContract = ({
     const form = useForm<z.infer<typeof ContractSchema>>({
         resolver: zodResolver(ContractSchema),
         defaultValues: {
-            placementId: "",
-            typeId: "",
-            federalId: "",
+            placement: "",
+            type: "",
+            federal: "",
             contractNumber: "",
             startDateOfTheAgreement: "",
             endDateOfTheContract: "",
@@ -86,9 +87,9 @@ export const AddAContract = ({
             subItem: "",
             returnDate: "",
             theAmountOfCollateral: "",
-            viewId: "",
-            articleId: "",
-            divisionId: "",
+            view: "",
+            article: "",
+            division: "",
             sourceOfFinancing: "",
             MP: false,
             micro: false,
@@ -111,41 +112,32 @@ export const AddAContract = ({
         }
     }, [values])
 
-    const {
-        searchedValue,
-        suggestions,
-        selectedSuggestion,
-        activeSuggestion,
-        handleChange,
-        handleKeyDown,
-        handleClick,
-    } = useAutocomplete(providers, inputSearchRef.current);
-
-
     const onSubmit = (values: z.infer<typeof ContractSchema>) => {
         values.contractColor = color;
-        values.provider = searchedValue
 
         const formData = new FormData();
         formData.append('pdfFile', values.pdfFile as File);
         values.pdfFile = {} as File;
 
+        console.log(values);
 
-        startTransition(() => {
-            contractCreate(values, formData)
-                .then((data) => {
-                    if (data.error) {
-                        toast.error(data.error);
-                    }
 
-                    if (data.success) {
-                        toast.success(data.success);
-                        router.push('/registry');
-                        router.refresh();
-                    }
-                })
-                .catch(() => toast.error("Что-то пошло не так!"));
-        });
+
+        // startTransition(() => {
+        //     contractCreate(values, formData)
+        //         .then((data) => {
+        //             if (data.error) {
+        //                 toast.error(data.error);
+        //             }
+
+        //             if (data.success) {
+        //                 toast.success(data.success);
+        //                 router.push('/registry');
+        //                 router.refresh();
+        //             }
+        //         })
+        //         .catch(() => toast.error("Что-то пошло не так!"));
+        // });
     }
 
     const deletePreview = () => {
@@ -164,6 +156,7 @@ export const AddAContract = ({
                             {formParam.type === "text"
                                 && formParam.name !== "provider"
                                 && formParam.name !== "actuallyPaidFor"
+                                && formParam.name !== "division"
                                 && (
                                     <FormField
                                         control={form.control}
@@ -186,52 +179,31 @@ export const AddAContract = ({
                                     />
                                 )}
 
-                            {formParam.type === "text" && formParam.name === "provider" && (
-                                <FormField
-                                    control={form.control}
-                                    name={formParam.name as any}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>{formParam.label}</FormLabel>
-                                            <FormControl>
-                                                <div className="pt-2 flex flex-col justify-center">
-                                                    <Input
-                                                        {...field}
-                                                        value={searchedValue}
-                                                        placeholder={formParam.label}
-                                                        onChangeCapture={handleChange}
-                                                        onKeyDown={handleKeyDown}
-                                                        ref={inputSearchRef}
-                                                        disabled={isPending}
-                                                        type={formParam.type}
-                                                    />
-                                                    <Card className="mt-1 border-none">
-                                                        {!suggestions.length &&
-                                                            searchedValue.length &&
-                                                            !selectedSuggestion.length ? (
-                                                            <></>
-                                                        ) : (
-                                                            <>
-                                                                {suggestions.map(({ name }: Provider, index) => (
-                                                                    <CardContent key={index} className="p-0">
-                                                                        <p
-                                                                            className={`h-full pt-1 text-center hover:cursor-pointer hover:bg-gray-100 ${index === activeSuggestion - 1 ? "bg-gray-100" : ""
-                                                                                }`}
-                                                                            onClick={() => handleClick(name)}
-                                                                        >{name}</p>
-                                                                    </CardContent>
+                            {formParam.type === "text"
+                                && formParam.name === "division"
+                                && (
+                                    <AutocompleteInput
+                                        control={form.control}
+                                        name={formParam.name}
+                                        label={formParam.label}
+                                        type={formParam.type}
+                                        isPending={isPending}
+                                        providers={divisions as []}
+                                    />
+                                )}
 
-                                                                ))}
-                                                            </>
-                                                        )}
-                                                    </Card>
-                                                </div>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            )}
+                            {formParam.type === "text"
+                                && formParam.name === "provider"
+                                && (
+                                    <AutocompleteInput
+                                        control={form.control}
+                                        name={formParam.name}
+                                        label={formParam.label}
+                                        type={formParam.type}
+                                        isPending={isPending}
+                                        providers={providers as []}
+                                    />
+                                )}
 
                             {formParam.type === "text" && formParam.name === "actuallyPaidFor" && (
                                 <>
@@ -269,7 +241,7 @@ export const AddAContract = ({
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>{formParam.label}</FormLabel>
-                                            {formParam.name === "placementId" && (
+                                            {formParam.name === "placement" && (
                                                 <Select
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}
@@ -290,7 +262,7 @@ export const AddAContract = ({
                                                     </SelectContent>
                                                 </Select>
                                             )}
-                                            {formParam.name === "typeId" && (
+                                            {formParam.name === "type" && (
                                                 <Select
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}
@@ -311,7 +283,7 @@ export const AddAContract = ({
                                                     </SelectContent>
                                                 </Select>
                                             )}
-                                            {formParam.name === "federalId" && (
+                                            {formParam.name === "federal" && (
                                                 <Select
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}
@@ -355,7 +327,7 @@ export const AddAContract = ({
                                                     </SelectContent>
                                                 </Select>
                                             )}
-                                            {formParam.name === "viewId" && (
+                                            {formParam.name === "view" && (
                                                 <Select
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}
@@ -376,7 +348,7 @@ export const AddAContract = ({
                                                     </SelectContent>
                                                 </Select>
                                             )}
-                                            {formParam.name === "articleId" && (
+                                            {formParam.name === "article" && (
                                                 <Select
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}
@@ -392,27 +364,6 @@ export const AddAContract = ({
                                                         {articles && articles.map(article => (
                                                             <SelectItem value={article.name} key={article.name}>
                                                                 {article.name}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                            )}
-                                            {formParam.name === "divisionId" && (
-                                                <Select
-                                                    disabled={isPending}
-                                                    onValueChange={field.onChange}
-                                                >
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue
-                                                                placeholder={formParam.label}
-                                                            />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {divisions && divisions.map(division => (
-                                                            <SelectItem value={division.name} key={division.name}>
-                                                                {division.name}
                                                             </SelectItem>
                                                         ))}
                                                     </SelectContent>
