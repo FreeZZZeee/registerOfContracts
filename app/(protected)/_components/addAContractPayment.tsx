@@ -83,6 +83,7 @@ export const AddAContractPayment = () => {
                     >
                         {formParamsPayment.map(formParam => (
                             <FormField
+                                key={formParam.name}
                                 control={form.control}
                                 name={formParam.name as any}
                                 render={({ field }) => (

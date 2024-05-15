@@ -32,6 +32,7 @@ import { useAutocomplete } from "@/hooks/useAutocomplete";
 import { Card, CardContent } from "@/components/ui/card";
 import { Provider } from "@/interfaces/provider.interface";
 import { AddAContractPayment } from "./addAContractPayment";
+import { AutocompleteInput } from "@/components/autocompleteInput";
 
 const colors = [
     { color: "bg-yellow-950" },
@@ -93,25 +94,7 @@ export const EditContract = ({
     const [isPending, startTransition] = useTransition();
     const [pdf, setPdf] = useState<string>(pdfFile as string);
 
-    const inputSearchRef = useRef<HTMLInputElement>(null);
-
     const router = useRouter();
-
-    useEffect(() => {
-        if (inputSearchRef.current) {
-            inputSearchRef.current.focus();
-        }
-    }, [])
-
-    const {
-        searchedValue,
-        suggestions,
-        selectedSuggestion,
-        activeSuggestion,
-        handleChange,
-        handleKeyDown,
-        handleClick,
-    } = useAutocomplete(providers, inputSearchRef.current);
 
 
     const form = useForm<z.infer<typeof ContractSchema>>({
@@ -126,7 +109,7 @@ export const EditContract = ({
             startDateOfTheAgreement: startDateOfTheAgreement || undefined,
             thePostagePeriod: thePostagePeriod || undefined,
             endDateOfTheContract: endDateOfTheContract || undefined,
-            provider: searchedValue ? searchedValue : provider || undefined,
+            provider: provider || undefined,
             theSubjectOfTheAgreement: theSubjectOfTheAgreement || undefined,
             theAmountOfTheContract: theAmountOfTheContract || undefined,
             returnDate: returnDate || undefined,
@@ -148,7 +131,6 @@ export const EditContract = ({
 
     const onSubmit = (values: z.infer<typeof ContractSchema>) => {
         values.contractColor = color;
-        values.provider = searchedValue ? searchedValue : provider;
 
         let formData: FormData;
         if (values?.pdfFile !== undefined) {
@@ -166,6 +148,7 @@ export const EditContract = ({
 
                     if (data.success) {
                         toast.success(data.success);
+                        router.push('/registry');
                         router.refresh();
                     }
                 })
@@ -187,26 +170,29 @@ export const EditContract = ({
                     {formParams.map(formParam => (
                         <div className="w-auto" key={formParam.name}>
 
-                            {formParam.type === "text" && formParam.name !== "provider" && formParam.name !== "actuallyPaidFor" && (
-                                <FormField
-                                    control={form.control}
-                                    name={formParam.name as any}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>{formParam.label}</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    {...field}
-                                                    placeholder={formParam.label}
-                                                    disabled={isPending}
-                                                    type={formParam.type}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            )}
+                            {formParam.type === "text"
+                                && formParam.name !== "provider"
+                                && formParam.name !== "actuallyPaidFor"
+                                && formParam.name !== "division" && (
+                                    <FormField
+                                        control={form.control}
+                                        name={formParam.name as any}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>{formParam.label}</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        {...field}
+                                                        placeholder={formParam.label}
+                                                        disabled={isPending}
+                                                        type={formParam.type}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                )}
 
                             {formParam.type === "text" && formParam.name === "actuallyPaidFor" && (
                                 <>
@@ -215,52 +201,33 @@ export const EditContract = ({
                                 </>
                             )}
 
-                            {formParam.type === "text" && formParam.name === "provider" && (
-                                <FormField
-                                    control={form.control}
-                                    name={formParam.name as any}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>{formParam.label}</FormLabel>
-                                            <FormControl>
-                                                <div className="pt-2 flex flex-col justify-center">
-                                                    <Input
-                                                        {...field}
-                                                        // value={searchedValue ? searchedValue : provider}
-                                                        placeholder={formParam.label}
-                                                        onChangeCapture={handleChange}
-                                                        onKeyDown={handleKeyDown}
-                                                        ref={inputSearchRef}
-                                                        disabled={isPending}
-                                                        type={formParam.type}
-                                                    />
-                                                    <Card className="mt-1 border-none">
-                                                        {!suggestions.length &&
-                                                            searchedValue.length &&
-                                                            !selectedSuggestion.length ? (
-                                                            <></>
-                                                        ) : (
-                                                            <>
-                                                                {suggestions.map(({ name }: Provider, index) => (
-                                                                    <CardContent key={index} className="p-0">
-                                                                        <p
-                                                                            className={`h-full pt-1 text-center hover:cursor-pointer hover:bg-gray-100 ${index === activeSuggestion - 1 ? "bg-gray-100" : ""
-                                                                                }`}
-                                                                            onClick={() => handleClick(name)}
-                                                                        >{name}</p>
-                                                                    </CardContent>
+                            {formParam.type === "text"
+                                && formParam.name === "division"
+                                && (
+                                    <AutocompleteInput
+                                        control={form.control}
+                                        nameProvider={formParam.name}
+                                        label={formParam.label}
+                                        type={formParam.type}
+                                        isPending={isPending}
+                                        providers={divisions as []}
+                                        setValue={form.setValue}
+                                    />
+                                )}
 
-                                                                ))}
-                                                            </>
-                                                        )}
-                                                    </Card>
-                                                </div>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            )}
+                            {formParam.type === "text"
+                                && formParam.name === "provider"
+                                && (
+                                    <AutocompleteInput
+                                        control={form.control}
+                                        nameProvider={formParam.name}
+                                        label={formParam.label}
+                                        type={formParam.type}
+                                        isPending={isPending}
+                                        providers={providers as []}
+                                        setValue={form.setValue}
+                                    />
+                                )}
 
 
                             {formParam.type === "date" && (

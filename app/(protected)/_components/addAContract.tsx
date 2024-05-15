@@ -65,8 +65,6 @@ export const AddAContract = ({
     const [color, setColor] = useState<string>();
     const [pdf, setPdf] = useState<string>();
 
-    const inputSearchRef = useRef<HTMLInputElement>(null);
-
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
 
@@ -106,10 +104,6 @@ export const AddAContract = ({
         if (values) {
             setValues("");
         }
-
-        if (inputSearchRef.current) {
-            inputSearchRef.current.focus();
-        }
     }, [values])
 
     const onSubmit = (values: z.infer<typeof ContractSchema>) => {
@@ -119,25 +113,21 @@ export const AddAContract = ({
         formData.append('pdfFile', values.pdfFile as File);
         values.pdfFile = {} as File;
 
-        console.log(values);
+        startTransition(() => {
+            contractCreate(values, formData)
+                .then((data) => {
+                    if (data.error) {
+                        toast.error(data.error);
+                    }
 
-
-
-        // startTransition(() => {
-        //     contractCreate(values, formData)
-        //         .then((data) => {
-        //             if (data.error) {
-        //                 toast.error(data.error);
-        //             }
-
-        //             if (data.success) {
-        //                 toast.success(data.success);
-        //                 router.push('/registry');
-        //                 router.refresh();
-        //             }
-        //         })
-        //         .catch(() => toast.error("Что-то пошло не так!"));
-        // });
+                    if (data.success) {
+                        toast.success(data.success);
+                        router.push('/registry');
+                        router.refresh();
+                    }
+                })
+                .catch(() => toast.error("Что-то пошло не так!"));
+        });
     }
 
     const deletePreview = () => {
@@ -184,11 +174,12 @@ export const AddAContract = ({
                                 && (
                                     <AutocompleteInput
                                         control={form.control}
-                                        name={formParam.name}
+                                        nameProvider={formParam.name}
                                         label={formParam.label}
                                         type={formParam.type}
                                         isPending={isPending}
                                         providers={divisions as []}
+                                        setValue={form.setValue}
                                     />
                                 )}
 
@@ -197,11 +188,12 @@ export const AddAContract = ({
                                 && (
                                     <AutocompleteInput
                                         control={form.control}
-                                        name={formParam.name}
+                                        nameProvider={formParam.name}
                                         label={formParam.label}
                                         type={formParam.type}
                                         isPending={isPending}
                                         providers={providers as []}
+                                        setValue={form.setValue}
                                     />
                                 )}
 

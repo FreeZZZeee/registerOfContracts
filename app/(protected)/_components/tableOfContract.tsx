@@ -111,13 +111,6 @@ export const columns: ColumnDef<contractParam>[] = [
         ),
     },
     {
-        accessorKey: "theSubjectOfTheAgreement",
-        header: "Фактически оплачено",
-        cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("theSubjectOfTheAgreement")}</div>
-        ),
-    },
-    {
         accessorKey: "contractColor",
         header: "Цвет",
         cell: ({ row }) => (
@@ -305,43 +298,6 @@ export function TableOfContracts({
                                                 <FaRegEdit className="!w-full !h-full" />
                                             </Link>
                                         </Button>
-                                        {/* <EditContract
-                                            id={row.original.id}
-                                            placementId={row.original.placementId}
-                                            contractNumber={row.original.contractNumber}
-                                            point={row.original.point}
-                                            subItem={row.original.subItem}
-                                            startDateOfTheAgreement={row.original.startDateOfTheAgreement}
-                                            thePostagePeriod={row.original.thePostagePeriod}
-                                            endDateOfTheContract={row.original.endDateOfTheContract}
-                                            provider={row.original.provider}
-                                            federalId={row.original.federalId}
-                                            typeId={row.original.typeId}
-                                            theSubjectOfTheAgreement={row.original.theSubjectOfTheAgreement}
-                                            theAmountOfTheContract={row.original.theAmountOfCollateral}
-                                            divisionId={row.original.divisionId}
-                                            contractColor={row.original.contractColor}
-                                            returnDate={row.original.returnDate}
-                                            theAmountOfCollateral={row.original.theAmountOfCollateral}
-                                            viewId={row.original.viewId}
-                                            articleId={row.original.articleId}
-                                            sourceOfFinancing={row.original.sourceOfFinancing}
-                                            MP={row.original.MP}
-                                            micro={row.original.micro}
-                                            small={row.original.small}
-                                            average={row.original.average}
-                                            subcontractorMP={row.original.subcontractorMP}
-                                            transients={row.original.transients}
-                                            additionalInformation={row.original.additionalInformation}
-                                            pdfFile={row.original.pdfFile}
-                                            placements={placements as []}
-                                            types={types as []}
-                                            federals={federals as []}
-                                            views={views as []}
-                                            articles={articles as []}
-                                            divisions={divisions as []}
-                                            colors={colors as []}
-                                        /> */}
                                         <Button
                                             onClick={() => onDelete(row.original.id)}
                                             variant="destructive"

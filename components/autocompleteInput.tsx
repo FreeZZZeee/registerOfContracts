@@ -2,30 +2,31 @@ import { Provider } from "@/interfaces/provider.interface"
 import { Card, CardContent } from "./ui/card"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form"
 import { Input } from "./ui/input"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useAutocomplete } from "@/hooks/useAutocomplete"
 
 interface autocompleteInputProps {
     control: any
-    name: any
+    nameProvider: any
     label: string
     type: string
     isPending: boolean
     providers: []
+    setValue: any
 }
 
 export const AutocompleteInput = ({
     control,
-    name,
+    nameProvider,
     label,
     type,
     isPending,
-    providers
+    providers,
+    setValue
 }: autocompleteInputProps) => {
     const inputSearchRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-
         if (inputSearchRef.current) {
             inputSearchRef.current.focus();
         }
@@ -40,10 +41,11 @@ export const AutocompleteInput = ({
         handleKeyDown,
         handleClick,
     } = useAutocomplete(providers, inputSearchRef.current);
+
     return (
         <FormField
             control={control}
-            name={name}
+            name={nameProvider}
             render={({ field }) => (
                 <FormItem>
                     <FormLabel>{label}</FormLabel>
@@ -71,7 +73,10 @@ export const AutocompleteInput = ({
                                                 <p
                                                     className={`h-full pt-1 text-center hover:cursor-pointer hover:bg-gray-100 ${index === activeSuggestion - 1 ? "bg-gray-100" : ""
                                                         }`}
-                                                    onClick={() => handleClick(name)}
+                                                    onClick={() => {
+                                                        handleClick(name)
+                                                        setValue(nameProvider, name)
+                                                    }}
                                                 >{name}</p>
                                             </CardContent>
 
@@ -83,7 +88,8 @@ export const AutocompleteInput = ({
                     </FormControl>
                     <FormMessage />
                 </FormItem>
-            )}
+            )
+            }
         />
     )
 }
