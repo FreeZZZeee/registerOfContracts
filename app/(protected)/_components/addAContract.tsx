@@ -7,7 +7,7 @@ import { FaRegFilePdf } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import Link from "next/link";
-import { ChangeEvent, useEffect, useRef, useState, useTransition } from "react"
+import { ChangeEvent, useEffect, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
@@ -28,9 +28,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { contractCreate } from "@/actions/contract";
 import { formParams } from "@/data/form-params"
 import { valuesParamPropsArr } from "@/interfaces/addContract.interface";
-import { Provider } from "@/interfaces/provider.interface";
-import { useAutocomplete } from "@/hooks/useAutocomplete";
-import { Card, CardContent } from "@/components/ui/card";
 import { AutocompleteInput } from "@/components/autocompleteInput";
 
 
@@ -180,6 +177,7 @@ export const AddAContract = ({
                                         isPending={isPending}
                                         providers={divisions as []}
                                         setValue={form.setValue}
+                                        valueProvider={""}
                                     />
                                 )}
 
@@ -194,6 +192,7 @@ export const AddAContract = ({
                                         isPending={isPending}
                                         providers={providers as []}
                                         setValue={form.setValue}
+                                        valueProvider={""}
                                     />
                                 )}
 

@@ -2,7 +2,7 @@ import { Provider } from "@/interfaces/provider.interface"
 import { Card, CardContent } from "./ui/card"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form"
 import { Input } from "./ui/input"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { useAutocomplete } from "@/hooks/useAutocomplete"
 
 interface autocompleteInputProps {
@@ -13,6 +13,7 @@ interface autocompleteInputProps {
     isPending: boolean
     providers: []
     setValue: any
+    valueProvider: string
 }
 
 export const AutocompleteInput = ({
@@ -22,7 +23,8 @@ export const AutocompleteInput = ({
     type,
     isPending,
     providers,
-    setValue
+    setValue,
+    valueProvider
 }: autocompleteInputProps) => {
     const inputSearchRef = useRef<HTMLInputElement>(null);
 
@@ -53,7 +55,7 @@ export const AutocompleteInput = ({
                         <div className="pt-2 flex flex-col justify-center">
                             <Input
                                 {...field}
-                                value={searchedValue}
+                                value={searchedValue ? searchedValue : valueProvider}
                                 placeholder={label}
                                 onChangeCapture={handleChange}
                                 onKeyDown={handleKeyDown}
@@ -75,7 +77,7 @@ export const AutocompleteInput = ({
                                                         }`}
                                                     onClick={() => {
                                                         handleClick(name)
-                                                        setValue(nameProvider, name)
+                                                        setValue(nameProvider, name ? name : valueProvider)
                                                     }}
                                                 >{name}</p>
                                             </CardContent>

@@ -14,7 +14,7 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form"
-import { ChangeEvent, useEffect, useRef, useState, useTransition } from "react"
+import { ChangeEvent, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation";
 import { Textarea } from "../../../components/ui/textarea";
@@ -28,9 +28,6 @@ import Link from "next/link";
 import { RiDeleteBin2Fill } from "react-icons/ri";
 import { formParams } from "@/data/form-params"
 import { valuesParamPropsArr } from "@/interfaces/formContract.interface";
-import { useAutocomplete } from "@/hooks/useAutocomplete";
-import { Card, CardContent } from "@/components/ui/card";
-import { Provider } from "@/interfaces/provider.interface";
 import { AddAContractPayment } from "./addAContractPayment";
 import { AutocompleteInput } from "@/components/autocompleteInput";
 
@@ -212,6 +209,7 @@ export const EditContract = ({
                                         isPending={isPending}
                                         providers={divisions as []}
                                         setValue={form.setValue}
+                                        valueProvider={division}
                                     />
                                 )}
 
@@ -226,6 +224,7 @@ export const EditContract = ({
                                         isPending={isPending}
                                         providers={providers as []}
                                         setValue={form.setValue}
+                                        valueProvider={provider}
                                     />
                                 )}
 
