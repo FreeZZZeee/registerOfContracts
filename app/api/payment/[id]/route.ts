@@ -4,18 +4,18 @@ import { getUserById } from "@/data/user";
 
 export async function DELETE(req: NextResponse, { params }: { params: { id: string } }) {
 
-    await db.placement.delete({ where: { id: params.id } });
+    await db.paid.delete({ where: { id: params.id } });
 
-    return NextResponse.json({ message: "Справочник удалён!" }, { status: 200 });
+    return NextResponse.json({ message: "Сумма платежа удалёна!" }, { status: 200 });
 }
 
 export async function GET(req: NextResponse, { params }: { params: { id: string } }) {
     try {
-        const placement = await db.placement.findUnique({
+        const payment = await db.paid.findUnique({
             where: { id: params.id }
         });
 
-        return NextResponse.json(placement, { status: 200 });
+        return NextResponse.json(payment, { status: 200 });
     } catch {
         return NextResponse.json({ status: 400 });
     }
@@ -23,7 +23,7 @@ export async function GET(req: NextResponse, { params }: { params: { id: string 
 
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
     const {
-        name,
+        data,
         user,
     } = await req.json();
 
@@ -37,12 +37,14 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
         return NextResponse.json({ message: "Неавторизованный!" }, { status: 401 });
     }
 
-    await db.placement.update({
+    await db.paid.update({
         where: {
             id: params.id
         },
-        data: { name: name }
+        data: {
+            ...data
+        }
     });
 
-    return NextResponse.json({ message: "Справочник обновлён!" }, { status: 200 });
+    return NextResponse.json({ message: "Сумма платежа обновлёна!" }, { status: 200 });
 }

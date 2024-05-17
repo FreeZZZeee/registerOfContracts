@@ -47,6 +47,7 @@ export const apiPrefix = [
    "/api/contract/guide",
    "/api/provider",
    "/api/provider/guide",
+   "/api/payment",
 ];
 
 /**

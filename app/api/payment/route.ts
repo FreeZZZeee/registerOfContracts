@@ -20,12 +20,11 @@ export async function POST(req: Request) {
 
     await db.paid.create({
         data: {
-            amount: data.amount,
-            contractId: data.contractId
+            ...data
         }
     });
 
-    return NextResponse.json({ message: "Справочник создан!" }, { status: 200 });
+    return NextResponse.json({ message: "Оплата добавлена!" }, { status: 200 });
 }
 
 export async function GET() {

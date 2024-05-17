@@ -22,25 +22,28 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form"
-import { useEffect, useState, useTransition } from "react"
+import { useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation";
 import { PaymentSchema } from "@/schemas/payment.schema";
-import { payCreateAction } from "@/actions/payment";
+import { payUpdateAction } from "@/actions/payment";
 import { formParamsPayment } from "@/data/form-params";
 import { AutocompleteInput } from "@/components/autocompleteInput";
-import { selectParam } from "@/interfaces/guide.interface";
+import { FaRegEdit } from "react-icons/fa";
+import { Payment } from "@/interfaces/payment.interface";
 
-interface Props {
-    idContract: string
-    providers: selectParam[]
+interface autocompleteInputProps {
+    providers: []
+    valueProvider: string
+    payment: Payment
 }
 
-export const AddAContractPayment = ({
-    idContract,
-    providers
-}: Props) => {
-    const [value, setValues] = useState<string>();
+
+export const EditContractPayment = ({
+    providers,
+    valueProvider,
+    payment
+}: autocompleteInputProps) => {
     const [isPending, startTransition] = useTransition();
     const [open, setOpen] = useState(false);
     const router = useRouter();
@@ -48,17 +51,17 @@ export const AddAContractPayment = ({
     const form = useForm<z.infer<typeof PaymentSchema>>({
         resolver: zodResolver(PaymentSchema),
         defaultValues: {
-            amount: "",
-            paymentOrderNumber: "",
-            paymentRegistrationDate: undefined,
-            division: "",
-            contract: idContract
+            amount: payment.amount || undefined,
+            paymentOrderNumber: payment.paymentOrderNumber || undefined,
+            paymentRegistrationDate: payment.paymentRegistrationDate.toISOString().substring(0, 10) || undefined,
+            division: payment.division || undefined,
+            contract: payment.contract || undefined
         }
     });
 
     const onSubmit = (values: z.infer<typeof PaymentSchema>) => {
         startTransition(() => {
-            payCreateAction(values)
+            payUpdateAction(values, payment.id)
                 .then((data) => {
                     if (data.error) {
                         toast.error(data.error);
@@ -74,29 +77,24 @@ export const AddAContractPayment = ({
         });
     }
 
-    useEffect(() => {
-        if (value) {
-            setValues("");
-        }
-    }, [value])
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild className="float-right">
-                <Button variant="outline">Добавить</Button>
+            <DialogTrigger asChild>
+                <Button variant="outline"><FaRegEdit className="!w-full !h-full" /></Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px] bg-slate-100">
                 <DialogHeader>
-                    <DialogTitle>Добавить</DialogTitle>
+                    <DialogTitle>Редактировать</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form
                         className="grid gap-4 py-4"
+                    // onSubmit={form.handleSubmit(onSubmit)}
                     >
                         {formParamsPayment.map(formParam => (
                             <div key={formParam.name}>
                                 {formParam.name !== "division" && (
                                     <FormField
-                                        key={formParam.name}
                                         control={form.control}
                                         name={formParam.name as any}
                                         render={({ field }) => (
@@ -105,7 +103,6 @@ export const AddAContractPayment = ({
                                                 <FormControl>
                                                     <Input
                                                         {...field}
-                                                        value={value}
                                                         placeholder={formParam.label}
                                                         disabled={isPending}
                                                         type={formParam.type}
@@ -125,7 +122,7 @@ export const AddAContractPayment = ({
                                         isPending={isPending}
                                         providers={providers as []}
                                         setValue={form.setValue}
-                                        valueProvider={""}
+                                        valueProvider={valueProvider}
                                     />
                                 )}
                             </div>

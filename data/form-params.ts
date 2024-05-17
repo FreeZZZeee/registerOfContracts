@@ -31,7 +31,7 @@ export const formParams = [
 
 export const formParamsPayment = [
     { name: "amount", label: "Сумма платежа", type: "text" },
-    { name: "paymentRegistationDate", label: "Дата регистрации платежа", type: "date" },
+    { name: "paymentRegistrationDate", label: "Дата регистрации платежа", type: "date" },
     { name: "division", label: "Подразделение", type: "text" },
     { name: "paymentOrderNumber", label: "№ платежного поручения.", type: "text" },
 ]

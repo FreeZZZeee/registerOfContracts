@@ -2,11 +2,14 @@ import { getContractFromAxios, getContractsFromAxios } from "@/data/contract";
 import { colors } from "@/data/colors";
 import { EditContract } from "../_components/editContracts";
 import { currentUser } from "@/lib/auth";
+import { getPayByContractId } from "@/data/payment";
+import { Payment } from "@/interfaces/payment.interface";
 
 const EditContractPage = async (props: any) => {
     const user = await currentUser();
     const qs = props.searchParams;
     const data = await getContractFromAxios(qs?.id);
+    const payment = await getPayByContractId(qs?.id);
 
     const dataContract = await getContractsFromAxios(user?.id as string);
 
@@ -49,6 +52,7 @@ const EditContractPage = async (props: any) => {
                 divisions={dataContract.divisions as []}
                 providers={dataContract.providers}
                 colors={colors as []}
+                payment={payment as Payment[]}
             />
         </div>
     );

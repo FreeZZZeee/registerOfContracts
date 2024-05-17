@@ -27,9 +27,13 @@ import { IoCloudUploadOutline } from "react-icons/io5";
 import Link from "next/link";
 import { RiDeleteBin2Fill } from "react-icons/ri";
 import { formParams } from "@/data/form-params"
-import { valuesParamPropsArr } from "@/interfaces/formContract.interface";
-import { AddAContractPayment } from "./addAContractPayment";
+import { valuesParamPropsArr } from "@/interfaces/formContractEdit.interface";
+import { EditContractPayment } from "./editContractPayment";
 import { AutocompleteInput } from "@/components/autocompleteInput";
+import { AddAContractPayment } from "./addAContractPayment";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TiDelete } from "react-icons/ti";
+import { payDeleteAction } from "@/actions/payment";
 
 const colors = [
     { color: "bg-yellow-950" },
@@ -85,7 +89,8 @@ export const EditContract = ({
     views,
     articles,
     divisions,
-    providers
+    providers,
+    payment
 }: valuesParamPropsArr) => {
     const [color, setColor] = useState<string>(contractColor);
     const [isPending, startTransition] = useTransition();
@@ -127,7 +132,7 @@ export const EditContract = ({
     });
 
     const onSubmit = (values: z.infer<typeof ContractSchema>) => {
-        values.contractColor = color;
+        values.contractColor = color ? color : "";
 
         let formData: FormData;
         if (values?.pdfFile !== undefined) {
@@ -155,6 +160,25 @@ export const EditContract = ({
 
     const deletePreview = () => {
         setPdf('');
+    }
+
+    let total = 0;
+
+    const onDelete = (id: string) => {
+        startTransition(() => {
+            payDeleteAction(id)
+                .then((data) => {
+                    if (data.error) {
+                        toast.error(data.error);
+                    }
+
+                    if (data.success) {
+                        toast.success(data.success);
+                        router.refresh();
+                    }
+                })
+                .catch(() => toast.error("Что-то пошло не так!"));
+        });
     }
 
     return (
@@ -194,7 +218,53 @@ export const EditContract = ({
                             {formParam.type === "text" && formParam.name === "actuallyPaidFor" && (
                                 <>
                                     <FormLabel className="block my-3">{formParam.label}</FormLabel>
-                                    <AddAContractPayment />
+                                    <AddAContractPayment
+                                        idContract={id}
+                                        providers={divisions}
+                                    />
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Сумма платежа</TableHead>
+                                                <TableHead>Дата Регистрации платежа</TableHead>
+                                                <TableHead>Подразделение</TableHead>
+                                                <TableHead>№ платежного поручения</TableHead>
+                                                <TableHead></TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {payment && payment.map((paid) => {
+                                                total += Number(paid.amount);
+                                                return (
+                                                    <TableRow key={paid.paymentOrderNumber} className="my-2">
+                                                        <TableCell>{Number(paid.amount).toLocaleString('en-US')}</TableCell>
+                                                        <TableCell>{paid.paymentRegistrationDate.toISOString().slice(0, 10)}</TableCell>
+                                                        <TableCell>{paid.division}</TableCell>
+                                                        <TableCell>{paid.paymentOrderNumber}</TableCell>
+                                                        <TableCell className="flex justify-end gap-2">
+                                                            <EditContractPayment
+                                                                providers={divisions as []}
+                                                                valueProvider={paid.division}
+                                                                payment={paid}
+                                                            />
+                                                            <Button
+                                                                onClick={() => onDelete(paid.id)}
+                                                                variant="destructive"
+                                                                className="w-[50px] p-2"
+                                                                disabled={isPending}
+                                                            >
+                                                                <TiDelete className="!w-full !h-full" />
+                                                            </Button>
+                                                        </TableCell>
+
+                                                    </TableRow>
+                                                )
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                    <div className="flex justify-end">
+                                        <span className="font-bold">Итого:&nbsp;</span><span>{total.toLocaleString('en-US')}</span>
+                                    </div>
                                 </>
                             )}
 
@@ -263,7 +333,7 @@ export const EditContract = ({
                                                     onValueChange={field.onChange}
                                                     defaultValue={field.value}
                                                 >
-                                                    <FormControl>
+                                                    <FormControl className="!bg-white">
                                                         <SelectTrigger>
                                                             <SelectValue
                                                                 placeholder={formParam.label}
@@ -285,7 +355,7 @@ export const EditContract = ({
                                                     onValueChange={field.onChange}
                                                     defaultValue={field.value}
                                                 >
-                                                    <FormControl>
+                                                    <FormControl className="!bg-white">
                                                         <SelectTrigger>
                                                             <SelectValue
                                                                 placeholder={formParam.label}
@@ -307,7 +377,7 @@ export const EditContract = ({
                                                     onValueChange={field.onChange}
                                                     defaultValue={field.value}
                                                 >
-                                                    <FormControl>
+                                                    <FormControl className="!bg-white">
                                                         <SelectTrigger>
                                                             <SelectValue
                                                                 placeholder={formParam.label}
@@ -353,7 +423,7 @@ export const EditContract = ({
                                                     onValueChange={field.onChange}
                                                     defaultValue={field.value}
                                                 >
-                                                    <FormControl>
+                                                    <FormControl className="!bg-white">
                                                         <SelectTrigger>
                                                             <SelectValue
                                                                 placeholder={formParam.label}
@@ -375,7 +445,7 @@ export const EditContract = ({
                                                     onValueChange={field.onChange}
                                                     defaultValue={field.value}
                                                 >
-                                                    <FormControl>
+                                                    <FormControl className="!bg-white">
                                                         <SelectTrigger>
                                                             <SelectValue
                                                                 placeholder={formParam.label}
@@ -397,7 +467,7 @@ export const EditContract = ({
                                                     onValueChange={field.onChange}
                                                     defaultValue={field.value}
                                                 >
-                                                    <FormControl>
+                                                    <FormControl className="!bg-white">
                                                         <SelectTrigger>
                                                             <SelectValue
                                                                 placeholder={formParam.label}

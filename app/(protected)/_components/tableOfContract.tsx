@@ -107,7 +107,7 @@ export const columns: ColumnDef<contractParam>[] = [
         accessorKey: "theAmountOfTheContract",
         header: "Сумма договора",
         cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("theAmountOfTheContract")}</div>
+            <div className="capitalize">{Number(row.getValue("theAmountOfTheContract")).toLocaleString('en-US')}</div>
         ),
     },
     {

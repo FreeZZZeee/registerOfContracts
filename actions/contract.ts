@@ -116,6 +116,9 @@ export const contractUpdate = async (
 
     const dbUser = await getUserById(user.id as string);
 
+    console.log(values);
+
+
     if (!dbUser) {
         return { error: "Неавторизованный" };
     }

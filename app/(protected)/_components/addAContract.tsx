@@ -196,13 +196,6 @@ export const AddAContract = ({
                                     />
                                 )}
 
-                            {formParam.type === "text" && formParam.name === "actuallyPaidFor" && (
-                                <>
-                                    <span className="text-sm block my-3 font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{formParam.label}</span>
-                                    <p className="font-bold mr-2 ml-auto">Итого: <span className="font-medium">0</span></p>
-                                </>
-                            )}
-
                             {formParam.type === "date" && (
                                 <FormField
                                     control={form.control}
@@ -237,7 +230,7 @@ export const AddAContract = ({
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}
                                                 >
-                                                    <FormControl>
+                                                    <FormControl className="!bg-white">
                                                         <SelectTrigger>
                                                             <SelectValue
                                                                 placeholder={formParam.label}
@@ -258,7 +251,7 @@ export const AddAContract = ({
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}
                                                 >
-                                                    <FormControl>
+                                                    <FormControl className="!bg-white">
                                                         <SelectTrigger>
                                                             <SelectValue
                                                                 placeholder={formParam.label}
@@ -279,7 +272,7 @@ export const AddAContract = ({
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}
                                                 >
-                                                    <FormControl>
+                                                    <FormControl className="!bg-white">
                                                         <SelectTrigger>
                                                             <SelectValue
                                                                 placeholder={formParam.label}
@@ -323,7 +316,7 @@ export const AddAContract = ({
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}
                                                 >
-                                                    <FormControl>
+                                                    <FormControl className="!bg-white">
                                                         <SelectTrigger>
                                                             <SelectValue
                                                                 placeholder={formParam.label}
@@ -344,7 +337,7 @@ export const AddAContract = ({
                                                     disabled={isPending}
                                                     onValueChange={field.onChange}
                                                 >
-                                                    <FormControl>
+                                                    <FormControl className="!bg-white">
                                                         <SelectTrigger>
                                                             <SelectValue
                                                                 placeholder={formParam.label}

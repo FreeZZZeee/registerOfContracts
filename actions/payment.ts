@@ -13,6 +13,7 @@ export const payCreateAction = async (
     values: z.infer<typeof PaymentSchema>,
 ) => {
     const user = await currentUser();
+    values.paymentRegistrationDate = new Date(values.paymentRegistrationDate as Date)
     const validateFields = PaymentSchema.safeParse(values);
 
     if (!validateFields.success) {
@@ -34,33 +35,28 @@ export const payCreateAction = async (
 }
 
 export const payUpdateAction = async (
-    values: z.infer<typeof GuideSchema>,
+    values: z.infer<typeof PaymentSchema>,
     id: string,
-    dbName: string,
 ) => {
     const user = await currentUser();
-    const validateFields = GuideSchema.safeParse(values);
+    values.paymentRegistrationDate = new Date(values.paymentRegistrationDate as Date)
+    const validateFields = PaymentSchema.safeParse(values);
 
     if (!validateFields.success) {
         return { error: "Недопустимое поле!" };
     }
 
-    const { name } = validateFields.data;
+    const data = validateFields.data;
 
-    const guideFromDB = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}/guide/${name}`);
-    const guideIDFromDB = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}/${id}`)
+    const paidIDFromDB = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/${id}`)
 
 
-    if (guideFromDB?.data) {
-        return { error: "Справочник уже существует!" }
+    if (!paidIDFromDB?.data) {
+        return { error: "Сумма платежа не существует!" }
     }
 
-    if (!guideIDFromDB?.data) {
-        return { error: "Справочник не существует!" }
-    }
-
-    const res = await axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}/${guideIDFromDB.data.id}`, {
-        name,
+    const res = await axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/${paidIDFromDB.data.id}`, {
+        data,
         user
     })
 
@@ -71,7 +67,7 @@ export const payUpdateAction = async (
     return { error: res?.data?.message };
 }
 
-export const payDeleteAction = async (dbName: string, id: string) => {
+export const payDeleteAction = async (id: string) => {
     const user: User = await currentUser() as User;
 
     if (!user) {
@@ -84,13 +80,14 @@ export const payDeleteAction = async (dbName: string, id: string) => {
         return { error: "Неавторизованный" };
     }
 
-    const guideFromDB = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}/${id}`)
+    const paidIDFromDB = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/${id}`)
 
-    if (!guideFromDB?.data) {
-        return { error: "Справочник не существует!" }
+
+    if (!paidIDFromDB?.data) {
+        return { error: "Сумма платежа не существует!" }
     }
 
-    const res: any = await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/${dbName}/${id}`)
+    const res: any = await axios.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/${id}`)
 
     if (res?.statusText === 'OK') {
         return { success: res?.data?.message }
