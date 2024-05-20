@@ -59,9 +59,15 @@ export const InfoContract = ({
         { name: "Поставщик, подрядчик, исполнитель", label: provider },
         { name: "Передмет договора", label: theSubjectOfTheAgreement },
         { name: "Фактически оплачено", label: actuallyPaidFor },
-        { name: "Сумма договора", label: theAmountOfTheContract },
+        {
+            name: "Сумма договора", label: new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB" })
+                .format(Number(theAmountOfTheContract.replace(/,/g, ".")))
+        },
         { name: "Дата возврата", label: returnDate },
-        { name: "Сумма обеспечения", label: theAmountOfCollateral },
+        {
+            name: "Сумма обеспечения", label: new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB" })
+                .format(Number(theAmountOfCollateral.replace(/,/g, ".")))
+        },
         { name: "Вид закупки", label: view },
         { name: "Статья расходов", label: article },
         { name: "Подразделение", label: division },

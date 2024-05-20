@@ -188,8 +188,8 @@ export const EditContract = ({
                 onSubmit={form.handleSubmit(onSubmit)}
             >
                 <div className="flex flex-col flex-wrap gap-2">
-                    {formParams.map(formParam => (
-                        <div className="w-auto" key={formParam.name}>
+                    {formParams.map((formParam, idx) => (
+                        <div className="w-auto" key={idx}>
 
                             {formParam.type === "text"
                                 && formParam.name !== "provider"
@@ -233,11 +233,13 @@ export const EditContract = ({
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            {payment && payment.map((paid) => {
-                                                total += Number(paid.amount);
+                                            {payment && payment.map((paid, idx) => {
+                                                total += Number(paid.amount.replace(/,/g, "."));
                                                 return (
-                                                    <TableRow key={paid.paymentOrderNumber} className="my-2">
-                                                        <TableCell>{Number(paid.amount).toLocaleString('en-US')}</TableCell>
+                                                    <TableRow key={idx} className="my-2">
+                                                        <TableCell>
+                                                            {new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB" }).format(Number(paid.amount.replace(/,/g, ".")))}
+                                                        </TableCell>
                                                         <TableCell>{paid.paymentRegistrationDate.toISOString().slice(0, 10)}</TableCell>
                                                         <TableCell>{paid.division}</TableCell>
                                                         <TableCell>{paid.paymentOrderNumber}</TableCell>
@@ -263,7 +265,7 @@ export const EditContract = ({
                                         </TableBody>
                                     </Table>
                                     <div className="flex justify-end">
-                                        <span className="font-bold">Итого:&nbsp;</span><span>{total.toLocaleString('en-US')}</span>
+                                        <span className="font-bold">Итого:&nbsp;</span><span>{new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB" }).format(total)}</span>
                                     </div>
                                 </>
                             )}
@@ -341,8 +343,8 @@ export const EditContract = ({
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        {placements.map(placement => (
-                                                            <SelectItem value={placement.name} key={placement.name}>
+                                                        {placements.map((placement, idx) => (
+                                                            <SelectItem value={placement.name} key={idx}>
                                                                 {placement.name}
                                                             </SelectItem>
                                                         ))}
@@ -578,7 +580,6 @@ export const EditContract = ({
                             )}
                         </div>
                     ))}
-
                 </div>
 
                 <Button

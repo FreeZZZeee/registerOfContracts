@@ -107,7 +107,11 @@ export const columns: ColumnDef<contractParam>[] = [
         accessorKey: "theAmountOfTheContract",
         header: "Сумма договора",
         cell: ({ row }) => (
-            <div className="capitalize">{Number(row.getValue("theAmountOfTheContract")).toLocaleString('en-US')}</div>
+            <div className="capitalize">
+                {new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB" })
+                    .format(Number(row.getValue<string>("theAmountOfTheContract")
+                        .replace(/,/g, ".")))}
+            </div>
         ),
     },
     {
@@ -278,7 +282,7 @@ export function TableOfContracts({
                                             type={row.original.type}
                                             theSubjectOfTheAgreement={row.original.theSubjectOfTheAgreement}
                                             actuallyPaidFor={row.original.actuallyPaidFor}
-                                            theAmountOfTheContract={row.original.theAmountOfCollateral}
+                                            theAmountOfTheContract={row.original.theAmountOfTheContract}
                                             division={row.original.division}
                                             returnDate={row.original.returnDate}
                                             theAmountOfCollateral={row.original.theAmountOfCollateral}

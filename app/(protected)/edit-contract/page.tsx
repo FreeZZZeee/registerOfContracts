@@ -28,7 +28,7 @@ const EditContractPage = async (props: any) => {
                 federal={data.federal}
                 type={data.type}
                 theSubjectOfTheAgreement={data.theSubjectOfTheAgreement}
-                theAmountOfTheContract={data.theAmountOfCollateral}
+                theAmountOfTheContract={data.theAmountOfTheContract}
                 division={data.division}
                 contractColor={data.contractColor}
                 returnDate={data.returnDate}
