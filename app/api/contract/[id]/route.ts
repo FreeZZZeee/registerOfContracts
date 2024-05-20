@@ -112,7 +112,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         },
         data: {
             ...data,
-            user: dbContractById.user,
+            user: dbContractById.user === dbUser.email ? dbUser.name : dbContractById.user,
             pdfFile: data.pdfFile
         }
     })

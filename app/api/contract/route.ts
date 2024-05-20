@@ -50,7 +50,7 @@ export async function POST(req: Request) {
             data: {
                 ...data,
                 pdfFile: data.pdfFile,
-                user: user.name
+                user: user.name ? user.name : user.email
             }
         });
 
