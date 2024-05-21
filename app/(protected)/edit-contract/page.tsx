@@ -36,7 +36,6 @@ const EditContractPage = async (props: any) => {
                 view={data.view}
                 article={data.article}
                 sourceOfFinancing={data.sourceOfFinancing}
-                MP={data.MP}
                 micro={data.micro}
                 small={data.small}
                 average={data.average}

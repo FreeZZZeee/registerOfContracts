@@ -19,7 +19,6 @@ export interface contractParam {
     article: string,
     division: string,
     sourceOfFinancing: string,
-    MP: boolean,
     micro: boolean,
     small: boolean,
     average: boolean,

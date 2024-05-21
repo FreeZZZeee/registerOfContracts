@@ -169,7 +169,6 @@ model Contract {
   division                 String
   sourceOfFinancing        String?
   additionalInformation    String? @db.Text
-  MP                       Boolean @default(false)
   subcontractorMP          Boolean @default(false)
   transients               Boolean @default(false)
   micro                    Boolean @default(false)

@@ -32,6 +32,7 @@ import { AutocompleteInput } from "@/components/autocompleteInput";
 
 
 const colors = [
+    { color: "bg-secondary" },
     { color: "bg-yellow-950" },
     { color: "bg-red-600" },
     { color: "bg-orange-700" },
@@ -86,7 +87,6 @@ export const AddAContract = ({
             article: "",
             division: "",
             sourceOfFinancing: "",
-            MP: false,
             micro: false,
             small: false,
             average: false,
@@ -305,7 +305,7 @@ export const AddAContract = ({
                                                             <SelectItem
                                                                 value={color.color}
                                                                 key={color.color}
-                                                                className={`${color.color} h-9 my-1`}>
+                                                                className={`${color.color} h-9 my-1 focus:opacity-50 focus:${color.color}`}>
                                                             </SelectItem>
                                                         ))}
                                                     </SelectContent>
@@ -359,18 +359,31 @@ export const AddAContract = ({
                                 />
                             )}
 
+                            {formParam.type === "headingBool" && (
+                                <FormField
+                                    control={form.control}
+                                    name={formParam.name as any}
+                                    render={() => (
+                                        <FormItem>
+                                            <FormLabel>{formParam.label}</FormLabel>
+                                        </FormItem>
+                                    )}
+                                />
+
+                            )}
+
                             {formParam.type === "bool" && (
                                 <FormField
                                     control={form.control}
                                     name={formParam.name as any}
                                     render={({ field }) => (
-                                        <FormItem className="flex flex-row items-center justify-between
-                                    rounded-lg border p-3 shadow-sm w-[250px]">
+                                        <FormItem className={`inline-flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm gap-x-4 ${formParam?.className}`}>
                                             <div className="space-y-0.5">
                                                 <FormLabel>{formParam.label}</FormLabel>
                                             </div>
                                             <FormControl>
                                                 <Switch
+                                                    className="!m-0"
                                                     disabled={isPending}
                                                     onCheckedChange={field.onChange}
                                                 />
@@ -378,6 +391,7 @@ export const AddAContract = ({
                                         </FormItem>
                                     )}
                                 />
+
                             )}
 
                             {formParam.type === "textArea" && (

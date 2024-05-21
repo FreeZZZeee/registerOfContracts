@@ -289,7 +289,6 @@ export function TableOfContracts({
                                             view={row.original.view}
                                             article={row.original.article}
                                             sourceOfFinancing={row.original.sourceOfFinancing}
-                                            MP={row.original.MP}
                                             micro={row.original.micro}
                                             small={row.original.small}
                                             average={row.original.average}

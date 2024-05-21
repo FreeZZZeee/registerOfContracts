@@ -43,18 +43,13 @@ export async function POST(req: Request) {
         return NextResponse.json({ message: "Договор уже существует!" }, { status: 409 });
     }
 
-    if (data.MP !== undefined
-        && data.subcontractorMP !== undefined
-        && data.transients !== undefined) {
-        await db.contract.create({
-            data: {
-                ...data,
-                pdfFile: data.pdfFile,
-                user: user.name ? user.name : user.email
-            }
-        });
-
-    }
+    await db.contract.create({
+        data: {
+            ...data,
+            pdfFile: data.pdfFile,
+            user: user.name ? user.name : user.email
+        }
+    });
 
     return NextResponse.json({ message: "Договор добавлен!" }, { status: 200 });
 }
