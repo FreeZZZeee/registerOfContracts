@@ -12,7 +12,7 @@ export const formParams = [
     { name: "theSubjectOfTheAgreement", label: "Передмет договора", type: "text" },
     { name: "actuallyPaidFor", label: "Фактически оплачено", type: "text" },
     { name: "theAmountOfTheContract", label: "Сумма договора", type: "text" },
-    { name: "returnDate", label: "Дата возврата", type: "date" },
+    { name: "returnDate", label: "Дата возврата обеспечения", type: "date" },
     { name: "theAmountOfCollateral", label: "Сумма обеспечения", type: "text" },
     { name: "view", label: "Вид закупки", type: "select" },
     { name: "article", label: "Статья расходов", type: "select" },

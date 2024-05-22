@@ -62,6 +62,7 @@ export const AddAContract = ({
     const [values, setValues] = useState<string>();
     const [color, setColor] = useState<string>();
     const [pdf, setPdf] = useState<string>();
+    const [placeVal, setPlaceVal] = useState<string>();
 
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
@@ -145,25 +146,52 @@ export const AddAContract = ({
                                 && formParam.name !== "actuallyPaidFor"
                                 && formParam.name !== "division"
                                 && (
-                                    <FormField
-                                        control={form.control}
-                                        name={formParam.name as any}
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>{formParam.label}</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        {...field}
-                                                        value={values}
-                                                        placeholder={formParam.label}
-                                                        disabled={isPending}
-                                                        type={formParam.type}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
+                                    <>
+                                        {formParam.name !== "theAmountOfCollateral" && (
+                                            <FormField
+                                                control={form.control}
+                                                name={formParam.name as any}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>{formParam.label}</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                value={values}
+                                                                placeholder={formParam.label}
+                                                                disabled={isPending}
+                                                                type={formParam.type}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
                                         )}
-                                    />
+
+                                        {placeVal === "ЕП 223" && formParam.name === "theAmountOfCollateral" && (
+                                            <FormField
+                                                control={form.control}
+                                                name={formParam.name as any}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>{formParam.label}</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                value={values}
+                                                                placeholder={formParam.label}
+                                                                disabled={isPending}
+                                                                type={formParam.type}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        )}
+                                    </>
+
                                 )}
 
                             {formParam.type === "text"
@@ -197,25 +225,51 @@ export const AddAContract = ({
                                 )}
 
                             {formParam.type === "date" && (
-                                <FormField
-                                    control={form.control}
-                                    name={formParam.name as any}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>{formParam.label}</FormLabel>
-                                            <FormControl className="w-[200px]">
-                                                <Input
-                                                    {...field}
-                                                    value={values}
-                                                    placeholder={formParam.label}
-                                                    disabled={isPending}
-                                                    type={formParam.type}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
+                                <>
+                                    {formParam.name !== "returnDate" && (
+                                        <FormField
+                                            control={form.control}
+                                            name={formParam.name as any}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>{formParam.label}</FormLabel>
+                                                    <FormControl className="w-[200px]">
+                                                        <Input
+                                                            {...field}
+                                                            value={values}
+                                                            placeholder={formParam.label}
+                                                            disabled={isPending}
+                                                            type={formParam.type}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
                                     )}
-                                />
+
+                                    {placeVal === "ЕП 223" && formParam.name === "returnDate" && (
+                                        <FormField
+                                            control={form.control}
+                                            name={formParam.name as any}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>{formParam.label}</FormLabel>
+                                                    <FormControl className="w-[200px]">
+                                                        <Input
+                                                            {...field}
+                                                            value={values}
+                                                            placeholder={formParam.label}
+                                                            disabled={isPending}
+                                                            type={formParam.type}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    )}
+                                </>
                             )}
 
                             {formParam.type === "select" && (
@@ -228,7 +282,11 @@ export const AddAContract = ({
                                             {formParam.name === "placement" && (
                                                 <Select
                                                     disabled={isPending}
-                                                    onValueChange={field.onChange}
+                                                    onValueChange={(e) => {
+                                                        field.onChange
+                                                        setPlaceVal(e);
+
+                                                    }}
                                                 >
                                                     <FormControl className="!bg-white">
                                                         <SelectTrigger>
@@ -239,7 +297,10 @@ export const AddAContract = ({
                                                     </FormControl>
                                                     <SelectContent>
                                                         {placements && placements.map(placement => (
-                                                            <SelectItem value={placement.name} key={placement.name}>
+                                                            <SelectItem
+                                                                value={placement.name}
+                                                                key={placement.name}
+                                                            >
                                                                 {placement.name}
                                                             </SelectItem>
                                                         ))}

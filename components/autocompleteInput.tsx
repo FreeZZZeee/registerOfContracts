@@ -2,7 +2,7 @@ import { Provider } from "@/interfaces/provider.interface"
 import { Card, CardContent } from "./ui/card"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form"
 import { Input } from "./ui/input"
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import { useAutocomplete } from "@/hooks/useAutocomplete"
 
 interface autocompleteInputProps {
