@@ -169,7 +169,7 @@ export const AddAContract = ({
                                             />
                                         )}
 
-                                        {placeVal === "ЕП 223" && formParam.name === "theAmountOfCollateral" && (
+                                        {placeVal !== "ЕП 223" && formParam.name === "theAmountOfCollateral" && (
                                             <FormField
                                                 control={form.control}
                                                 name={formParam.name as any}
@@ -248,7 +248,7 @@ export const AddAContract = ({
                                         />
                                     )}
 
-                                    {placeVal === "ЕП 223" && formParam.name === "returnDate" && (
+                                    {placeVal !== "ЕП 223" && formParam.name === "returnDate" && (
                                         <FormField
                                             control={form.control}
                                             name={formParam.name as any}
