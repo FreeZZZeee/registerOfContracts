@@ -95,6 +95,7 @@ export const EditContract = ({
     const [color, setColor] = useState<string>(contractColor);
     const [isPending, startTransition] = useTransition();
     const [pdf, setPdf] = useState<string>(pdfFile as string);
+    const [placeVal, setPlaceVal] = useState<string>();
 
     const router = useRouter();
 
@@ -194,24 +195,49 @@ export const EditContract = ({
                                 && formParam.name !== "provider"
                                 && formParam.name !== "actuallyPaidFor"
                                 && formParam.name !== "division" && (
-                                    <FormField
-                                        control={form.control}
-                                        name={formParam.name as any}
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>{formParam.label}</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        {...field}
-                                                        placeholder={formParam.label}
-                                                        disabled={isPending}
-                                                        type={formParam.type}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
+                                    <>
+                                        {formParam.name !== "theAmountOfCollateral" && (
+                                            <FormField
+                                                control={form.control}
+                                                name={formParam.name as any}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>{formParam.label}</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder={formParam.label}
+                                                                disabled={isPending}
+                                                                type={formParam.type}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
                                         )}
-                                    />
+
+                                        {placeVal !== "ЕП 223" && formParam.name === "theAmountOfCollateral" && (
+                                            <FormField
+                                                control={form.control}
+                                                name={formParam.name as any}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>{formParam.label}</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder={formParam.label}
+                                                                disabled={isPending}
+                                                                type={formParam.type}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        )}
+                                    </>
                                 )}
 
                             {formParam.type === "text" && formParam.name === "actuallyPaidFor" && (
@@ -301,24 +327,49 @@ export const EditContract = ({
 
 
                             {formParam.type === "date" && (
-                                <FormField
-                                    control={form.control}
-                                    name={formParam.name as any}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>{formParam.label}</FormLabel>
-                                            <FormControl className="w-[200px]">
-                                                <Input
-                                                    {...field}
-                                                    placeholder={formParam.label}
-                                                    disabled={isPending}
-                                                    type={formParam.type}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
+                                <>
+                                    {formParam.name !== "returnDate" && (
+                                        <FormField
+                                            control={form.control}
+                                            name={formParam.name as any}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>{formParam.label}</FormLabel>
+                                                    <FormControl className="w-[200px]">
+                                                        <Input
+                                                            {...field}
+                                                            placeholder={formParam.label}
+                                                            disabled={isPending}
+                                                            type={formParam.type}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
                                     )}
-                                />
+
+                                    {placeVal !== "ЕП 223" && formParam.name === "returnDate" && (
+                                        <FormField
+                                            control={form.control}
+                                            name={formParam.name as any}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>{formParam.label}</FormLabel>
+                                                    <FormControl className="w-[200px]">
+                                                        <Input
+                                                            {...field}
+                                                            placeholder={formParam.label}
+                                                            disabled={isPending}
+                                                            type={formParam.type}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    )}
+                                </>
                             )}
 
                             {formParam.type === "select" && (
@@ -331,7 +382,10 @@ export const EditContract = ({
                                             {formParam.name === "placement" && (
                                                 <Select
                                                     disabled={isPending}
-                                                    onValueChange={field.onChange}
+                                                    onValueChange={(e) => {
+                                                        field.onChange
+                                                        setPlaceVal(e);
+                                                    }}
                                                     defaultValue={field.value}
                                                 >
                                                     <FormControl className="!bg-white">

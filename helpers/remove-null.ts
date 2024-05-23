@@ -1,25 +1,24 @@
 interface searchValuesParams {
-    placementId: string,
-    typeId: string,
-    federalId: string,
-    contractNumber: string,
+    placement: string,
+    type: string,
+    federal: string,
+    point: string,
+    subItem: string,
     startDateOfTheAgreement: string,
     endDateOfTheContract: string,
     provider: string,
+    thePostagePeriod: string,
     theSubjectOfTheAgreement: string,
-    actuallyPaidFor: string,
     theAmountOfTheContract: string,
-    returnDate: string,
-    theAmountOfCollateral: string,
-    viewId: string,
-    articleId: string,
-    divisionId: string,
+    division: string,
     sourceOfFinancing: string,
-    MP: boolean,
     subcontractorMP: boolean,
     transients: boolean,
-    additionalInformation: string,
-    contractColor: string
+    micro: boolean,
+    small: boolean,
+    average: boolean,
+    contractColor: string,
+    user: string
 }
 
 export const removeNull: {} | any = (obj: searchValuesParams) => {

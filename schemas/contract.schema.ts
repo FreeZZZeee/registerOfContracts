@@ -65,10 +65,9 @@ export const ContractSchema = z.object({
 });
 
 export const SearchContractSchema = z.object({
-    placement: z.string(),
+    placement: z.optional(z.string()),
     type: z.optional(z.string()),
     federal: z.optional(z.string()),
-    contractNumber: z.optional(z.string()),
     startDateOfTheAgreement: z.optional(z.string()),
     endDateOfTheContract: z.optional(z.string()),
     provider: z.optional(z.string()),
@@ -77,19 +76,13 @@ export const SearchContractSchema = z.object({
     thePostagePeriod: z.optional(z.string()),
     point: z.optional(z.string()),
     subItem: z.optional(z.string()),
-    actuallyPaidFor: z.optional(z.string()),
     theAmountOfTheContract: z.optional(z.string()),
-    returnDate: z.optional(z.string()),
-    theAmountOfCollateral: z.optional(z.string()),
-    view: z.optional(z.string()),
-    article: z.optional(z.string()),
     division: z.optional(z.string()),
     sourceOfFinancing: z.optional(z.string()),
-    additionalInformation: z.optional(z.string()),
     subcontractorMP: z.optional(z.boolean()),
     transients: z.optional(z.boolean()),
     micro: z.optional(z.boolean()),
     small: z.optional(z.boolean()),
     average: z.optional(z.boolean()),
-    userId: z.optional(z.string())
+    user: z.optional(z.string())
 });

@@ -27,7 +27,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { removeItem } from "@/hooks/lokalStorege.removeItem";
-import { formParams } from "@/data/form-params"
+import { searchFormParams } from "@/data/form-params"
 import { colors } from "@/data/colors";
 import { valuesParamPropsArr } from "@/interfaces/searchContract.interface";
 
@@ -47,26 +47,25 @@ export const SheetSearch = ({
     const form = useForm<z.infer<typeof SearchContractSchema>>({
         resolver: zodResolver(SearchContractSchema),
         defaultValues: {
-            placementId: "",
-            typeId: "",
-            federalId: "",
-            contractNumber: "",
+            user: "",
+            placement: "",
+            type: "",
+            point: "",
+            subItem: "",
+            federal: "",
             startDateOfTheAgreement: "",
+            thePostagePeriod: "",
             endDateOfTheContract: "",
             provider: "",
             theSubjectOfTheAgreement: "",
-            actuallyPaidFor: "",
             theAmountOfTheContract: "",
-            returnDate: "",
-            theAmountOfCollateral: "",
-            viewId: "",
-            articleId: "",
-            divisionId: "",
+            division: "",
             sourceOfFinancing: "",
-            MP: false,
             subcontractorMP: false,
+            micro: false,
+            small: false,
+            average: false,
             transients: false,
-            additionalInformation: "",
             contractColor: ""
         }
     });
@@ -116,7 +115,7 @@ export const SheetSearch = ({
                     >
                         <ScrollArea className="h-[700px] w-full rounded-md border p-4">
                             <div className="flex flex-col flex-wrap gap-2">
-                                {formParams.map(formParam => (
+                                {searchFormParams.map(formParam => (
                                     <div className="w-auto" key={formParam.name}>
                                         {formParam.type === "text" && (
                                             <FormField
@@ -167,7 +166,28 @@ export const SheetSearch = ({
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel>{formParam.label}</FormLabel>
-                                                        {formParam.name === "placementId" && (
+                                                        {formParam.name === "user" && (
+                                                            <Select
+                                                                disabled={isPending}
+                                                                onValueChange={field.onChange}
+                                                            >
+                                                                <FormControl>
+                                                                    <SelectTrigger>
+                                                                        <SelectValue
+                                                                            placeholder={formParam.label}
+                                                                        />
+                                                                    </SelectTrigger>
+                                                                </FormControl>
+                                                                <SelectContent>
+                                                                    {users.map(user => (
+                                                                        <SelectItem value={user.name} key={user.name}>
+                                                                            {user.name}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
+                                                        )}
+                                                        {formParam.name === "placement" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
@@ -188,7 +208,7 @@ export const SheetSearch = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {formParam.name === "typeId" && (
+                                                        {formParam.name === "type" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
@@ -209,7 +229,7 @@ export const SheetSearch = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {formParam.name === "federalId" && (
+                                                        {formParam.name === "federal" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
@@ -253,28 +273,8 @@ export const SheetSearch = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {formParam.name === "viewId" && (
-                                                            <Select
-                                                                disabled={isPending}
-                                                                onValueChange={field.onChange}
-                                                            >
-                                                                <FormControl>
-                                                                    <SelectTrigger>
-                                                                        <SelectValue
-                                                                            placeholder={formParam.label}
-                                                                        />
-                                                                    </SelectTrigger>
-                                                                </FormControl>
-                                                                <SelectContent>
-                                                                    {views.map(view => (
-                                                                        <SelectItem value={view.name} key={view.name}>
-                                                                            {view.name}
-                                                                        </SelectItem>
-                                                                    ))}
-                                                                </SelectContent>
-                                                            </Select>
-                                                        )}
-                                                        {formParam.name === "articleId" && (
+
+                                                        {formParam.name === "article" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
@@ -295,7 +295,7 @@ export const SheetSearch = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {formParam.name === "divisionId" && (
+                                                        {formParam.name === "division" && (
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
@@ -342,57 +342,8 @@ export const SheetSearch = ({
                                                 )}
                                             />
                                         )}
-
-                                        {formParam.type === "textArea" && (
-                                            <FormField
-                                                control={form.control}
-                                                name={formParam.name as any}
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel>{formParam.label}</FormLabel>
-                                                        <FormControl>
-                                                            <Textarea
-                                                                placeholder="Дополнительная информация" id="message-2"
-                                                                disabled={isPending}
-                                                                {...field}
-                                                            />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        )}
                                     </div>
                                 ))}
-                                <FormField
-                                    control={form.control}
-                                    name="userId"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Исполнитель</FormLabel>
-                                            <Select
-                                                disabled={isPending}
-                                                onValueChange={field.onChange}
-                                            >
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue
-                                                            placeholder="Исполнитель"
-                                                        />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {users.map(user => (
-                                                        <SelectItem value={user.name} key={user.name}>
-                                                            {user.name}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
                             </div>
                         </ScrollArea>
                         {/* <FormError message={error} />
