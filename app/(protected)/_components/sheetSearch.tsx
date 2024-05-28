@@ -21,7 +21,6 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -35,7 +34,6 @@ export const SheetSearch = ({
     placements,
     types,
     federals,
-    views,
     articles,
     divisions,
     users
@@ -54,11 +52,13 @@ export const SheetSearch = ({
             subItem: "",
             federal: "",
             startDateOfTheAgreement: "",
-            thePostagePeriod: "",
+            thePostagePeriodFrom: "",
+            thePostagePeriodIsUpTo: "",
             endDateOfTheContract: "",
             provider: "",
             theSubjectOfTheAgreement: "",
-            theAmountOfTheContract: "",
+            theAmountOfTheContractFrom: "",
+            theAmountOfTheContractIsUpTo: "",
             division: "",
             sourceOfFinancing: "",
             subcontractorMP: false,
@@ -71,6 +71,7 @@ export const SheetSearch = ({
     });
 
     const onSubmit = (values: z.infer<typeof SearchContractSchema>) => {
+        values.contractColor = color;
         startTransition(() => {
             contractSearch(values)
                 .then((data) => {
@@ -320,6 +321,19 @@ export const SheetSearch = ({
                                                     </FormItem>
                                                 )}
                                             />
+                                        )}
+
+                                        {formParam.type === "headingBool" && (
+                                            <FormField
+                                                control={form.control}
+                                                name={formParam.name as any}
+                                                render={() => (
+                                                    <FormItem>
+                                                        <FormLabel>{formParam.label}</FormLabel>
+                                                    </FormItem>
+                                                )}
+                                            />
+
                                         )}
 
                                         {formParam.type === "bool" && (

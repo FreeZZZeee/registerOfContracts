@@ -144,6 +144,23 @@ export function TableOfContracts({
 
     const router = useRouter();
 
+    useEffect(() => {
+        setInterval(() => {
+            if (typeof window !== 'undefined') {
+                let searchContract = JSON.parse(localStorage.getItem('searchContracts') as any);
+                if (searchContract) {
+                    setSearchContract(searchContract);
+                }
+            }
+        }, 100);
+    }, [])
+
+    if (searchContract && searchContract?.length > 0) {
+        data = searchContract;
+
+    }
+
+
     const table = useReactTable({
         data,
         columns,
@@ -178,21 +195,6 @@ export function TableOfContracts({
                 })
                 .catch(() => toast.error("Что-то пошло не так!"));
         });
-    }
-
-    useEffect(() => {
-        setInterval(() => {
-            if (typeof window !== 'undefined') {
-                let searchContract = JSON.parse(localStorage.getItem('searchContracts') as any);
-                if (searchContract) {
-                    setSearchContract(searchContract);
-                }
-            }
-        }, 100);
-    }, [])
-
-    if (searchContract && searchContract?.length > 0) {
-        data = searchContract;
     }
 
     return (
