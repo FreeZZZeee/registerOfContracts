@@ -133,6 +133,7 @@ export const EditContract = ({
 
     const onSubmit = (values: z.infer<typeof ContractSchema>) => {
         values.contractColor = color ? color : "";
+        values.placement = placeVal ? placeVal : placement;
 
         let formData: FormData;
         if (values?.pdfFile !== undefined) {
