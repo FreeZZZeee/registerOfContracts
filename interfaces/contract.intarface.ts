@@ -26,6 +26,6 @@ export interface contractParam {
     transients: boolean,
     additionalInformation: string,
     contractColor: string
-    userId: string
+    user: string
     pdfFile: string
 }

@@ -27,6 +27,7 @@ const RegestryPage = async () => {
                 views={data?.views as []}
                 articles={data?.articles as []}
                 divisions={data?.divisions as []}
+                providers={data?.providers as []}
                 users={users as []}
             />
             <Button variant="outline" asChild>

@@ -2,7 +2,7 @@
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useForm } from "react-hook-form"
 import Link from "next/link";
 
@@ -29,6 +29,8 @@ import { removeItem } from "@/hooks/lokalStorege.removeItem";
 import { searchFormParams } from "@/data/form-params"
 import { colors } from "@/data/colors";
 import { valuesParamPropsArr } from "@/interfaces/searchContract.interface";
+import { AutocompleteInput } from "@/components/autocompleteInput";
+import { searchContract } from "@/interfaces/searchContract.interface";
 
 export const SheetSearch = ({
     placements,
@@ -36,39 +38,13 @@ export const SheetSearch = ({
     federals,
     articles,
     divisions,
+    providers,
     users
 }: valuesParamPropsArr) => {
     const [color, setColor] = useState<string>();
     const [open, setOpen] = useState<boolean>(false);
+    const [searchValues, setSearchValues] = useState<searchContract>();
     const [isPending, startTransition] = useTransition();
-
-    const form = useForm<z.infer<typeof SearchContractSchema>>({
-        resolver: zodResolver(SearchContractSchema),
-        defaultValues: {
-            user: "",
-            placement: "",
-            type: "",
-            point: "",
-            subItem: "",
-            federal: "",
-            startDateOfTheAgreement: "",
-            thePostagePeriodFrom: "",
-            thePostagePeriodIsUpTo: "",
-            endDateOfTheContract: "",
-            provider: "",
-            theSubjectOfTheAgreement: "",
-            theAmountOfTheContractFrom: "",
-            theAmountOfTheContractIsUpTo: "",
-            division: "",
-            sourceOfFinancing: "",
-            subcontractorMP: false,
-            micro: false,
-            small: false,
-            average: false,
-            transients: false,
-            contractColor: ""
-        }
-    });
 
     const onSubmit = (values: z.infer<typeof SearchContractSchema>) => {
         values.contractColor = color;
@@ -83,19 +59,53 @@ export const SheetSearch = ({
                         toast.success(data.success);
                         setOpen(false);
                         localStorage.setItem('searchContracts', JSON.stringify(data.contracts));
+                        setSearchValues(values as searchContract)
                     }
                 })
                 .catch(() => toast.error("Что-то пошло не так!"));
         });
     }
 
+    const form = useForm<z.infer<typeof SearchContractSchema>>({
+        resolver: zodResolver(SearchContractSchema),
+        defaultValues: {
+            user: searchValues?.user ? searchValues?.user : "",
+            placement: searchValues?.placement ? searchValues?.placement : "",
+            type: searchValues?.type ? searchValues?.type : "",
+            point: searchValues?.point ? searchValues?.point : "",
+            subItem: searchValues?.subItem ? searchValues?.subItem : "",
+            federal: searchValues?.federal ? searchValues?.federal : "",
+            startDateOfTheAgreement: searchValues?.startDateOfTheAgreement ? searchValues?.startDateOfTheAgreement : "",
+            thePostagePeriodFrom: searchValues?.thePostagePeriodFrom ? searchValues?.thePostagePeriodFrom : "",
+            thePostagePeriodIsUpTo: searchValues?.thePostagePeriodIsUpTo ? searchValues?.thePostagePeriodIsUpTo : "",
+            endDateOfTheContract: searchValues?.endDateOfTheContract ? searchValues?.endDateOfTheContract : "",
+            provider: searchValues?.provider ? searchValues?.provider : "",
+            theSubjectOfTheAgreement: searchValues?.theSubjectOfTheAgreement ? searchValues?.theSubjectOfTheAgreement : "",
+            theAmountOfTheContractFrom: searchValues?.theAmountOfTheContractFrom ? searchValues?.theAmountOfTheContractFrom : "",
+            theAmountOfTheContractIsUpTo: searchValues?.theAmountOfTheContractIsUpTo ? searchValues?.theAmountOfTheContractIsUpTo : "",
+            division: searchValues?.division ? searchValues?.division : "",
+            sourceOfFinancing: searchValues?.sourceOfFinancing ? searchValues?.sourceOfFinancing : "",
+            subcontractorMP: searchValues?.subcontractorMP ? searchValues?.subcontractorMP : false,
+            micro: searchValues?.micro ? searchValues?.micro : false,
+            small: searchValues?.small ? searchValues?.small : false,
+            average: searchValues?.average ? searchValues?.average : false,
+            transients: searchValues?.transients ? searchValues?.transients : false,
+            contractColor: searchValues?.contractColor ? searchValues?.contractColor : ""
+        }
+    });
+
     const clearSearch = () => {
         removeItem('searchContracts');
         toast.success("Фильтр сброшен");
         setOpen(false);
         window.location.reload()
-
     }
+
+    useEffect(() => {
+        window.onbeforeunload = function () {
+            localStorage.removeItem("searchContracts");
+        }
+    }, []);
 
     return (
         <Sheet open={open} onOpenChange={setOpen}>
@@ -118,26 +128,57 @@ export const SheetSearch = ({
                             <div className="flex flex-col flex-wrap gap-2">
                                 {searchFormParams.map(formParam => (
                                     <div className="w-auto" key={formParam.name}>
-                                        {formParam.type === "text" && (
-                                            <FormField
+                                        {formParam.type === "text"
+                                            && formParam.name !== "division"
+                                            && formParam.name !== "provider"
+                                            && (
+                                                <FormField
+                                                    control={form.control}
+                                                    name={formParam.name as any}
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>{formParam.label}</FormLabel>
+                                                            <FormControl>
+                                                                <Input
+                                                                    {...field}
+                                                                    placeholder={formParam.label}
+                                                                    disabled={isPending}
+                                                                    type={formParam.type}
+                                                                />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+
+
+                                            )}
+
+                                        {formParam.name === "division" && (
+                                            <AutocompleteInput
                                                 control={form.control}
-                                                name={formParam.name as any}
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel>{formParam.label}</FormLabel>
-                                                        <FormControl>
-                                                            <Input
-                                                                {...field}
-                                                                placeholder={formParam.label}
-                                                                disabled={isPending}
-                                                                type={formParam.type}
-                                                            />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
+                                                nameProvider={formParam.name}
+                                                label={formParam.label}
+                                                type={formParam.type}
+                                                isPending={isPending}
+                                                providers={divisions as []}
+                                                setValue={form.setValue}
+                                                valueProvider={searchValues?.division ? searchValues.division : ""}
                                             />
                                         )}
+                                        {formParam.name === "provider"
+                                            && (
+                                                <AutocompleteInput
+                                                    control={form.control}
+                                                    nameProvider={formParam.name}
+                                                    label={formParam.label}
+                                                    type={formParam.type}
+                                                    isPending={isPending}
+                                                    providers={providers as []}
+                                                    setValue={form.setValue}
+                                                    valueProvider={searchValues?.provider ? searchValues.provider : ""}
+                                                />
+                                            )}
 
                                         {formParam.type === "date" && (
                                             <FormField
@@ -171,6 +212,7 @@ export const SheetSearch = ({
                                                             <Select
                                                                 disabled={isPending}
                                                                 onValueChange={field.onChange}
+                                                                defaultValue={field.value}
                                                             >
                                                                 <FormControl>
                                                                     <SelectTrigger>
@@ -296,27 +338,6 @@ export const SheetSearch = ({
                                                                 </SelectContent>
                                                             </Select>
                                                         )}
-                                                        {formParam.name === "division" && (
-                                                            <Select
-                                                                disabled={isPending}
-                                                                onValueChange={field.onChange}
-                                                            >
-                                                                <FormControl>
-                                                                    <SelectTrigger>
-                                                                        <SelectValue
-                                                                            placeholder={formParam.label}
-                                                                        />
-                                                                    </SelectTrigger>
-                                                                </FormControl>
-                                                                <SelectContent>
-                                                                    {divisions.map(division => (
-                                                                        <SelectItem value={division.name} key={division.name}>
-                                                                            {division.name}
-                                                                        </SelectItem>
-                                                                    ))}
-                                                                </SelectContent>
-                                                            </Select>
-                                                        )}
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -350,6 +371,7 @@ export const SheetSearch = ({
                                                             <Switch
                                                                 disabled={isPending}
                                                                 onCheckedChange={field.onChange}
+                                                                checked={field.value}
                                                             />
                                                         </FormControl>
                                                     </FormItem>
